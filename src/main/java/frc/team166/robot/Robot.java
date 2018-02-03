@@ -18,6 +18,7 @@ import frc.team166.robot.subsystems.Drive;
 import frc.team166.robot.subsystems.Manipulator;
 import frc.team166.robot.subsystems.LED;
 import frc.team166.robot.subsystems.Lift;
+import frc.team166.robot.subsystems.Vision;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -31,6 +32,7 @@ public class Robot extends TimedRobot {
     public static final Drive drive = new Drive();
     public static final Manipulator manipulator = new Manipulator();
     public static final Lift lift = new Lift();
+    public static final Vision vision = new Vision();
     public static OI m_oi;
 
     Command m_autonomousCommand;
@@ -46,7 +48,7 @@ public class Robot extends TimedRobot {
         m_chooser.addDefault("Default Auto", drive.DriveTime(2, 0.6));
         m_chooser.addObject("Cross Line And Drop Cube", CrossLineAndDropCube());
         SmartDashboard.putData("Auto mode", m_chooser);
-        CameraServer.getInstance().startAutomaticCapture();
+
     }
 
     /**
