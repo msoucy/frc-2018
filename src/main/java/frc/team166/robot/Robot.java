@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.team166.chopshoplib.commands.scripting.ScriptCommand;
 import frc.team166.robot.commands.ExampleCommand;
 import frc.team166.robot.subsystems.Cart;
 import frc.team166.robot.subsystems.ExampleSubsystem;
@@ -41,6 +42,9 @@ public class Robot extends TimedRobot {
         m_chooser.addDefault("Default Auto", new ExampleCommand());
         // chooser.addObject("My Auto", new MyAutoCommand());
         SmartDashboard.putData("Auto mode", m_chooser);
+        SmartDashboard.putData("Preference Command", ScriptCommand.fromPreference("PrefCommand"));
+
+        ScriptCommand.register(cart);
 
     }
 
