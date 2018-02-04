@@ -6,6 +6,6 @@ package frc.team166.chopshoplib.commands.scripting;
 @FunctionalInterface
 public interface Scriptable {
 
-    void registerHandler(Engine e);
+    void registerScriptable(Engine e);
 
 }

@@ -63,6 +63,10 @@ public class ScriptCommand extends Command {
      * @param engine The scripting engine to use
      */
     public static Command fromPreference(String key, Engine engine) {
+        Preferences prefs = Preferences.getInstance();
+        if (!prefs.containsKey(key)) {
+            prefs.putString(key, "");
+        }
         return new InstantCommand(key) {
             @Override
             protected void initialize() {

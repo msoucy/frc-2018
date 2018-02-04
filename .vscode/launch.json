@@ -10,6 +10,13 @@
             "request": "attach",
             "hostName": "roboRIO-166-FRC.local",
             "port": 8348
+        },
+        {
+            "type": "java",
+            "name": "Debug (USB)",
+            "request": "attach",
+            "hostName": "172.22.11.2",
+            "port": 8348
         }
     ]
 }

@@ -52,9 +52,12 @@ public class SimpleEngine implements Engine {
      */
     public Command parseScript(String script) {
         CommandChain result = new CommandChain(script);
-        for (String groupStr : script.split(";")) {
-            Command[] cmds = (Command[]) Arrays.stream(groupStr.split("\\|")).map(this::parseSingleCommand).toArray();
-            result.then(cmds);
+        if (!"".equals(script)) {
+            for (String groupStr : script.split(";")) {
+                Command[] cmds = Arrays.stream(groupStr.split("\\|")).map(this::parseSingleCommand)
+                        .toArray(Command[]::new);
+                result.then(cmds);
+            }
         }
         return result;
     }
@@ -64,7 +67,7 @@ public class SimpleEngine implements Engine {
      * @param cmd The name of the command to look up
      */
     Command parseSingleCommand(String cmd) {
-        String[] args = cmd.split("\\w+");
+        String[] args = cmd.split("[\\s,]+");
         if (args.length == 0) {
             // Something is terribly wrong
             return null;
@@ -76,10 +79,14 @@ public class SimpleEngine implements Engine {
             for (int i = 0; i < args.length - 2; i++) {
                 cmdargs[i] = args[i + 2];
             }
-            return new TimeoutCommand(parseArgs(cmdargs), timeoutLength);
+            Command wrapped = parseArgs(cmdargs);
+            if (wrapped != null) {
+                return new TimeoutCommand(wrapped, timeoutLength);
+            }
         } else {
             return parseArgs(args);
         }
+        return null;
     }
 
     /**

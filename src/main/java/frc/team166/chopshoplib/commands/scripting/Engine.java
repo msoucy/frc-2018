@@ -40,7 +40,7 @@ public interface Engine {
      * @param func The function that creates the given command
      */
     default void register(Scriptable s) {
-        s.registerHandler(this);
+        s.registerScriptable(this);
     }
 
     /**

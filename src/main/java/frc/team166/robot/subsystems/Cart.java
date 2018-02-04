@@ -86,7 +86,7 @@ public class Cart extends Subsystem implements Scriptable {
     }
 
     @Override
-    public void registerHandler(Engine e) {
+    public void registerScriptable(Engine e) {
         e.register("left", this::moveleft);
         e.register("right", this::moveright);
     }
