@@ -12,11 +12,13 @@ import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
+import frc.team166.chopshoplib.commands.scripting.Engine;
+import frc.team166.chopshoplib.commands.scripting.Scriptable;
 
 /**
  * An example subsystem.  You can replace me with your own Subsystem.
  */
-public class Cart extends Subsystem {
+public class Cart extends Subsystem implements Scriptable {
     Victor motor = new Victor(1);
     DigitalInput sensorright = new DigitalInput(8);
     DigitalInput sensorleft = new DigitalInput(9);
@@ -81,5 +83,11 @@ public class Cart extends Subsystem {
                 setspeed(0);
             }
         };
+    }
+
+    @Override
+    public void registerHandler(Engine e) {
+        e.register("left", this::moveleft);
+        e.register("right", this::moveright);
     }
 }
