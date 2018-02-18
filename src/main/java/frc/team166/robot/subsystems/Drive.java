@@ -10,26 +10,28 @@ package frc.team166.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.team166.chopshoplib.commands.CommandChain;
+import frc.team166.chopshoplib.commands.SubsystemCommand;
+import frc.team166.chopshoplib.commands.scripting.Engine;
+import frc.team166.chopshoplib.commands.scripting.Scriptable;
+import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 import frc.team166.robot.RobotMap.PreferenceStrings;
-import frc.team166.chopshoplib.commands.CommandChain;
-import frc.team166.chopshoplib.commands.SubsystemCommand;
-import frc.team166.chopshoplib.sensors.Lidar;
-import edu.wpi.first.wpilibj.I2C.Port;
 
 /**
  * An example subsystem.  You can replace me with your own Subsystem.
  */
-public class Drive extends Subsystem {
+public class Drive extends Subsystem implements Scriptable {
 
     // declare lidar
     Lidar frontLidar = new Lidar(Port.kOnboard, 0x10);
@@ -66,6 +68,8 @@ public class Drive extends Subsystem {
 
     final static double AUTOMATIC_ROBOT_FORWARD_SPEED = .2;
     final static double ABSOLUTE_TOLERANCE_ANGLE = 3;
+
+    double scriptDriveSpeed = 0.0;
 
     //this makes children that control the tempestGyro, drive motors, and PIDController loop. 
     public Drive() {
@@ -265,6 +269,19 @@ public class Drive extends Subsystem {
                 .then(TurnByDegrees(90)).then(DriveTime(1, .8)).then(TurnByDegrees(90)).then(DriveTime(.5, .8))
                 .then(TurnByDegrees(90));
 
+    }
+
+    @Override
+    public void registerScriptable(Engine e) {
+        e.register("left", d -> turnByDegrees(-d));
+        e.register("right", d -> turnByDegrees(d));
+        e.registerAction("speed", d -> {
+            scriptDriveSpeed = d;
+        });
+
+        e.register("drive", d -> {
+            return driveTime(d, scriptDriveSpeed);
+        });
     }
 
 }

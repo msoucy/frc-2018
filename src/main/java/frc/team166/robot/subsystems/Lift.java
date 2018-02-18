@@ -39,13 +39,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
+import frc.team166.chopshoplib.commands.scripting.Engine;
+import frc.team166.chopshoplib.commands.scripting.Scriptable;
 import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 import frc.team166.robot.RobotMap.PreferenceStrings;
 import edu.wpi.first.wpilibj.DigitalInput;
 
-public class Lift extends PIDSubsystem {
+public class Lift extends PIDSubsystem implements Scriptable {
     // Defines Limit Switches (Digital imputs)
     DigitalInput bottomLimitSwitch = new DigitalInput(RobotMap.DigitalInputs.LIFT_LIMIT_SWITCH_BOTTOM);
     DigitalInput topLimitSwitch = new DigitalInput(RobotMap.DigitalInputs.LIFT_LIMIT_SWITCH_TOP);
@@ -179,6 +181,10 @@ public class Lift extends PIDSubsystem {
     }
 
     public Command GoToHeight(LiftHeights height, boolean isHighGear) {
+        return GoToHeight(height.get(), isHighGear);
+    }
+
+    public Command GoToHeight(double height, boolean isHighGear) {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
@@ -188,7 +194,7 @@ public class Lift extends PIDSubsystem {
                 } else {
                     shiftToLowGear();
                 }
-                setSetpoint(height.get());
+                setSetpoint(height);
             }
 
             @Override
@@ -338,5 +344,13 @@ public class Lift extends PIDSubsystem {
 
     public Command DisengageBrake() {
         return new ActionCommand("Don't Brake", this, this::disengageBrake);
+    }
+
+    @Override
+    public void registerScriptable(Engine e) {
+        e.register("brakeOn", this::Brake);
+        e.register("brakeOff", this::DisengageBrake);
+        e.register("climb", this::ClimbUp);
+        e.register("height", d -> GoToHeight(d, true));
     }
 }

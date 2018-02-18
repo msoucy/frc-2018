@@ -7,15 +7,22 @@
 
 package frc.team166.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
+import frc.team166.chopshoplib.commands.scripting.Engine;
+import frc.team166.chopshoplib.commands.scripting.Scriptable;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -23,10 +30,8 @@ import edu.wpi.first.wpilibj.Preferences;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 import frc.team166.robot.RobotMap.PreferenceStrings;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
 
-public class Manipulator extends PIDSubsystem {
+public class Manipulator extends PIDSubsystem implements Scriptable {
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
 
@@ -294,6 +299,18 @@ public class Manipulator extends PIDSubsystem {
 
     public Command enablePID() {
         return new ActionCommand("Enable PID", this, this::enable);
+    }
+
+    @Override
+    public void registerScriptable(Engine e) {
+        e.register("openOuter", this::OpenOuterManipulator);
+        e.register("closeOuter", this::CloseOuterManipulator);
+        e.register("openInner", this::OpenInnerManipulator);
+        e.register("closeInner", this::CloseInnerManipulator);
+        e.register("dropCube", this::CubeDrop);
+        e.register("ejectCube", this::CubeEject);
+        e.register("pickup", this::CubePickup);
+        e.register("deploy", this::DeployManipulator);
     }
 
 }

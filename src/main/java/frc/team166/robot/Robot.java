@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.commands.CommandChain;
+import frc.team166.chopshoplib.commands.Commands;
+import frc.team166.chopshoplib.commands.scripting.ScriptCommand;
 import frc.team166.robot.subsystems.Drive;
 import frc.team166.robot.subsystems.Manipulator;
 import frc.team166.robot.subsystems.LED;
@@ -47,6 +49,8 @@ public class Robot extends TimedRobot {
         m_chooser.addObject("Cross Line And Drop Cube", CrossLineAndDropCube());
         SmartDashboard.putData("Auto mode", m_chooser);
         CameraServer.getInstance().startAutomaticCapture();
+
+        ScriptCommand.register(drive);
     }
 
     /**
@@ -81,13 +85,6 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         m_autonomousCommand = m_chooser.getSelected();
-
-        /*
-         * String autoSelected = SmartDashboard.getString("Auto Selector",
-         * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
-         * = new MyAutoCommand(); break; case "Default Auto": default:
-         * autonomousCommand = new ExampleCommand(); break; }
-         */
 
         // schedule the autonomous command (example)
         if (m_autonomousCommand != null) {

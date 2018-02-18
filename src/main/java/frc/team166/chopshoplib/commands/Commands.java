@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 
 public class Commands {
     public static Command repeat(final int n, Command c) {
@@ -81,5 +82,9 @@ public class Commands {
 
     public static Command first(Command... cs) {
         return new CommandChain(cs);
+    }
+
+    public static Command empty() {
+        return new InstantCommand();
     }
 }

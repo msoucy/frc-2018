@@ -1,9 +1,12 @@
 package frc.team166.chopshoplib.commands.scripting;
 
+import java.util.function.DoubleConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.command.Command;
+import frc.team166.chopshoplib.commands.ActionCommand;
+import frc.team166.chopshoplib.commands.Commands;
 
 public interface Engine {
     /**
@@ -32,6 +35,28 @@ public interface Engine {
      */
     default void register(String prefix, Supplier<Command> func) {
         registerHandler(prefix, s -> func.get());
+    }
+
+    /**
+     * Register a scriptable action that does  function with the given prefix
+     * @param prefix The prefix for use in scripts
+     * @param func The function that creates the given command
+     */
+    default void registerAction(String prefix, Runnable func) {
+        registerHandler(prefix, s -> new ActionCommand(func));
+    }
+
+    /**
+     * Register a command function with the given prefix
+     * @param prefix The prefix for use in scripts
+     * @param func The function that creates the given command
+     */
+    default void registerAction(String prefix, DoubleConsumer func) {
+        registerHandler(prefix, s -> {
+            double arg = Double.parseDouble(s);
+            func.accept(arg);
+            return Commands.empty();
+        });
     }
 
     /**
