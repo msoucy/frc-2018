@@ -1,7 +1,7 @@
 plugins {
     id "java"
     id "eclipse"
-    id "idea"
+    id "findbugs"
     id "jaci.openrio.gradle.GradleRIO" version "2018.03.06"
 }
 
@@ -47,4 +47,12 @@ jar {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '4.6'
+}
+
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled false
+        html.enabled true
+        html.stylesheet resources.text.fromFile('config/xsl/findbugs-custom.xsl')
+    }
 }

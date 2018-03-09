@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
     public static final Drive drive = new Drive();
     public static final Manipulator manipulator = new Manipulator();
     public static final Lift lift = new Lift();
-    public static OI m_oi;
+    public static final OI m_oi = new OI();
 
     Command m_autonomousCommand;
     SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -42,7 +42,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        m_oi = new OI();
         m_chooser.addDefault("Default Auto", drive.DriveTime(2, 0.6));
         m_chooser.addObject("Cross Line And Drop Cube", CrossLineAndDropCube());
         SmartDashboard.putData("Auto mode", m_chooser);

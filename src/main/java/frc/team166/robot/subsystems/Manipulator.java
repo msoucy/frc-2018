@@ -47,9 +47,9 @@ public class Manipulator extends PIDSubsystem {
     AnalogPotentiometer potentiometer = new AnalogPotentiometer(RobotMap.AnalogInputs.MANIPULATOR_POTENTIOMETER);
 
     // inches:
-    double ROLLER_RADIUS = 1.4375;
+    final static double ROLLER_RADIUS = 1.4375;
     // ft:
-    double DIST_PER_PULSE_INTAKE = (((ROLLER_RADIUS * 2.0 * Math.PI) / 1024.0) / 12.0);
+    final static double DIST_PER_PULSE_INTAKE = (((ROLLER_RADIUS * 2.0 * Math.PI) / 1024.0) / 12.0);
 
     private static double kP_Manipulator = 0;
     private static double kI_Manipulator = 0;

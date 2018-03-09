@@ -1,27 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
-/*Functions 
-read encoder 
-set motor to raise lift 
-set motor to lower lift 
-shift into low or high gear 
-read top limit switch 
-read bottom limit switch 
-read other limit switches...? 
- go to specified height
-
-Commands 
-go to specified height 
-make the robot climb 
-raise lift 
-lower lift 
-*/
-
 package frc.team166.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
@@ -52,7 +28,7 @@ public class Lift extends PIDSubsystem {
     // Defines Encoders and sets the the distance per Tick
     Encoder liftEncoder = new Encoder(RobotMap.Encoders.LIFT_A, RobotMap.Encoders.LIFT_B);
     // This is for one inch
-    private final double encoderDistancePerTick = 0.01636;
+    private static final double encoderDistancePerTick = 0.01636;
     // Defines Motors 
     WPI_VictorSPX liftMotorA = new WPI_VictorSPX(RobotMap.CAN.LIFT_MOTOR_A);
     WPI_VictorSPX liftMotorB = new WPI_VictorSPX(RobotMap.CAN.LIFT_MOTOR_B);

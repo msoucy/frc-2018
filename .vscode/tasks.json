@@ -39,6 +39,13 @@
             "command": ".\\gradlew shuffleboard",
             "group": "build",
             "problemMatcher": []
+        },
+        {
+            "label": "Check",
+            "type": "shell",
+            "command": ".\\gradlew check",
+            "group": "build",
+            "problemMatcher": []
         }
     ]
 }
