@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.robot.subsystems.Drive;
 import frc.team166.robot.subsystems.Manipulator;
-import frc.team166.robot.subsystems.LED;
+// import frc.team166.robot.subsystems.LED;
 import frc.team166.robot.subsystems.Lift;
 
 /**
@@ -43,7 +43,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         m_chooser.addDefault("Default Auto", drive.DriveTime(2, 0.6));
-        m_chooser.addObject("Cross Line And Drop Cube", CrossLineAndDropCube());
+        m_chooser.addObject("Cross Line And Drop Cube", crossLineAndDropCube());
         SmartDashboard.putData("Auto mode", m_chooser);
         CameraServer.getInstance().startAutomaticCapture();
     }
@@ -128,7 +128,7 @@ public class Robot extends TimedRobot {
     public void testPeriodic() {
     }
 
-    public Command CrossLineAndDropCube() {
+    public Command crossLineAndDropCube() {
         return new CommandChain("Cross Line And Drop Cube").then(drive.DriveTime(4, 0.6)).then(manipulator.CubeEject());
     }
 
