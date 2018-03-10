@@ -56,3 +56,8 @@ tasks.withType(FindBugs) {
         html.stylesheet resources.text.fromFile('config/xsl/findbugs-custom.xsl')
     }
 }
+
+findbugs {
+    excludeFilter = new File("config/findbugs-exclude.xml")
+    effort = "max"
+}
