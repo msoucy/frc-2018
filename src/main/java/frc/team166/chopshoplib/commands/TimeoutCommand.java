@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.command.TimedCommand;
  */
 public class TimeoutCommand extends TimedCommand {
     /**
-     * Wrap the provided command with a timeout
+     * Wrap the provided command with a timeout.
      * @param cmd The command to time out
      * @param timeout The maximum time before timing out
      */
@@ -19,7 +19,7 @@ public class TimeoutCommand extends TimedCommand {
     }
 
     /**
-     * Wrap the provided command with a timeout
+     * Wrap the provided command with a timeout.
      * @param name The name for the timed out command
      * @param cmd The command to time out
      * @param timeout The maximum time before timing out

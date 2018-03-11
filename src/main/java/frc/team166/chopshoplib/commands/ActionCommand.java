@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 public class ActionCommand extends InstantCommand {
     /**
-     * Create a command that calls the given action when run
+     * Create a command that calls the given action when run.
      * @param action The action to take when the command is run
      */
     public ActionCommand(Runnable action) {
@@ -18,7 +18,7 @@ public class ActionCommand extends InstantCommand {
 
     /**
      * Create a command that depends on the given subsystem and calls
-     * the provided action when run
+     * the provided action when run.
      * @param subsystem The subsystem that the command depends on
      * @param action The action to take when the command is run
      */
@@ -28,7 +28,7 @@ public class ActionCommand extends InstantCommand {
     }
 
     /**
-     * Create a named command that calls the given action when run
+     * Create a named command that calls the given action when run.
      * @param name The name of the command
      * @param action The action to take when the command is run
      */
@@ -39,7 +39,7 @@ public class ActionCommand extends InstantCommand {
 
     /**
      * Create a named command that depends on the given subsystem and calls
-     * the provided action when run
+     * the provided action when run.
      * @param name The name of the command
      * @param subsystem The subsystem that the command depends on
      * @param action The action to take when the command is run
@@ -62,7 +62,7 @@ public class ActionCommand extends InstantCommand {
     }
 
     /**
-     * Use the given subsystem's name and mark it required
+     * Use the given subsystem's name and mark it required.
      * @param subsystem The subsystem to depend on
      */
     private void useSubsystem(Subsystem subsystem) {

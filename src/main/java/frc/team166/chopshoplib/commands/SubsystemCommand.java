@@ -4,11 +4,11 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
- * A command that relies on a subsystem
+ * A command that relies on a subsystem.
  */
 public abstract class SubsystemCommand extends Command {
     /**
-     * Create a command that depends on a system
+     * Create a command that depends on a system.
      * @param subsystem The subsystem to depend on
      */
     public SubsystemCommand(Subsystem subsystem) {
@@ -17,7 +17,7 @@ public abstract class SubsystemCommand extends Command {
     }
 
     /**
-     * Create a command that depends on a system
+     * Create a command that depends on a system.
      * @param name The name of the command
      * @param subsystem The subsystem to depend on
      */

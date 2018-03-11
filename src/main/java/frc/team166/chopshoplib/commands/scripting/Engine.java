@@ -7,14 +7,14 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public interface Engine {
     /**
-     * Register a command function with the given prefix
+     * Register a command function with the given prefix.
      * @param prefix The prefix for use in scripts
      * @param func The function that creates the given command, given a double parameter
      */
     void registerHandler(String prefix, Function<String, Command> func);
 
     /**
-     * Register a command function with the given prefix
+     * Register a command function with the given prefix.
      * @param prefix The prefix for use in scripts
      * @param func The function that creates the given command, given a double parameter
      */
@@ -26,7 +26,7 @@ public interface Engine {
     }
 
     /**
-     * Register a command function with the given prefix
+     * Register a command function with the given prefix.
      * @param prefix The prefix for use in scripts
      * @param func The function that creates the given command
      */
@@ -35,24 +35,23 @@ public interface Engine {
     }
 
     /**
-     * Register a command function with the given prefix
-     * @param prefix The prefix for use in scripts
-     * @param func The function that creates the given command
+     * Register a scriptable object's commands with the engine.
+     * @param s The scriptable to register
      */
     default void register(Scriptable s) {
         s.registerScriptable(this);
     }
 
     /**
-     * Unregister a command function with the given prefix
-     *
-     * If no new command is specified for this prefix, its usage in scripts will be an error
+     * Unregister a command function with the given prefix.
+     * 
+     * <p>If no new command is specified for this prefix, its usage in scripts will be an error
      * @param prefix The prefix for use in scripts
      */
     void unregister(String prefix);
 
     /**
-     * Create a sequence of commands from the provided script
+     * Create a sequence of commands from the provided script.
      * @param script The text of the script to translate
      */
     Command parseScript(String script);

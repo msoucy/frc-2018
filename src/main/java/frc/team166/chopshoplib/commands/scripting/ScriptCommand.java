@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 
 /**
- * An autonomous that is parsed from a string script
+ * A command that is parsed from a string script.
  */
 public class ScriptCommand extends Command {
 
@@ -19,7 +19,7 @@ public class ScriptCommand extends Command {
     public static final Engine DEFAULT_ENGINE = new SimpleEngine();
 
     /**
-     * Create an autonomous that parses the given script when it's started
+     * Create a command that parses the given script when it's started.
      * @param script The script string to evaluate
      */
     public ScriptCommand(String script) {
@@ -27,7 +27,7 @@ public class ScriptCommand extends Command {
     }
 
     /**
-     * Create an autonomous that parses the given script when it's started
+     * Create a command that parses the given script when it's started.
      * @param name The name of the command
      * @param script The script string to evaluate
      */
@@ -37,7 +37,7 @@ public class ScriptCommand extends Command {
     }
 
     /**
-     * Create an autonomous that parses the given script when it's started
+     * Create a command that parses the given script when it's started.
      * @param script The script string to evaluate
      * @param engine The scripting engine to use for this command
      */
@@ -47,7 +47,7 @@ public class ScriptCommand extends Command {
     }
 
     /**
-     * Create an autonomous that parses the given script when it's started
+     * Create a command that parses the given script when it's started.
      * @param name The name of the command
      * @param script The script string to evaluate
      * @param engine The scripting engine to use for this command
@@ -59,7 +59,7 @@ public class ScriptCommand extends Command {
     }
 
     /**
-     * Create a command that parses and runs a ScriptCommand from a preference
+     * Create a command that parses and runs a ScriptCommand from a preference.
      * @param key The preference name to read from
      * @param engine The scripting engine to use
      */
@@ -79,7 +79,7 @@ public class ScriptCommand extends Command {
     }
 
     /**
-     * Create a command that parses and runs a ScriptCommand from a preference
+     * Create a command that parses and runs a ScriptCommand from a preference.
      * @param key The preference name to read from
      */
     public static Command fromPreference(String key) {
@@ -87,49 +87,49 @@ public class ScriptCommand extends Command {
     }
 
     /**
-     * Register a command function with the given prefix
+     * Register a command function with the given prefix.
      * @param prefix The prefix for use in scripts
      * @param func The function that creates the given command, given a double parameter
      */
-    static public void registerHandler(String prefix, Function<String, Command> func) {
+    public static void registerHandler(String prefix, Function<String, Command> func) {
         DEFAULT_ENGINE.registerHandler(prefix, func);
     }
 
     /**
-     * Register a command function with the given prefix
+     * Register a command function with the given prefix.
      * @param prefix The prefix for use in scripts
      * @param func The function that creates the given command, given a double parameter
      */
-    static public void register(String prefix, Function<Double, Command> func) {
+    public static void register(String prefix, Function<Double, Command> func) {
         DEFAULT_ENGINE.register(prefix, func);
     }
 
     /**
-     * Register a command function with the given prefix
+     * Register a command function with the given prefix.
      * @param prefix The prefix for use in scripts
      * @param func The function that creates the given command
      */
-    static public void register(String prefix, Supplier<Command> func) {
+    public static void register(String prefix, Supplier<Command> func) {
         DEFAULT_ENGINE.register(prefix, func);
     }
 
     /**
-     * Register a scriptable object
+     * Register a scriptable object.
      * 
-     * Calls the object's registerHandler method
+     * <p>Calls the object's registerHandler method
      * @param s The object to use in scripts
      */
-    static public void register(Scriptable s) {
+    public static void register(Scriptable s) {
         DEFAULT_ENGINE.register(s);
     }
 
     /**
-     * Unregister a command function with the given prefix
+     * Unregister a command function with the given prefix.
      *
-     * If no new command is specified for this prefix, its usage in scripts will be an error
+     * <p>If no new command is specified for this prefix, its usage in scripts will be an error
      * @param prefix The prefix for use in scripts
      */
-    static public void unregister(String prefix) {
+    public static void unregister(String prefix) {
         DEFAULT_ENGINE.unregister(prefix);
     }
 
@@ -141,7 +141,10 @@ public class ScriptCommand extends Command {
 
     @Override
     protected boolean isFinished() {
-        return generatedCommand != null && (generatedCommand.isCanceled() || generatedCommand.isCompleted());
+        if (generatedCommand == null) {
+            return false;
+        }
+        return generatedCommand.isCanceled() || generatedCommand.isCompleted();
     }
 
 }

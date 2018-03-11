@@ -8,19 +8,19 @@ import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
-import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.SensorBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
 public class Lidar extends SensorBase implements PIDSource {
     I2C i2cDevice;
-    Thread t;
+    Thread pollingThread;
     private double distanceMM;
 
     private boolean isValid;
-    private double samples[];
+    private double[] samples;
     private int sampleIndex;
     private boolean reset;
 
@@ -78,7 +78,7 @@ public class Lidar extends SensorBase implements PIDSource {
         /**
          * This will process the response from a settings query.
          * 
-         * This will process the byte array and turn it into a more easily accessible object. 
+         * <p>This will process the byte array and turn it into a more easily accessible object. 
          * 
          * @param response A byte array with the response from a settings query
          */
@@ -160,15 +160,15 @@ public class Lidar extends SensorBase implements PIDSource {
     }
 
     /**
-     * Create a LIDAR object
+     * Create a LIDAR object.
      * 
      * @param port The I2C port the sensor is connected to
-     * @param kAddress The I2C address the sensor is found at
+     * @param address The I2C address the sensor is found at
      * @param averageOver The number of samples to average
      */
-    public Lidar(Port port, int kAddress, int averageOver) {
-        i2cDevice = new I2C(port, kAddress);
-        setName("Lidar", kAddress);
+    public Lidar(Port port, int address, int averageOver) {
+        i2cDevice = new I2C(port, address);
+        setName("Lidar", address);
 
         // Objects related to statistics
         samples = new double[averageOver];
@@ -176,24 +176,24 @@ public class Lidar extends SensorBase implements PIDSource {
         standardDeviationLimit = 100;
         reset = false;
 
-        t = new Thread(new PollSensor());
-        t.setName(String.format("LiDAR-0x%x", kAddress));
-        t.start();
+        pollingThread = new Thread(new PollSensor());
+        pollingThread.setName(String.format("LiDAR-0x%x", address));
+        pollingThread.start();
     }
 
     /**
-     * Create a LIDAR object
+     * Create a LIDAR object.
      * 
      * @param port The I2C port the sensor is connected to
-     * @param kAddress The I2C address the sensor is found at
+     * @param address The I2C address the sensor is found at
      */
-    public Lidar(Port port, int kAddress) {
+    public Lidar(Port port, int address) {
         // Default to averaging over 10 samples
-        this(port, kAddress, 25);
+        this(port, address, 25);
     }
 
     /**
-     * Set the maximum allowed standard deviation before the input is considered invalid
+     * Set the maximum allowed standard deviation before the input is considered invalid.
      * 
      * @param sdLimit The maximum standard deviation expected
      */
@@ -202,7 +202,7 @@ public class Lidar extends SensorBase implements PIDSource {
     }
 
     /**
-     * Clear the samples
+     * Clear the samples.
      */
     public synchronized void reset() {
         for (int i = 0; i < samples.length; i++) {
@@ -213,14 +213,14 @@ public class Lidar extends SensorBase implements PIDSource {
     }
 
     /**
-     * This function gets the distance from a LiDAR sensor
-     * @param bFlag True requests the distance in inches, false requests the distance in mm
+     * This function gets the distance from a LiDAR sensor.
+     * @param inches True requests the distance in inches, false requests the distance in mm
      */
-    public Optional<Double> getDistanceOptional(Boolean bFlag) {
+    public Optional<Double> getDistanceOptional(Boolean inches) {
         if (getValidity() == false) {
             return Optional.empty();
         }
-        if (bFlag == true) {
+        if (inches == true) {
             return Optional.of((distanceMM / 25.4));
         } else {
             return Optional.of(new Double(distanceMM));
@@ -228,11 +228,11 @@ public class Lidar extends SensorBase implements PIDSource {
     }
 
     /**
-     * This function gets the distance from a LiDAR sensor
-     * @param bFlag True requests the distance in inches, false requests the distance in mm
+     * This function gets the distance from a LiDAR sensor.
+     * @param inches True requests the distance in inches, false requests the distance in mm
      */
-    public double getDistance(Boolean bFlag) {
-        if (bFlag == true) {
+    public double getDistance(Boolean inches) {
+        if (inches == true) {
             return distanceMM / 25.4;
         } else {
             return distanceMM;
@@ -264,14 +264,14 @@ public class Lidar extends SensorBase implements PIDSource {
     }
 
     /**
-     * Get the validity of the sensor
+     * Get the validity of the sensor.
      */
     public synchronized boolean getValidity() {
         return isValid;
     }
 
     /**
-     * Change the mode of the LiDAR sensor
+     * Change the mode of the LiDAR sensor.
      * @param mode Which mode to change to
      */
     public void setMode(Settings.OpMode mode) {
@@ -282,6 +282,9 @@ public class Lidar extends SensorBase implements PIDSource {
         }
     }
 
+    /**
+     * Get LIDAR settings object.
+     */
     public Settings querySettings() {
         byte[] dataBuffer = new byte[23];
         i2cDevice.writeBulk(new byte[] { 0x51 });

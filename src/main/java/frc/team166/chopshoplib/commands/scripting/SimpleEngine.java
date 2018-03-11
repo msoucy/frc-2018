@@ -3,6 +3,7 @@ package frc.team166.chopshoplib.commands.scripting;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PrintCommand;
@@ -11,17 +12,18 @@ import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.commands.TimeoutCommand;
 
 /**
- * A simple language meant for creating series of commands
- * Sets of commands are separated with semicolons
- * Commands to be run at the same time are separated by pipes
- * Command names are separated from their optional double arguments by whitespace
- * A command can be given a timeout with `timeout 5 mycommand`
+ * A simple language meant for creating series of commands.
+ *
+ * <p>Sets of commands are separated with semicolons.
+ * Commands to be run at the same time are separated by pipes.
+ * Command names are separated from their optional double arguments by whitespace.
+ * A command can be given a timeout with `timeout 5 mycommand`.
  */
 public class SimpleEngine implements Engine {
     HashMap<String, Function<String, Command>> handlers = new HashMap<>();
 
     /**
-     * Initialize the default handlers
+     * Initialize the default handlers.
      */
     public SimpleEngine() {
         register("wait", WaitCommand::new);
@@ -29,7 +31,7 @@ public class SimpleEngine implements Engine {
     }
 
     /**
-     * Register a command function with the given prefix
+     * Register a command function with the given prefix.
      * @param prefix The prefix for use in scripts
      * @param func The function that creates the given command, given a double parameter
      */
@@ -38,9 +40,9 @@ public class SimpleEngine implements Engine {
     }
 
     /**
-     * Unregister a command function with the given prefix
+     * Unregister a command function with the given prefix.
      *
-     * If no new command is specified for this prefix, its usage in scripts will be an error
+     * <p>If no new command is specified for this prefix, its usage in scripts will be an error
      * @param prefix The prefix for use in scripts
      */
     public void unregister(String prefix) {
@@ -48,14 +50,14 @@ public class SimpleEngine implements Engine {
     }
 
     /**
-     * Parse the entire script into a command group
+     * Parse the entire script into a command group.
      */
     public Command parseScript(String script) {
         CommandChain result = new CommandChain(script);
         if (!"".equals(script)) {
             for (String groupStr : script.trim().split(";")) {
-                Command[] cmds = Arrays.stream(groupStr.split("\\|")).map(String::trim).map(this::parseSingleCommand)
-                        .toArray(Command[]::new);
+                Stream<String> cmdStrs = Arrays.stream(groupStr.split("\\|")).map(String::trim);
+                Command[] cmds = cmdStrs.map(this::parseSingleCommand).toArray(Command[]::new);
                 result.then(cmds);
             }
         }
@@ -63,7 +65,7 @@ public class SimpleEngine implements Engine {
     }
 
     /**
-     * Create a command from a string
+     * Create a command from a string.
      * @param cmd The name of the command to look up
      */
     Command parseSingleCommand(String cmd) {
@@ -90,7 +92,7 @@ public class SimpleEngine implements Engine {
     }
 
     /**
-     * Create a command from a string
+     * Create a command from a string.
      * @param args The split arguments, including command name
      */
     Command parseArgs(String[] args) {

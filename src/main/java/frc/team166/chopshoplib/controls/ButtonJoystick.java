@@ -1,14 +1,15 @@
 package frc.team166.chopshoplib.controls;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.buttons.Button;
 import java.util.Vector;
+
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
  * Represents a joystick along with it's associated buttons
- * <p>
- * This class serves as a wrapper for a Joystick and all it's buttons.
+ * 
+ * <p>This class serves as a wrapper for a Joystick and all it's buttons.
  */
 public class ButtonJoystick extends Joystick {
     Vector<Button> buttons = new Vector<Button>();
@@ -29,9 +30,9 @@ public class ButtonJoystick extends Joystick {
 
     /**
     * Get a button from this joystick
-    * <p>
-    * Returns the sepcified button of a joystick without having to explicitly create
-    * each button.
+    * 
+    * <p>Returns the sepcified button of a joystick without having to explicitly
+    * create each button.
     * 
     * @param buttonId The index of the button to accesss
     * @return The button object for the given ID

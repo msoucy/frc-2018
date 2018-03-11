@@ -2,6 +2,7 @@ plugins {
     id "java"
     id "eclipse"
     id "findbugs"
+    id "checkstyle"
     id "jaci.openrio.gradle.GradleRIO" version "2018.03.06"
 }
 
@@ -60,4 +61,16 @@ tasks.withType(FindBugs) {
 findbugs {
     excludeFilter = new File("config/findbugs-exclude.xml")
     effort = "max"
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        xml.enabled false
+        html.enabled true
+        html.stylesheet resources.text.fromFile('config/xsl/checkstyle-noframes-severity-sorted.xsl')
+    }
+}
+
+checkstyle {
+    toolVersion "8.8"
 }
