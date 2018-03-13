@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        m_chooser.addDefault("Default Auto", drive.DriveTime(2, 0.6));
+        m_chooser.addDefault("Default Auto", drive.driveTime(2, 0.6));
         m_chooser.addObject("Cross Line And Drop Cube", crossLineAndDropCube());
         SmartDashboard.putData("Auto mode", m_chooser);
         CameraServer.getInstance().startAutomaticCapture();
@@ -129,7 +129,7 @@ public class Robot extends TimedRobot {
     }
 
     public Command crossLineAndDropCube() {
-        return new CommandChain("Cross Line And Drop Cube").then(drive.DriveTime(4, 0.6)).then(manipulator.CubeEject());
+        return new CommandChain("Cross Line And Drop Cube").then(drive.driveTime(4, 0.6)).then(manipulator.CubeEject());
     }
 
 }

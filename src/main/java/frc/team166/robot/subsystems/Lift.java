@@ -2,13 +2,14 @@ package frc.team166.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.I2C.Port;
+import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,7 +20,6 @@ import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 import frc.team166.robot.RobotMap.PreferenceStrings;
-import edu.wpi.first.wpilibj.DigitalInput;
 
 public class Lift extends PIDSubsystem {
     // Defines Limit Switches (Digital imputs)
@@ -65,7 +65,7 @@ public class Lift extends PIDSubsystem {
     }
 
     //sets the maximum lidar distance before switching to the encoder
-    private final static double kMaxLidarDistance = 60;
+    private static final double kMaxLidarDistance = 60;
 
     public Lift() {
         super("Lift", kP, kI, kD, kF);
@@ -189,8 +189,8 @@ public class Lift extends PIDSubsystem {
 
             @Override
             protected void execute() {
-                double elevatorControl = Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kRight)
-                        - Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kLeft);
+                double elevatorControl = Robot.m_oi.xboxTempest.getTriggerAxis(Hand.kRight)
+                        - Robot.m_oi.xboxTempest.getTriggerAxis(Hand.kLeft);
 
                 if (elevatorControl >= 0 && topLimitSwitch.get()) {
                     if (topLimitSwitchCounter < Preferences.getInstance()
@@ -209,7 +209,7 @@ public class Lift extends PIDSubsystem {
                     }
                 }
                 if (upStop == true) {
-                    liftDrive.set(Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kLeft));
+                    liftDrive.set(Robot.m_oi.xboxTempest.getTriggerAxis(Hand.kLeft));
                     return;
                 }
 
@@ -231,7 +231,7 @@ public class Lift extends PIDSubsystem {
                     }
                 }
                 if (downStop == true) {
-                    liftDrive.set(Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kRight));
+                    liftDrive.set(Robot.m_oi.xboxTempest.getTriggerAxis(Hand.kRight));
                     return;
                 }
 

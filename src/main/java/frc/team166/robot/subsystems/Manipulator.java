@@ -233,8 +233,8 @@ public class Manipulator extends PIDSubsystem {
 
             @Override
             protected void initialize() {
-                Robot.m_oi.xBoxTempest.setRumble(RumbleType.kLeftRumble, 1);
-                Robot.m_oi.xBoxTempest.setRumble(RumbleType.kRightRumble, 1);
+                Robot.m_oi.xboxTempest.setRumble(RumbleType.kLeftRumble, 1);
+                Robot.m_oi.xboxTempest.setRumble(RumbleType.kRightRumble, 1);
                 setTimeout(.1);
             }
 
@@ -245,8 +245,8 @@ public class Manipulator extends PIDSubsystem {
 
             @Override
             protected void end() {
-                Robot.m_oi.xBoxTempest.setRumble(RumbleType.kLeftRumble, 0);
-                Robot.m_oi.xBoxTempest.setRumble(RumbleType.kRightRumble, 0);
+                Robot.m_oi.xboxTempest.setRumble(RumbleType.kLeftRumble, 0);
+                Robot.m_oi.xboxTempest.setRumble(RumbleType.kRightRumble, 0);
             }
 
         };

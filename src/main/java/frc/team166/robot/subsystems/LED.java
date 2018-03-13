@@ -1,33 +1,23 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.team166.robot.subsystems;
 
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.team166.chopshoplib.commands.SubsystemCommand;
-import frc.team166.robot.RobotMap;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder.BooleanConsumer;
+import frc.team166.chopshoplib.commands.SubsystemCommand;
+import frc.team166.robot.RobotMap;
 
 public class LED extends Subsystem {
 
     public void initDefaultCommand() {
-    };
+    }
 
     //these will be changed from DigitalOutputs to something else when we get real hardware...
     DigitalOutput red = new DigitalOutput(RobotMap.DigitalInputs.RED_LED);
     DigitalOutput green = new DigitalOutput(RobotMap.DigitalInputs.GREEN_LED);
     DigitalOutput blue = new DigitalOutput(RobotMap.DigitalInputs.BLUE_LED);
-
-    public LED() {
-
-    }
 
     // METHODS
     private void allOff() {
@@ -38,32 +28,24 @@ public class LED extends Subsystem {
 
     private boolean isBlueTeam() {
         Alliance team = DriverStation.getInstance().getAlliance();
-        if (team == DriverStation.Alliance.Blue) {
-            return true;
-        } else {
-            return false;
-        }
+        return (team == DriverStation.Alliance.Blue);
     }
 
     private void setTeamColor(boolean turnOn) {
         if (isBlueTeam()) {
             red.set(false);
-            if (turnOn) {
-                blue.set(true);
-            } else {
-                blue.set(false);
-            }
+            blue.set(turnOn);
         } else {
             blue.set(false);
-            if (turnOn) {
-                red.set(true);
-            } else {
-                red.set(false);
-            }
+            red.set(turnOn);
         }
     }
 
     // COMMANDS
+    /**
+     * Blink the green light.
+     * @param numberOfBlinks The number of times to blink the light
+     */
     public Command blinkGreen(int numberOfBlinks) {
         return new SubsystemCommand(this) {
             double lastUpdateTime = System.currentTimeMillis();
@@ -108,6 +90,9 @@ public class LED extends Subsystem {
         };
     }
 
+    /**
+     * Blink the team color.
+     */
     public Command blinkTeamColor() {
         return new SubsystemCommand(this) {
             double lastUpdateTime = System.currentTimeMillis();
@@ -122,13 +107,8 @@ public class LED extends Subsystem {
             protected void execute() {
                 if (System.currentTimeMillis() >= lastUpdateTime + 750) {
                     lastUpdateTime = System.currentTimeMillis();
-                    if (isOn) {
-                        setTeamColor(false);
-                        isOn = false;
-                    } else {
-                        setTeamColor(true);
-                        isOn = true;
-                    }
+                    isOn = !isOn;
+                    setTeamColor(isOn);
                 }
             }
 
@@ -145,24 +125,12 @@ public class LED extends Subsystem {
     }
 
     public Command blueOn() {
-        return new SubsystemCommand(this) {
-            @Override
-            protected void initialize() {
-                blue.set(true);
-            }
-
-            @Override
-            protected boolean isFinished() {
-                return false;
-            }
-
-            @Override
-            protected void end() {
-                blue.set(false);
-            }
-        };
+        return onOff(blue::set);
     }
 
+    /**
+     * Set cyan (blue + green) on.
+     */
     public Command cyanOn() {
         return new SubsystemCommand(this) {
             @Override
@@ -185,48 +153,22 @@ public class LED extends Subsystem {
     }
 
     public Command greenOn() {
-        return new SubsystemCommand(this) {
-            @Override
-            protected void initialize() {
-                green.set(true);
-            }
-
-            @Override
-            protected boolean isFinished() {
-                return false;
-            }
-
-            @Override
-            protected void end() {
-                green.set(false);
-            }
-        };
+        return onOff(green::set);
     }
 
     public Command lightTeamColor() {
-        return new SubsystemCommand(this) {
-            @Override
-            protected void initialize() {
-                setTeamColor(true);
-            }
-
-            @Override
-            protected boolean isFinished() {
-                return false;
-            }
-
-            @Override
-            protected void end() {
-                setTeamColor(false);
-            }
-        };
+        return onOff(this::setTeamColor);
     }
 
     public Command redOn() {
+        return onOff(red::set);
+    }
+
+    private Command onOff(BooleanConsumer light) {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
-                red.set(true);
+                light.accept(true);
             }
 
             @Override
@@ -236,7 +178,7 @@ public class LED extends Subsystem {
 
             @Override
             protected void end() {
-                red.set(false);
+                light.accept(false);
             }
         };
     }

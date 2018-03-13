@@ -27,7 +27,7 @@ import frc.team166.chopshoplib.sensors.Lidar;
 import edu.wpi.first.wpilibj.I2C.Port;
 
 /**
- * An example subsystem.  You can replace me with your own Subsystem.
+ * Drive train.
  */
 public class Drive extends Subsystem {
 
@@ -44,16 +44,19 @@ public class Drive extends Subsystem {
     WPI_VictorSPX m_frontright = new WPI_VictorSPX(RobotMap.CAN.FRONT_RIGHT);
     SpeedControllerGroup m_right = new SpeedControllerGroup(m_frontright, m_rearright);
 
-    /**defines the left and right motors defined above into a differential drive
-     * that can be used for arcade and tank drive, amung other things
+    /**
+     * Create a drive train.
+     *
+     * <p>defines the left and right motors defined above into a differential drive
+     * that can be used for arcade and tank drive, among other things
      */
     DifferentialDrive m_drive = new DifferentialDrive(m_left, m_right);
 
     //defines values that will be used in the PIDController (In order of where they will fall in the Controller)
-    final static double kP = 1.0 / 100;
-    final static double kI = 0.000085;
-    final static double kD = 0;
-    final static double kF = 0;
+    static final double kP = 1.0 / 100;
+    static final double kI = 0.000085;
+    static final double kD = 0;
+    static final double kF = 0;
 
     //defines a new double that is going to be used in the line that defines the drive type
     double angleCorrection;
@@ -64,27 +67,28 @@ public class Drive extends Subsystem {
         angleCorrection = value;
     });
 
-    final static double AUTOMATIC_ROBOT_FORWARD_SPEED = .2;
-    final static double ABSOLUTE_TOLERANCE_ANGLE = 3;
+    static final double AUTOMATIC_ROBOT_FORWARD_SPEED = .2;
+    static final double ABSOLUTE_TOLERANCE_ANGLE = 3;
 
-    //this makes children that control the tempestGyro, drive motors, and PIDController loop. 
+    /**
+     * this makes children that control the tempestGyro, drive motors, and PIDController loop.
+     */
     public Drive() {
 
-        SmartDashboard.putData("XBox", XboxArcade());
-        SmartDashboard.putData("Turn -45", TurnByDegrees(-45));
-        SmartDashboard.putData("Turn 45", TurnByDegrees(45));
-        SmartDashboard.putData("Drive 2s", DriveTime(2, .6));
-        SmartDashboard.putData("Drive Box", DriveBox());
+        SmartDashboard.putData("XBox", xboxArcade());
+        SmartDashboard.putData("Turn -45", turnByDegrees(-45));
+        SmartDashboard.putData("Turn 45", turnByDegrees(45));
+        SmartDashboard.putData("Drive 2s", driveTime(2, .6));
+        SmartDashboard.putData("Drive Box", driveBox());
 
         addChild(tempestGyro);
         addChild(m_drive);
         addChild(drivePidController);
         addChild(frontLidar);
 
-        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.AUTOMATIC_ROBOT_FORWARD_SPEED,
+        PreferenceStrings.setDefaultDouble(PreferenceStrings.AUTOMATIC_ROBOT_FORWARD_SPEED,
                 AUTOMATIC_ROBOT_FORWARD_SPEED);
-        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.ABSOLUTE_TOLERANCE_ANGLE,
-                ABSOLUTE_TOLERANCE_ANGLE);
+        PreferenceStrings.setDefaultDouble(PreferenceStrings.ABSOLUTE_TOLERANCE_ANGLE, ABSOLUTE_TOLERANCE_ANGLE);
 
         drivePidController.disable();
         drivePidController.setInputRange(0, 360);
@@ -95,7 +99,7 @@ public class Drive extends Subsystem {
 
     //the default command for this code is supposed to rotate the robot so that it's gyro value is 0
     public void initDefaultCommand() {
-        setDefaultCommand(JoystickArcadeTwoStick());
+        setDefaultCommand(joystickArcadeTwoStick());
 
     }
 
@@ -103,7 +107,10 @@ public class Drive extends Subsystem {
         m_drive.stopMotor();
     }
 
-    public Command XboxArcade() {
+    /**
+     * Drive using an XBox controller in arcade drive mode.
+     */
+    public Command xboxArcade() {
         return new SubsystemCommand("XBoxArcade", this) {
             @Override
             protected boolean isFinished() {
@@ -112,14 +119,17 @@ public class Drive extends Subsystem {
 
             @Override
             protected void execute() {
-                m_drive.arcadeDrive(-Robot.m_oi.xBoxTempest.getY(Hand.kLeft), Robot.m_oi.xBoxTempest.getX(Hand.kRight));
+                m_drive.arcadeDrive(-Robot.m_oi.xboxTempest.getY(Hand.kLeft), Robot.m_oi.xboxTempest.getX(Hand.kRight));
 
             }
 
         };
     }
 
-    public Command JoystickArcadeTwoStick() {
+    /**
+     * Drive using two-stick arcade drive.
+     */
+    public Command joystickArcadeTwoStick() {
         return new SubsystemCommand("joystick Arcade with two sticks", this) {
             @Override
             protected void initialize() {
@@ -137,9 +147,12 @@ public class Drive extends Subsystem {
             }
 
         };
-    };
+    }
 
-    public Command DriveStraight() {
+    /**
+     * Drive straight, forever.
+     */
+    public Command driveStraight() {
         return new SubsystemCommand("Drive Straight", this) {
             @Override
             protected void initialize() {
@@ -150,8 +163,8 @@ public class Drive extends Subsystem {
 
             @Override
             protected void execute() {
-                m_drive.arcadeDrive(Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kRight)
-                        - Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kLeft), angleCorrection);
+                m_drive.arcadeDrive(Robot.m_oi.xboxTempest.getTriggerAxis(Hand.kRight)
+                        - Robot.m_oi.xboxTempest.getTriggerAxis(Hand.kLeft), angleCorrection);
             }
 
             @Override
@@ -166,10 +179,11 @@ public class Drive extends Subsystem {
         };
     }
 
-    public Command DrivetoProximity(double inches) {
+    /**
+     * Remain at a particular distance from the sensor reading.
+     */
+    public Command drivetoProximity(double inches) {
         return new SubsystemCommand("Drive Distance", this) {
-
-            //double realDistanceInches = frontLidar.getDistance(true);
 
             @Override
             protected void initialize() {
@@ -202,7 +216,10 @@ public class Drive extends Subsystem {
         };
     }
 
-    public Command TurnByDegrees(double degrees) {
+    /**
+     * Turn to the given angle.
+     */
+    public Command turnByDegrees(double degrees) {
         return new SubsystemCommand("Turn " + degrees, this) {
             @Override
             protected void initialize() {
@@ -233,7 +250,10 @@ public class Drive extends Subsystem {
         };
     }
 
-    public Command DriveTime(double seconds, double speed) {
+    /**
+     * Drive forward at the given speed for the desired time.
+     */
+    public Command driveTime(double seconds, double speed) {
         return new SubsystemCommand("Drive Time", this) {
             @Override
             protected void initialize() {
@@ -260,10 +280,13 @@ public class Drive extends Subsystem {
         };
     }
 
-    public Command DriveBox() {
-        return new CommandChain("Box Drive").then(DriveTime(1, .8)).then(TurnByDegrees(90)).then(DriveTime(.5, .8))
-                .then(TurnByDegrees(90)).then(DriveTime(1, .8)).then(TurnByDegrees(90)).then(DriveTime(.5, .8))
-                .then(TurnByDegrees(90));
+    /**
+     * Drive in a box pattern.
+     */
+    public Command driveBox() {
+        return new CommandChain("Box Drive").then(driveTime(1, .8)).then(turnByDegrees(90)).then(driveTime(.5, .8))
+                .then(turnByDegrees(90)).then(driveTime(1, .8)).then(turnByDegrees(90)).then(driveTime(.5, .8))
+                .then(turnByDegrees(90));
 
     }
 
