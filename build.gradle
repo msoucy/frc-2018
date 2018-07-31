@@ -1,26 +1,27 @@
 plugins {
     id "java"
-    id "eclipse"
-    id "idea"
-    id "jaci.openrio.gradle.GradleRIO" version "2018.03.06"
+    id "edu.wpi.first.GradleRIO" version "2019.0.0-alpha-3"
 }
 
-def TEAM = 166
 def ROBOT_CLASS = "frc.team166.robot.Robot"
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project EmbeddedTools.
 deploy {
     targets {
-        target("roborio", jaci.openrio.gradle.frc.RoboRIO) {
-            team = TEAM
+        target("roborio", edu.wpi.first.gradlerio.frc.RoboRIO) {
+            // Team number is loaded either from the .wpilib/wpilib_preferences.json
+            // or from command line. If not found an exception will be thrown.
+            // You can use getTeamOrDefault(team) instead of getTeamNumber if you
+            // want to store a team number in this file.
+            team = getTeamNumber()
         }
     }
     artifacts {
-        artifact("frcJavaDebug", jaci.openrio.gradle.frc.FRCJavaArtifact) {
+        artifact('frcJava', edu.wpi.first.gradlerio.frc.FRCJavaArtifact) {
             targets << "roborio"
-            // debug = true
-            // debugPort = 8348
+            // Debug can be overridden by command line, for use with VSCode
+            debug = getDebugOrDefault(false)
         }
     }
 }
@@ -42,9 +43,16 @@ dependencies {
 // knows where to look for our Robot Class.
 jar {
     from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    manifest jaci.openrio.gradle.GradleRIOPlugin.javaManifest(ROBOT_CLASS)
+    manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_CLASS)
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.6'
+// Force Java 8 Compatibility mode for deployed code, in case the develoment
+// system is using Java 10.
+compileJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
+wrapper {
+    gradleVersion = '4.9'
 }
