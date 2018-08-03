@@ -1,12 +1,11 @@
 package frc.team166.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-
 import edu.wpi.first.wpilibj.AnalogGyro;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.I2C.Port;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
@@ -21,25 +20,9 @@ import frc.team166.robot.RobotMap;
 
 public class Drive extends Subsystem {
 
-    // declare lidar
     Lidar frontLidar = new Lidar(Port.kOnboard, 0x10);
-    // defines the gyro
     AnalogGyro tempestGyro = new AnalogGyro(RobotMap.AnalogInputs.tempestgyro);
-    // defines the left motors as motors and combines the left motors into one motor
-    WPI_VictorSPX m_rearleft = new WPI_VictorSPX(RobotMap.CAN.BACK_LEFT);
-    WPI_VictorSPX m_frontleft = new WPI_VictorSPX(RobotMap.CAN.FRONT_LEFT);
-    SpeedControllerGroup m_left = new SpeedControllerGroup(m_frontleft, m_rearleft);
-    // defines the right motors as motors and combines the left motors into one
-    // motor
-    WPI_VictorSPX m_rearright = new WPI_VictorSPX(RobotMap.CAN.BACK_RIGHT);
-    WPI_VictorSPX m_frontright = new WPI_VictorSPX(RobotMap.CAN.FRONT_RIGHT);
-    SpeedControllerGroup m_right = new SpeedControllerGroup(m_frontright, m_rearright);
-
-    /**
-     * defines the left and right motors defined above into a differential drive
-     * that can be used for arcade and tank drive, amung other things
-     */
-    DifferentialDrive m_drive = new DifferentialDrive(m_left, m_right);
+    DifferentialDrive m_drive;
 
     // defines values that will be used in the PIDController (In order of where they
     // will fall in the Controller)
@@ -64,7 +47,11 @@ public class Drive extends Subsystem {
 
     // this makes children that control the tempestGyro, drive motors, and
     // PIDController loop.
-    public Drive() {
+    public Drive(SpeedController frontLeft, SpeedController frontRight, SpeedController rearLeft,
+            SpeedController rearRight) {
+
+        m_drive = new DifferentialDrive(new SpeedControllerGroup(frontLeft, rearLeft),
+                new SpeedControllerGroup(frontRight, rearRight));
 
         // SmartDashboard.putData("XBox", XboxArcade());
         // SmartDashboard.putData("Turn -45", TurnByDegrees(-45));

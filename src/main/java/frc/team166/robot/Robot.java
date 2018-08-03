@@ -7,6 +7,8 @@
 
 package frc.team166.robot;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -21,7 +23,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.controls.ButtonJoystick;
 import frc.team166.chopshoplib.controls.ButtonXboxController;
-import frc.team166.chopshoplib.outputs.DigitalOutputDutyCycle;
 import frc.team166.robot.subsystems.Drive;
 import frc.team166.robot.subsystems.LED;
 import frc.team166.robot.subsystems.Lift;
@@ -30,7 +31,9 @@ import frc.team166.robot.subsystems.Manipulator;
 public class Robot extends TimedRobot {
     // Initialize subsystems and their members
     public static final LED led = new LED(4, 5, 6);
-    public static final Drive drive = new Drive();
+
+    public static final Drive drive = new Drive(new WPI_VictorSPX(8), new WPI_VictorSPX(4), new WPI_VictorSPX(9),
+            new WPI_VictorSPX(5));
     public static final Manipulator manipulator = new Manipulator();
     public static final Lift lift = new Lift();
     public static final Compressor compressy = new Compressor(1);

@@ -16,10 +16,6 @@ package frc.team166.robot;
 public class RobotMap {
     public static class CAN {
         // changes motor ports into integers
-        public final static int FRONT_RIGHT = 4;
-        public final static int FRONT_LEFT = 8;
-        public final static int BACK_RIGHT = 5;
-        public final static int BACK_LEFT = 9;
         public final static int ROLLER_LEFT = 3;
         public final static int ROLLER_RIGHT = 2;
         public final static int LIFT_MOTOR_A = 6;
