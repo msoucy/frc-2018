@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
@@ -19,7 +18,6 @@ import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
-import frc.team166.robot.RobotMap.PreferenceStrings;
 
 public class Manipulator extends PIDSubsystem {
     // Put methods for controlling this subsystem
@@ -80,15 +78,6 @@ public class Manipulator extends PIDSubsystem {
         // SmartDashboard.putData("Deploy Manipulator With Joystick",
         // DeployManipulatorWithJoystick());
         // SmartDashboard.putData("Re-Enable Potentiometer", enablePID());
-
-        // Preferences Are Wanted In The Constructer So They Can Appear On Live Window
-        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.CUBE_PICKUP_DISTANCE, 0.5);
-        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.DEPLOY_MANIPULATOR_SPEED, 0.5);
-        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.DEPLOY_MANIPULATOR_TIME, 1.5);
-        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.CUBE_EJECT_WAIT_TIME, 5.0);
-        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.MANIPULATOR_HORIZONTAL_INPUT, 2.5);
-        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.MANIPULATOR_MOTOR_INTAKE_SPEED, -0.8);
-        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.MANIPULATOR_MOTOR_DISCHARGE_SPEED, 0.8);
     }
 
     // METHODS
@@ -132,8 +121,7 @@ public class Manipulator extends PIDSubsystem {
      */
     private void setMotorsToIntake() {
         // change once you find optimal motor speed
-        rollers.set(
-                Preferences.getInstance().getDouble(RobotMap.PreferenceStrings.MANIPULATOR_MOTOR_INTAKE_SPEED, -0.6));
+        rollers.set(-0.6);
     }
 
     /**
@@ -142,9 +130,8 @@ public class Manipulator extends PIDSubsystem {
      * Turns motors on to discharge a cube
      */
     private void setMotorsToDischarge() {
-        rollers.set(
-                Preferences.getInstance().getDouble(RobotMap.PreferenceStrings.MANIPULATOR_MOTOR_DISCHARGE_SPEED, 0.6));
         // change once you find optimal motor speed
+        rollers.set(0.6);
     }
 
     // COMMANDS
@@ -249,7 +236,7 @@ public class Manipulator extends PIDSubsystem {
 
             @Override
             protected void initialize() {
-                setTimeout(Preferences.getInstance().getDouble(RobotMap.PreferenceStrings.CUBE_EJECT_WAIT_TIME, 1));
+                setTimeout(5.0);
                 String gameData;
                 gameData = DriverStation.getInstance().getGameSpecificMessage();
 
@@ -289,8 +276,7 @@ public class Manipulator extends PIDSubsystem {
 
             @Override
             protected boolean isFinished() {
-                if (getIRDistance() > Preferences.getInstance()
-                        .getDouble(RobotMap.PreferenceStrings.CUBE_PICKUP_DISTANCE, 1.0)) {
+                if (getIRDistance() > 0.5) {
                     return true;
                 }
                 return false;
@@ -339,8 +325,7 @@ public class Manipulator extends PIDSubsystem {
 
             @Override
             protected void initialize() {
-                setSetpoint(Preferences.getInstance().getDouble(RobotMap.PreferenceStrings.MANIPULATOR_HORIZONTAL_INPUT,
-                        2.5));
+                setSetpoint(2.5);
             }
 
             @Override

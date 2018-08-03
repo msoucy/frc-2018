@@ -7,8 +7,6 @@
 
 package frc.team166.robot;
 
-import edu.wpi.first.wpilibj.Preferences;
-
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
  * to a variable name. This provides flexibility changing wiring, makes checking
@@ -66,42 +64,5 @@ public class RobotMap {
         public final static int BLUE_LED = 6;
         public final static int LIFT_A = 0;
         public final static int LIFT_B = 1;
-    }
-
-    public static class PreferenceStrings {
-        // changes preferences to strings
-        public static void setDefaultDouble(String preferenceName, double defaultValue) {
-            Preferences prefs = Preferences.getInstance();
-
-            if (!prefs.containsKey(preferenceName)) {
-                prefs.putDouble(preferenceName, defaultValue);
-            }
-
-        }
-
-        public static void setDefaultBool(String preferenceName, Boolean defaultValue) {
-            Preferences prefs = Preferences.getInstance();
-
-            if (!prefs.containsKey(preferenceName)) {
-                prefs.putBoolean(preferenceName, defaultValue);
-            }
-
-        }
-
-        public static final String LIFT_UP_DOWN_INCREMENT = "liftUpDownIncrement";
-        public static final String UP_MAX_SPEED = "Up Max Speed";
-        public static final String DOWN_MAX_SPEED = "Down Max Speed";
-        public static final String LIFT_CYCLES_BEFORE_STOP = "Lift Cycles Before Stop";
-        public static final String MANIPULATOR_MOTOR_INTAKE_SPEED = "manipulatorMotorIntakeSpeed";
-        public static final String MANIPULATOR_MOTOR_DISCHARGE_SPEED = "manipulatorMotorDischargeSpeed";
-        public static final String CUBE_PICKUP_DISTANCE = "cubePickupDistance";
-        public static final String CUBE_EJECT_WAIT_TIME = "cubeEjectWaitTime";
-        public static final String AUTOMATIC_ROBOT_FORWARD_SPEED = "automaticrobotforwardspeed";
-        public static final String ABSOLUTE_TOLERANCE_ANGLE = "absolutetoleranceangle";
-        public static final String USE_LIDAR = "useLidar";
-        public static final String DEPLOY_MANIPULATOR_TIME = "deployManipulatorTime";
-        public static final String DEPLOY_MANIPULATOR_SPEED = "deployManipulatorSpeed";
-        public static final String MANIPULATOR_HORIZONTAL_INPUT = "manipulatorHorizontalInput";
-        public static final String RAISE_LIFT_WAIT_TIME = "raiseLiftWaitTime";
     }
 }

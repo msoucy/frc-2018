@@ -19,7 +19,6 @@ import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
-import frc.team166.robot.RobotMap.PreferenceStrings;
 
 public class Lift extends PIDSubsystem {
     // Defines Limit Switches (Digital imputs)
@@ -69,12 +68,11 @@ public class Lift extends PIDSubsystem {
 
     public Lift() {
         super("Lift", kP, kI, kD, kF);
-        setOutputRange(Preferences.getInstance().getDouble(PreferenceStrings.DOWN_MAX_SPEED, -1),
-                Preferences.getInstance().getDouble(PreferenceStrings.UP_MAX_SPEED, 1));
+        setOutputRange(-1, 1);
         setAbsoluteTolerance(0.05);
         liftEncoder.setDistancePerPulse(encoderDistancePerTick);
-        // creates a child for the encoders and other stuff (limit switches, lidar,
-        // etc.)
+        // creates a child for the encoders and other stuff
+        // (limit switches, lidar, etc.)
         addChild("Encoder", liftEncoder);
         addChild("Top", topLimitSwitch);
         addChild("Bottom", bottomLimitSwitch);
@@ -86,11 +84,9 @@ public class Lift extends PIDSubsystem {
 
         liftDrive.setInverted(true);
 
-        PreferenceStrings.setDefaultDouble(PreferenceStrings.LIFT_UP_DOWN_INCREMENT, 1);
-        PreferenceStrings.setDefaultDouble(PreferenceStrings.UP_MAX_SPEED, 1);
-        PreferenceStrings.setDefaultDouble(PreferenceStrings.DOWN_MAX_SPEED, 1);
-        PreferenceStrings.setDefaultBool(PreferenceStrings.USE_LIDAR, false);
-        PreferenceStrings.setDefaultDouble(PreferenceStrings.LIFT_CYCLES_BEFORE_STOP, 1);
+        if (!Preferences.getInstance().containsKey("Use LIDAR")) {
+            Preferences.getInstance().putBoolean("Use LIDAR", false);
+        }
 
         registerCommands();
     }
@@ -142,7 +138,7 @@ public class Lift extends PIDSubsystem {
     }
 
     public double findLiftHeight() {
-        if (Preferences.getInstance().getBoolean(PreferenceStrings.USE_LIDAR, false) == true) {
+        if (Preferences.getInstance().getBoolean("Use LIDAR", false) == true) {
             if (liftLidar.getDistance(true) > kMaxLidarDistance) {
                 return (liftLidar.getDistance(true));
             } else {
@@ -171,7 +167,7 @@ public class Lift extends PIDSubsystem {
         return new SubsystemCommand("Raise Lift A Little", this) {
             @Override
             protected void initialize() {
-                setTimeout(Preferences.getInstance().getDouble(RobotMap.PreferenceStrings.RAISE_LIFT_WAIT_TIME, 2.5));
+                setTimeout(2.5);
                 disengageBrake();
                 liftDrive.set(0.9);
             }
@@ -320,7 +316,7 @@ public class Lift extends PIDSubsystem {
 
             @Override
             protected void execute() {
-                setSetpointRelative(Preferences.getInstance().getDouble(PreferenceStrings.LIFT_UP_DOWN_INCREMENT, 1));
+                setSetpointRelative(1);
             }
 
             @Override
@@ -339,7 +335,7 @@ public class Lift extends PIDSubsystem {
 
             @Override
             protected void execute() {
-                setSetpointRelative(-Preferences.getInstance().getDouble(PreferenceStrings.LIFT_UP_DOWN_INCREMENT, 1));
+                setSetpointRelative(-1);
 
             }
 

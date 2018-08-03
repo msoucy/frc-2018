@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -17,7 +16,6 @@ import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
-import frc.team166.robot.RobotMap.PreferenceStrings;
 
 /**
  * An example subsystem. You can replace me with your own Subsystem.
@@ -83,16 +81,10 @@ public class Drive extends Subsystem {
         drivePidController.setOutputRange(-0.6, 0.6);
         drivePidController.setPercentTolerance(0.90);
 
-        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.AUTOMATIC_ROBOT_FORWARD_SPEED,
-                AUTOMATIC_ROBOT_FORWARD_SPEED);
-        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.ABSOLUTE_TOLERANCE_ANGLE,
-                ABSOLUTE_TOLERANCE_ANGLE);
-
         drivePidController.disable();
         drivePidController.setInputRange(0, 360);
         drivePidController.setContinuous();
-        drivePidController.setAbsoluteTolerance(Preferences.getInstance()
-                .getDouble(RobotMap.PreferenceStrings.ABSOLUTE_TOLERANCE_ANGLE, ABSOLUTE_TOLERANCE_ANGLE));
+        drivePidController.setAbsoluteTolerance(ABSOLUTE_TOLERANCE_ANGLE);
     }
 
     // the default command for this code is supposed to rotate the robot so that
@@ -189,9 +181,7 @@ public class Drive extends Subsystem {
 
             @Override
             protected void execute() {
-                m_drive.arcadeDrive(Preferences.getInstance()
-                        .getDouble(RobotMap.PreferenceStrings.ABSOLUTE_TOLERANCE_ANGLE, ABSOLUTE_TOLERANCE_ANGLE),
-                        angleCorrection);
+                m_drive.arcadeDrive(ABSOLUTE_TOLERANCE_ANGLE, angleCorrection);
             }
 
             @Override
@@ -222,8 +212,7 @@ public class Drive extends Subsystem {
             protected void initialize() {
                 tempestGyro.reset();
                 drivePidController.reset();
-                drivePidController.setAbsoluteTolerance(Preferences.getInstance()
-                        .getDouble(RobotMap.PreferenceStrings.ABSOLUTE_TOLERANCE_ANGLE, ABSOLUTE_TOLERANCE_ANGLE));
+                drivePidController.setAbsoluteTolerance(ABSOLUTE_TOLERANCE_ANGLE);
                 drivePidController.setSetpoint(degrees);
                 drivePidController.enable();
             }
