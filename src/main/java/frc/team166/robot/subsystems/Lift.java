@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -159,8 +160,9 @@ public class Lift extends PIDSubsystem {
     }
 
     // does not do anything
+    @Override
     public void initDefaultCommand() {
-        setDefaultCommand(ManualLift());
+        setDefaultCommand(ManualLift(Robot.xBoxTempest));
     }
 
     public Command RaiseLiftALittle() {
@@ -218,7 +220,7 @@ public class Lift extends PIDSubsystem {
         };
     }
 
-    public Command ManualLift() {
+    public Command ManualLift(final XboxController controller) {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
@@ -228,8 +230,7 @@ public class Lift extends PIDSubsystem {
 
             @Override
             protected void execute() {
-                double elevatorControl = Robot.xBoxTempest.getTriggerAxis(Hand.kRight)
-                        - Robot.xBoxTempest.getTriggerAxis(Hand.kLeft);
+                double elevatorControl = controller.getTriggerAxis(Hand.kRight) - controller.getTriggerAxis(Hand.kLeft);
 
                 if (elevatorControl >= .1 || elevatorControl <= -0.1) {
                     disengageBrake();
@@ -238,9 +239,9 @@ public class Lift extends PIDSubsystem {
 
                 }
                 if (elevatorControl > 0 && !topLimitSwitch.get()) {
-                    liftDrive.set(Robot.xBoxTempest.getTriggerAxis(Hand.kLeft));
+                    liftDrive.set(controller.getTriggerAxis(Hand.kLeft));
                 } else if ((elevatorControl < 0 && !bottomLimitSwitch.get())) {
-                    liftDrive.set(Robot.xBoxTempest.getTriggerAxis(Hand.kRight));
+                    liftDrive.set(controller.getTriggerAxis(Hand.kRight));
                 } else {
                     liftDrive.set(elevatorControl);
                 }

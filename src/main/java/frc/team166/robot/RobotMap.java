@@ -34,14 +34,6 @@ public class RobotMap {
         public final static int MANIPULATOR_POTENTIOMETER = 3;
     }
 
-    public static class Buttons {
-        // changes button ports into integers
-        public final static int XboxAbutton = 1;
-        public final static int XboxBbutton = 2;
-        public final static int XboxXbutton = 3;
-        public final static int JoystickTrigger = 1;
-    }
-
     public static class Solenoids {
         // changes Solenoid ports into integers
 

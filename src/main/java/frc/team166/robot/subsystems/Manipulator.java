@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import frc.team166.chopshoplib.commands.ActionCommand;
@@ -135,13 +136,14 @@ public class Manipulator extends PIDSubsystem {
     }
 
     // COMMANDS
+    @Override
     public void initDefaultCommand() {
         setDefaultCommand(DefaultCommand());
     };
 
     public Command DefaultCommand() {
         return new ActionCommand("Manipulator Default Command", this, () -> {
-            DeployManipulatorWithJoystick().start();
+            DeployManipulatorWithJoystick(Robot.xBoxTempest).start();
         });
     }
 
@@ -276,48 +278,15 @@ public class Manipulator extends PIDSubsystem {
 
             @Override
             protected boolean isFinished() {
-                if (getIRDistance() > 0.5) {
-                    return true;
-                }
-                return false;
+                return (getIRDistance() > 0.5);
             }
 
             @Override
             protected void end() {
                 closeOuterManipulator();
                 rollers.stopMotor();
-                Rumble().start();
             }
         };
-    }
-
-    public Command Rumble() {
-
-        return new SubsystemCommand("Rumble", this) {
-
-            @Override
-            protected void initialize() {
-                Robot.xBoxTempest.setRumble(RumbleType.kLeftRumble, 1);
-                Robot.xBoxTempest.setRumble(RumbleType.kRightRumble, 1);
-                setTimeout(.1);
-            }
-
-            @Override
-            protected boolean isFinished() {
-                return isTimedOut();
-            }
-
-            @Override
-            protected void end() {
-                Robot.xBoxTempest.setRumble(RumbleType.kLeftRumble, 0);
-                Robot.xBoxTempest.setRumble(RumbleType.kRightRumble, 0);
-            }
-
-        };
-    }
-
-    public Command CubePickupWithLights(int blinkCount) {
-        return new CommandChain("Cube Pickup with Lights").then(CubePickup()).then(Robot.led.BlinkGreen(blinkCount));
     }
 
     public Command DeployManipulator() {
@@ -336,10 +305,8 @@ public class Manipulator extends PIDSubsystem {
         };
     }
 
-    public Command DeployManipulatorWithJoystick() {
+    public Command DeployManipulatorWithJoystick(final XboxController controller) {
         return new SubsystemCommand("Deploy Manipulator With Joystick") {
-            double rotation;
-
             @Override
             protected void initialize() {
                 disable();
@@ -347,10 +314,9 @@ public class Manipulator extends PIDSubsystem {
 
             @Override
             protected void execute() {
-                rotation = Math.pow(Robot.xBoxTempest.getY(Hand.kLeft), 2);
+                double rotation = Math.pow(controller.getY(Hand.kLeft), 2);
 
-                rotation = rotation
-                        * (Robot.xBoxTempest.getY(Hand.kLeft) / Math.abs(Robot.xBoxTempest.getY(Hand.kLeft)));
+                rotation *= (controller.getY(Hand.kLeft) / Math.abs(controller.getY(Hand.kLeft)));
 
                 deploymentMotor.set(rotation);
             }

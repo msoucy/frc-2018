@@ -14,9 +14,10 @@ import frc.team166.robot.RobotMap;
 
 public class LED extends Subsystem {
 
+    @Override
     public void initDefaultCommand() {
         setDefaultCommand(BreathTeamColor());
-    };
+    }
 
     // these will be changed from DigitalOutputs to something else when we get real
     // hardware...
@@ -47,28 +48,16 @@ public class LED extends Subsystem {
 
     private boolean isBlueTeam() {
         Alliance team = DriverStation.getInstance().getAlliance();
-        if (team == DriverStation.Alliance.Blue) {
-            return true;
-        } else {
-            return false;
-        }
+        return (team == DriverStation.Alliance.Blue);
     }
 
     private void setTeamColor(boolean turnOn) {
         if (isBlueTeam()) {
             red.set(false);
-            if (turnOn) {
-                blue.set(true);
-            } else {
-                blue.set(false);
-            }
+            blue.set(turnOn);
         } else {
             blue.set(false);
-            if (turnOn) {
-                red.set(true);
-            } else {
-                red.set(false);
-            }
+            red.set(turnOn);
         }
     }
 
@@ -103,11 +92,7 @@ public class LED extends Subsystem {
 
             @Override
             protected boolean isFinished() {
-                if (count >= numberOfBlinks) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return (count >= numberOfBlinks);
             }
 
             @Override
@@ -131,13 +116,8 @@ public class LED extends Subsystem {
             protected void execute() {
                 if (System.currentTimeMillis() >= lastUpdateTime + 750) {
                     lastUpdateTime = System.currentTimeMillis();
-                    if (isOn) {
-                        setTeamColor(false);
-                        isOn = false;
-                    } else {
-                        setTeamColor(true);
-                        isOn = true;
-                    }
+                    isOn = !isOn;
+                    setTeamColor(isOn);
                 }
             }
 
@@ -335,11 +315,7 @@ public class LED extends Subsystem {
 
             @Override
             protected boolean isFinished() {
-                if (count >= numberOfBlinks) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return (count >= numberOfBlinks);
             }
 
             @Override
@@ -376,11 +352,7 @@ public class LED extends Subsystem {
 
             @Override
             protected boolean isFinished() {
-                if (count >= numberOfBlinks) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return (count >= numberOfBlinks);
             }
 
             @Override

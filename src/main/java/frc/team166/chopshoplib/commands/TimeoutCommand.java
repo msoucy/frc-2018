@@ -5,13 +5,15 @@ import edu.wpi.first.wpilibj.command.TimedCommand;
 
 /**
  * A command that runs another command.
- * The command will be killed after a certain amount of time,
- * if it hasn't already run to completion.
+ * <p>
+ * The command will be killed after a certain amount of time, if it hasn't
+ * already run to completion.
  */
 public class TimeoutCommand extends TimedCommand {
     /**
      * Wrap the provided command with a timeout
-     * @param cmd The command to time out
+     * 
+     * @param cmd     The command to time out
      * @param timeout The maximum time before timing out
      */
     public TimeoutCommand(Command cmd, double timeout) {
@@ -20,8 +22,9 @@ public class TimeoutCommand extends TimedCommand {
 
     /**
      * Wrap the provided command with a timeout
-     * @param name The name for the timed out command
-     * @param cmd The command to time out
+     * 
+     * @param name    The name for the timed out command
+     * @param cmd     The command to time out
      * @param timeout The maximum time before timing out
      */
     public TimeoutCommand(String name, Command cmd, double timeout) {

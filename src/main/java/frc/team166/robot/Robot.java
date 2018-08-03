@@ -10,18 +10,21 @@ package frc.team166.robot;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.command.TimedCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.controls.ButtonJoystick;
 import frc.team166.chopshoplib.controls.ButtonXboxController;
 import frc.team166.robot.subsystems.Drive;
-import frc.team166.robot.subsystems.Manipulator;
 import frc.team166.robot.subsystems.LED;
 import frc.team166.robot.subsystems.Lift;
+import frc.team166.robot.subsystems.Manipulator;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -170,6 +173,29 @@ public class Robot extends TimedRobot {
                 .then(drive.DriveTime(.3, .6), lift.RaiseLiftALittle());
         return cmdMidAuto;
 
+    }
+
+    public Command Rumble(final XboxController controller) {
+
+        return new TimedCommand("Rumble", 0.1) {
+
+            @Override
+            protected void initialize() {
+                controller.setRumble(RumbleType.kLeftRumble, 1);
+                controller.setRumble(RumbleType.kRightRumble, 1);
+            }
+
+            @Override
+            protected void end() {
+                controller.setRumble(RumbleType.kLeftRumble, 0);
+                controller.setRumble(RumbleType.kRightRumble, 0);
+            }
+        };
+    }
+
+    public Command CubePickupWithLights(int blinkCount) {
+        return new CommandChain("Cube Pickup with Lights").then(manipulator.CubePickup()).then(Rumble(xBoxTempest))
+                .then(led.BlinkGreen(blinkCount));
     }
 
 }

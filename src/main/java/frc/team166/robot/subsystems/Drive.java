@@ -3,10 +3,12 @@ package frc.team166.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -89,8 +91,9 @@ public class Drive extends Subsystem {
 
     // the default command for this code is supposed to rotate the robot so that
     // it's gyro value is 0
+    @Override
     public void initDefaultCommand() {
-        setDefaultCommand(JoystickArcadeTwoStick());
+        setDefaultCommand(JoystickArcadeTwoStick(Robot.leftDriveStick, Robot.rightDriveStick));
 
     }
 
@@ -98,7 +101,7 @@ public class Drive extends Subsystem {
         m_drive.stopMotor();
     }
 
-    public Command XboxArcade() {
+    public Command XboxArcade(final XboxController controller) {
         return new SubsystemCommand("XBoxArcade", this) {
             @Override
             protected boolean isFinished() {
@@ -107,13 +110,13 @@ public class Drive extends Subsystem {
 
             @Override
             protected void execute() {
-                m_drive.arcadeDrive(-Robot.xBoxTempest.getY(Hand.kLeft), Robot.xBoxTempest.getX(Hand.kRight));
+                m_drive.arcadeDrive(-controller.getY(Hand.kLeft), controller.getX(Hand.kRight));
             }
 
         };
     }
 
-    public Command JoystickArcadeTwoStick() {
+    public Command JoystickArcadeTwoStick(final Joystick left, final Joystick right) {
         return new SubsystemCommand("joystick Arcade with two sticks", this) {
             @Override
             protected void initialize() {
@@ -121,7 +124,7 @@ public class Drive extends Subsystem {
 
             @Override
             protected void execute() {
-                m_drive.arcadeDrive(-Robot.leftDriveStick.getY() * 0.8, Robot.rightDriveStick.getX());
+                m_drive.arcadeDrive(-left.getY() * 0.8, right.getX());
 
             }
 
@@ -133,7 +136,7 @@ public class Drive extends Subsystem {
         };
     };
 
-    public Command DriveStraight() {
+    public Command DriveStraight(final XboxController controller) {
         return new SubsystemCommand("Drive Straight", this) {
             @Override
             protected void initialize() {
@@ -144,8 +147,7 @@ public class Drive extends Subsystem {
 
             @Override
             protected void execute() {
-                m_drive.arcadeDrive(
-                        Robot.xBoxTempest.getTriggerAxis(Hand.kRight) - Robot.xBoxTempest.getTriggerAxis(Hand.kLeft),
+                m_drive.arcadeDrive(controller.getTriggerAxis(Hand.kRight) - controller.getTriggerAxis(Hand.kLeft),
                         angleCorrection);
             }
 
