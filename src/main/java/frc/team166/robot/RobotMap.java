@@ -1,21 +1,11 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.team166.robot;
 
+import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.SpeedController;
 import frc.team166.chopshoplib.outputs.DigitalOutputDutyCycle;
+import frc.team166.chopshoplib.sensors.Lidar;
 
-/**
- * The RobotMap is a mapping from the ports sensors and actuators are wired into
- * to a variable name. This provides flexibility changing wiring, makes checking
- * the wiring easier and significantly reduces the number of magic numbers
- * floating aroun
- */
 public interface RobotMap {
     public static class CAN {
         // changes motor ports into integers
@@ -28,7 +18,6 @@ public interface RobotMap {
 
     public static class AnalogInputs {
         // changes input ports into integers
-        public final static int tempestgyro = 1;
         public final static int IR = 2;
         public final static int MANIPULATOR_POTENTIOMETER = 3;
     }
@@ -54,6 +43,8 @@ public interface RobotMap {
         public final static int LIFT_B = 1;
     }
 
+    public Compressor getCompressor();
+
     public DigitalOutputDutyCycle getRedLED();
 
     public DigitalOutputDutyCycle getGreenLED();
@@ -63,4 +54,8 @@ public interface RobotMap {
     public SpeedController getLeftWheelMotors();
 
     public SpeedController getRightWheelMotors();
+
+    public Lidar getDriveLidar();
+
+    public AnalogGyro getDriveGyro();
 }

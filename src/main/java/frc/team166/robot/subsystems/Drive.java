@@ -2,7 +2,6 @@ package frc.team166.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.XboxController;
@@ -18,8 +17,8 @@ import frc.team166.robot.RobotMap;
 
 public class Drive extends Subsystem {
 
-    Lidar frontLidar = new Lidar(Port.kOnboard, 0x10);
-    AnalogGyro tempestGyro = new AnalogGyro(RobotMap.AnalogInputs.tempestgyro);
+    Lidar frontLidar;
+    AnalogGyro tempestGyro;
     DifferentialDrive m_drive;
 
     // defines values that will be used in the PIDController (In order of where they
@@ -47,6 +46,8 @@ public class Drive extends Subsystem {
     public Drive(RobotMap map) {
 
         m_drive = new DifferentialDrive(map.getLeftWheelMotors(), map.getRightWheelMotors());
+        tempestGyro = map.getDriveGyro();
+        frontLidar = map.getDriveLidar();
 
         // SmartDashboard.putData("XBox", XboxArcade());
         // SmartDashboard.putData("Turn -45", TurnByDegrees(-45));
