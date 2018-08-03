@@ -1,30 +1,23 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.team166.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.team166.robot.Robot;
-import frc.team166.robot.RobotMap;
-import frc.team166.robot.RobotMap.PreferenceStrings;
 import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.chopshoplib.sensors.Lidar;
-import edu.wpi.first.wpilibj.I2C.Port;
+import frc.team166.robot.Robot;
+import frc.team166.robot.RobotMap;
+import frc.team166.robot.RobotMap.PreferenceStrings;
 
 /**
  * An example subsystem. You can replace me with your own Subsystem.
@@ -122,8 +115,7 @@ public class Drive extends Subsystem {
 
             @Override
             protected void execute() {
-                m_drive.arcadeDrive(-Robot.m_oi.xBoxTempest.getY(Hand.kLeft), Robot.m_oi.xBoxTempest.getX(Hand.kRight));
-
+                m_drive.arcadeDrive(-Robot.xBoxTempest.getY(Hand.kLeft), Robot.xBoxTempest.getX(Hand.kRight));
             }
 
         };
@@ -137,7 +129,7 @@ public class Drive extends Subsystem {
 
             @Override
             protected void execute() {
-                m_drive.arcadeDrive(-Robot.m_oi.leftDriveStick.getY() * 0.8, Robot.m_oi.rightDriveStick.getX());
+                m_drive.arcadeDrive(-Robot.leftDriveStick.getY() * 0.8, Robot.rightDriveStick.getX());
 
             }
 
@@ -160,8 +152,9 @@ public class Drive extends Subsystem {
 
             @Override
             protected void execute() {
-                m_drive.arcadeDrive(Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kRight)
-                        - Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kLeft), angleCorrection);
+                m_drive.arcadeDrive(
+                        Robot.xBoxTempest.getTriggerAxis(Hand.kRight) - Robot.xBoxTempest.getTriggerAxis(Hand.kLeft),
+                        angleCorrection);
             }
 
             @Override

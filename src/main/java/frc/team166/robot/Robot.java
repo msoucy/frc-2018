@@ -1,8 +1,8 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* Copyright (c) 2017-2018 FIRST. All Rights Reserved. */
+/* Open Source Software - may be modified and shared by FRC teams. The code */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
+/* the project. */
 /*----------------------------------------------------------------------------*/
 
 package frc.team166.robot;
@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.commands.CommandChain;
+import frc.team166.chopshoplib.controls.ButtonJoystick;
+import frc.team166.chopshoplib.controls.ButtonXboxController;
 import frc.team166.robot.subsystems.Drive;
 import frc.team166.robot.subsystems.Manipulator;
 import frc.team166.robot.subsystems.LED;
@@ -33,8 +35,12 @@ public class Robot extends TimedRobot {
     public static final Drive drive = new Drive();
     public static final Manipulator manipulator = new Manipulator();
     public static final Lift lift = new Lift();
-    public static OI m_oi;
     public static final Compressor compressy = new Compressor(1);
+
+    // Joysticks
+    public static ButtonJoystick leftDriveStick = new ButtonJoystick(0);
+    public static ButtonJoystick rightDriveStick = new ButtonJoystick(1);
+    public static ButtonXboxController xBoxTempest = new ButtonXboxController(2);
 
     Command m_autonomousCommand;
     SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -45,7 +51,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        m_oi = new OI();
+
         m_chooser.addDefault("Default Auto", drive.DriveTime(3, 0.6));
         m_chooser.addObject("Mid Auto", MidAuto());
         m_chooser.addObject("Cross Line And Drop Cube", CrossLineAndDropCube());
@@ -53,6 +59,15 @@ public class Robot extends TimedRobot {
         SmartDashboard.putData("Turn 90", drive.TurnByDegrees(90));
         SmartDashboard.putData("Turn -90", drive.TurnByDegrees(-90));
         CameraServer.getInstance().startAutomaticCapture();
+
+        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kY).whenPressed(manipulator.CloseOuterManipulator());
+        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kX).whenPressed(manipulator.OpenOuterManipulator());
+
+        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kA).whileHeld(manipulator.ManipulatorIntakeHeld());
+        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kB).whileHeld(manipulator.ManipulatorDischargeHeld());
+
+        rightDriveStick.getButton(1).whenPressed(manipulator.CubeDrop());
+        rightDriveStick.getButton(2).whenPressed(manipulator.CubeClamp());
     }
 
     /**
@@ -88,13 +103,6 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         m_autonomousCommand = m_chooser.getSelected();
-
-        /*
-         * String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
-         * switch(autoSelected) { case "My Auto": autonomousCommand = new
-         * MyAutoCommand(); break; case "Default Auto": default: autonomousCommand = new
-         * ExampleCommand(); break; }
-         */
 
         // schedule the autonomous command (example)
         if (m_autonomousCommand != null) {

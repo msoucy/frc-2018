@@ -16,7 +16,8 @@ public class ButtonXboxController extends XboxController {
     /**
      * Construct an instance of a joystick along with each button the joystick has.
      *
-     * @param port The USB port that the joystick is connected to on the Driver Station
+     * @param port The USB port that the joystick is connected to on the Driver
+     *             Station
      */
     public ButtonXboxController(int port) {
         super(port);
@@ -28,14 +29,14 @@ public class ButtonXboxController extends XboxController {
     }
 
     /**
-    * Get a button from this joystick
-    * <p>
-    * Returns the sepcified button of a joystick without having to explicitly create
-    * each button.
-    * 
-    * @param buttonId The index of the button to accesss
-    * @return The button object for the given ID
-    */
+     * Get a button from this joystick
+     * <p>
+     * Returns the sepcified button of a joystick without having to explicitly
+     * create each button.
+     * 
+     * @param buttonId The index of the button to accesss
+     * @return The button object for the given ID
+     */
     public Button getButton(int buttonId) {
         if (buttons.size() <= buttonId) {
             for (int i = buttons.size(); i <= buttonId; i++) {
@@ -45,9 +46,13 @@ public class ButtonXboxController extends XboxController {
         return buttons.get(buttonId);
     }
 
+    public Button getButton(xBoxButton buttonId) {
+        return getButton(buttonId.get());
+    }
+
     public enum xBoxButton {
-        kBumperLeft(5), kBumperRight(6), kStickLeft(9), kStickRight(10), kA(1), kB(2), kX(3), kY(4), kBack(7), kStart(
-                8);
+        kBumperLeft(5), kBumperRight(6), kStickLeft(9), kStickRight(10), kA(1), kB(2), kX(3), kY(4), kBack(7),
+        kStart(8);
 
         private int value;
 

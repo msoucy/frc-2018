@@ -1,32 +1,25 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.team166.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 import frc.team166.robot.RobotMap.PreferenceStrings;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
 
 public class Manipulator extends PIDSubsystem {
     // Put methods for controlling this subsystem
@@ -318,8 +311,8 @@ public class Manipulator extends PIDSubsystem {
 
             @Override
             protected void initialize() {
-                Robot.m_oi.xBoxTempest.setRumble(RumbleType.kLeftRumble, 1);
-                Robot.m_oi.xBoxTempest.setRumble(RumbleType.kRightRumble, 1);
+                Robot.xBoxTempest.setRumble(RumbleType.kLeftRumble, 1);
+                Robot.xBoxTempest.setRumble(RumbleType.kRightRumble, 1);
                 setTimeout(.1);
             }
 
@@ -330,8 +323,8 @@ public class Manipulator extends PIDSubsystem {
 
             @Override
             protected void end() {
-                Robot.m_oi.xBoxTempest.setRumble(RumbleType.kLeftRumble, 0);
-                Robot.m_oi.xBoxTempest.setRumble(RumbleType.kRightRumble, 0);
+                Robot.xBoxTempest.setRumble(RumbleType.kLeftRumble, 0);
+                Robot.xBoxTempest.setRumble(RumbleType.kRightRumble, 0);
             }
 
         };
@@ -369,10 +362,10 @@ public class Manipulator extends PIDSubsystem {
 
             @Override
             protected void execute() {
-                rotation = Math.pow(Robot.m_oi.xBoxTempest.getY(Hand.kLeft), 2);
+                rotation = Math.pow(Robot.xBoxTempest.getY(Hand.kLeft), 2);
 
                 rotation = rotation
-                        * (Robot.m_oi.xBoxTempest.getY(Hand.kLeft) / Math.abs(Robot.m_oi.xBoxTempest.getY(Hand.kLeft)));
+                        * (Robot.xBoxTempest.getY(Hand.kLeft) / Math.abs(Robot.xBoxTempest.getY(Hand.kLeft)));
 
                 deploymentMotor.set(rotation);
             }

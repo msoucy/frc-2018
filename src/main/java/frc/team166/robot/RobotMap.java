@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.Preferences;
  */
 public class RobotMap {
     public static class CAN {
-        //changes motor ports into integers
+        // changes motor ports into integers
         public final static int FRONT_RIGHT = 4;
         public final static int FRONT_LEFT = 8;
         public final static int BACK_RIGHT = 5;
@@ -29,23 +29,15 @@ public class RobotMap {
         public final static int DEPLOYMENT_MOTOR = 1;
     }
 
-    //"GIT er done" -Mr.P "I ask for so little, and get so much less in return"
-    public static class Controller {
-        //changes controller ports into integers
-        public final static int leftcontrol = 0;
-        public final static int rightcontrol = 1;
-        public final static int Xboxcontrol = 2;
-    }
-
     public static class AnalogInputs {
-        //changes input ports into integers
+        // changes input ports into integers
         public final static int tempestgyro = 1;
         public final static int IR = 2;
         public final static int MANIPULATOR_POTENTIOMETER = 3;
     }
 
     public static class Buttons {
-        //changes button ports into integers
+        // changes button ports into integers
         public final static int XboxAbutton = 1;
         public final static int XboxBbutton = 2;
         public final static int XboxXbutton = 3;
@@ -53,7 +45,7 @@ public class RobotMap {
     }
 
     public static class Solenoids {
-        //changes Solenoid ports into integers
+        // changes Solenoid ports into integers
 
         public final static int LIFT_TRANSMISSION_A = 4;
         public final static int LIFT_TRANSMISSION_B = 5;
@@ -66,7 +58,7 @@ public class RobotMap {
     }
 
     public static class DigitalInputs {
-        //changes digital imput ports into integers
+        // changes digital imput ports into integers
         public final static int LIFT_LIMIT_SWITCH_BOTTOM = 9;
         public final static int LIFT_LIMIT_SWITCH_TOP = 8;
         public final static int RED_LED = 4;
@@ -77,7 +69,7 @@ public class RobotMap {
     }
 
     public static class PreferenceStrings {
-        //changes preferences to strings
+        // changes preferences to strings
         public static void setDefaultDouble(String preferenceName, double defaultValue) {
             Preferences prefs = Preferences.getInstance();
 
