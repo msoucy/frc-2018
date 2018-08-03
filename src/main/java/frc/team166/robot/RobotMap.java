@@ -51,9 +51,6 @@ public class RobotMap {
         // changes digital imput ports into integers
         public final static int LIFT_LIMIT_SWITCH_BOTTOM = 9;
         public final static int LIFT_LIMIT_SWITCH_TOP = 8;
-        public final static int RED_LED = 4;
-        public final static int GREEN_LED = 5;
-        public final static int BLUE_LED = 6;
         public final static int LIFT_A = 0;
         public final static int LIFT_B = 1;
     }

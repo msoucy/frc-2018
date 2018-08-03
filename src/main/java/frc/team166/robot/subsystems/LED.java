@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.chopshoplib.outputs.DigitalOutputDutyCycle;
-import frc.team166.robot.RobotMap;
 
 public class LED extends Subsystem {
 
@@ -19,16 +18,20 @@ public class LED extends Subsystem {
         setDefaultCommand(BreathTeamColor());
     }
 
-    // these will be changed from DigitalOutputs to something else when we get real
-    // hardware...
-    DigitalOutputDutyCycle red = new DigitalOutputDutyCycle(RobotMap.DigitalInputs.RED_LED);
-    DigitalOutputDutyCycle green = new DigitalOutputDutyCycle(RobotMap.DigitalInputs.GREEN_LED);
-    DigitalOutputDutyCycle blue = new DigitalOutputDutyCycle(RobotMap.DigitalInputs.BLUE_LED);
+    DigitalOutputDutyCycle red;
+    DigitalOutputDutyCycle green;
+    DigitalOutputDutyCycle blue;
 
-    public LED() {
+    public LED(int _red, int _green, int _blue) {
         registerCommands();
+
+        red = new DigitalOutputDutyCycle(_red);
         addChild("Red", red);
+
+        green = new DigitalOutputDutyCycle(_green);
         addChild("Green", green);
+
+        blue = new DigitalOutputDutyCycle(_blue);
         addChild("Blue", blue);
     }
 
@@ -133,11 +136,11 @@ public class LED extends Subsystem {
         };
     }
 
-    public Command BlueOn() {
+    private Command ColorOn(DigitalOutputDutyCycle color) {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
-                blue.set(true);
+                color.set(true);
             }
 
             @Override
@@ -147,9 +150,21 @@ public class LED extends Subsystem {
 
             @Override
             protected void end() {
-                blue.set(false);
+                color.set(false);
             }
         };
+    }
+
+    public Command RedOn() {
+        return ColorOn(red);
+    }
+
+    public Command GreenOn() {
+        return ColorOn(green);
+    }
+
+    public Command BlueOn() {
+        return ColorOn(blue);
     }
 
     public Command CyanOn() {
@@ -173,25 +188,6 @@ public class LED extends Subsystem {
         };
     }
 
-    public Command GreenOn() {
-        return new SubsystemCommand(this) {
-            @Override
-            protected void initialize() {
-                green.set(true);
-            }
-
-            @Override
-            protected boolean isFinished() {
-                return false;
-            }
-
-            @Override
-            protected void end() {
-                green.set(false);
-            }
-        };
-    }
-
     public Command LightTeamColor() {
         return new SubsystemCommand(this) {
             @Override
@@ -207,25 +203,6 @@ public class LED extends Subsystem {
             @Override
             protected void end() {
                 setTeamColor(false);
-            }
-        };
-    }
-
-    public Command RedOn() {
-        return new SubsystemCommand(this) {
-            @Override
-            protected void initialize() {
-                red.set(true);
-            }
-
-            @Override
-            protected boolean isFinished() {
-                return false;
-            }
-
-            @Override
-            protected void end() {
-                red.set(false);
             }
         };
     }

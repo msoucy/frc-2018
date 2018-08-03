@@ -21,20 +21,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.controls.ButtonJoystick;
 import frc.team166.chopshoplib.controls.ButtonXboxController;
+import frc.team166.chopshoplib.outputs.DigitalOutputDutyCycle;
 import frc.team166.robot.subsystems.Drive;
 import frc.team166.robot.subsystems.LED;
 import frc.team166.robot.subsystems.Lift;
 import frc.team166.robot.subsystems.Manipulator;
 
-/**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the TimedRobot
- * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the build.properties file in the
- * project.
- */
 public class Robot extends TimedRobot {
-    public static final LED led = new LED();
+    // Initialize subsystems and their members
+    public static final LED led = new LED(4, 5, 6);
     public static final Drive drive = new Drive();
     public static final Manipulator manipulator = new Manipulator();
     public static final Lift lift = new Lift();
