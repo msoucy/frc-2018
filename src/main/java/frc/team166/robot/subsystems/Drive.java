@@ -19,9 +19,6 @@ import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
-/**
- * An example subsystem. You can replace me with your own Subsystem.
- */
 public class Drive extends Subsystem {
 
     // declare lidar
@@ -94,7 +91,6 @@ public class Drive extends Subsystem {
     @Override
     public void initDefaultCommand() {
         setDefaultCommand(JoystickArcadeTwoStick(Robot.leftDriveStick, Robot.rightDriveStick));
-
     }
 
     public void reset() {
@@ -112,20 +108,14 @@ public class Drive extends Subsystem {
             protected void execute() {
                 m_drive.arcadeDrive(-controller.getY(Hand.kLeft), controller.getX(Hand.kRight));
             }
-
         };
     }
 
     public Command JoystickArcadeTwoStick(final Joystick left, final Joystick right) {
         return new SubsystemCommand("joystick Arcade with two sticks", this) {
             @Override
-            protected void initialize() {
-            }
-
-            @Override
             protected void execute() {
                 m_drive.arcadeDrive(-left.getY() * 0.8, right.getX());
-
             }
 
             @Override
@@ -171,9 +161,6 @@ public class Drive extends Subsystem {
 
     public Command DrivetoProximity(double inches) {
         return new SubsystemCommand("Drive Distance", this) {
-
-            // double realDistanceInches = frontLidar.getDistance(true);
-
             @Override
             protected void initialize() {
                 drivePidController.setSetpoint(tempestGyro.getAngle());
@@ -188,11 +175,7 @@ public class Drive extends Subsystem {
 
             @Override
             protected boolean isFinished() {
-                if (frontLidar.getDistance(true) <= inches) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return (frontLidar.getDistance(true) <= inches);
 
             }
 
@@ -203,7 +186,7 @@ public class Drive extends Subsystem {
 
             @Override
             protected void interrupted() {
-                drivePidController.disable();
+                end();
             }
         };
     }
@@ -238,7 +221,7 @@ public class Drive extends Subsystem {
 
             @Override
             protected void interrupted() {
-                drivePidController.disable();
+                end();
             }
         };
     }

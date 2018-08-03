@@ -9,20 +9,16 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import frc.team166.chopshoplib.commands.ActionCommand;
-import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
 public class Manipulator extends PIDSubsystem {
-    // Put methods for controlling this subsystem
-    // here. Call these from Commands.
 
     WPI_VictorSPX deploymentMotor = new WPI_VictorSPX(RobotMap.CAN.DEPLOYMENT_MOTOR);
 
@@ -42,17 +38,17 @@ public class Manipulator extends PIDSubsystem {
     AnalogPotentiometer potentiometer = new AnalogPotentiometer(RobotMap.AnalogInputs.MANIPULATOR_POTENTIOMETER);
 
     // inches:
-    double ROLLER_RADIUS = 1.4375;
+    final static double ROLLER_RADIUS = 1.4375;
     // ft:
-    double DIST_PER_PULSE_INTAKE = (((ROLLER_RADIUS * 2.0 * Math.PI) / 1024.0) / 12.0);
+    final static double DIST_PER_PULSE_INTAKE = (((ROLLER_RADIUS * 2.0 * Math.PI) / 1024.0) / 12.0);
 
-    private static double kP_Manipulator = 0;
-    private static double kI_Manipulator = 0;
-    private static double kD_Manipulator = 0;
-    private static double kF_Manipulator = 0;
+    private static double kP = 0;
+    private static double kI = 0;
+    private static double kD = 0;
+    private static double kF = 0;
 
     public Manipulator() {
-        super("Manipulator", kP_Manipulator, kI_Manipulator, kD_Manipulator, kF_Manipulator);
+        super("Manipulator", kP, kI, kD, kF);
 
         setAbsoluteTolerance(5);
 
@@ -107,10 +103,12 @@ public class Manipulator extends PIDSubsystem {
         return irSensor.getVoltage();
     }
 
+    @Override
     protected double returnPIDInput() {
         return potentiometer.pidGet();
     }
 
+    @Override
     protected void usePIDOutput(double output) {
         deploymentMotor.set(output);
     }
