@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.chopshoplib.outputs.DigitalOutputDutyCycle;
+import frc.team166.robot.RobotMap;
 
 public class LED extends Subsystem {
 
@@ -22,16 +23,16 @@ public class LED extends Subsystem {
     DigitalOutputDutyCycle green;
     DigitalOutputDutyCycle blue;
 
-    public LED(int _red, int _green, int _blue) {
+    public LED(RobotMap map) {
         registerCommands();
 
-        red = new DigitalOutputDutyCycle(_red);
+        red = map.getRedLED();
         addChild("Red", red);
 
-        green = new DigitalOutputDutyCycle(_green);
+        green = map.getGreenLED();
         addChild("Green", green);
 
-        blue = new DigitalOutputDutyCycle(_blue);
+        blue = map.getBlueLED();
         addChild("Blue", blue);
     }
 

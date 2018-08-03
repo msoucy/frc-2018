@@ -7,13 +7,16 @@
 
 package frc.team166.robot;
 
+import edu.wpi.first.wpilibj.SpeedController;
+import frc.team166.chopshoplib.outputs.DigitalOutputDutyCycle;
+
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
  * to a variable name. This provides flexibility changing wiring, makes checking
  * the wiring easier and significantly reduces the number of magic numbers
  * floating aroun
  */
-public class RobotMap {
+public interface RobotMap {
     public static class CAN {
         // changes motor ports into integers
         public final static int ROLLER_LEFT = 3;
@@ -50,4 +53,14 @@ public class RobotMap {
         public final static int LIFT_A = 0;
         public final static int LIFT_B = 1;
     }
+
+    public DigitalOutputDutyCycle getRedLED();
+
+    public DigitalOutputDutyCycle getGreenLED();
+
+    public DigitalOutputDutyCycle getBlueLED();
+
+    public SpeedController getLeftWheelMotors();
+
+    public SpeedController getRightWheelMotors();
 }

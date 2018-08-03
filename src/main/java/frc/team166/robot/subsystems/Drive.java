@@ -5,8 +5,6 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -30,6 +28,8 @@ public class Drive extends Subsystem {
     final static double kI = 0.00005;
     final static double kD = 0;
     final static double kF = 0;
+    final static double AUTOMATIC_ROBOT_FORWARD_SPEED = .2;
+    final static double ABSOLUTE_TOLERANCE_ANGLE = 3;
 
     // defines a new double that is going to be used in the line that defines the
     // drive type
@@ -42,16 +42,11 @@ public class Drive extends Subsystem {
         angleCorrection = value;
     });
 
-    final static double AUTOMATIC_ROBOT_FORWARD_SPEED = .2;
-    final static double ABSOLUTE_TOLERANCE_ANGLE = 3;
-
     // this makes children that control the tempestGyro, drive motors, and
     // PIDController loop.
-    public Drive(SpeedController frontLeft, SpeedController frontRight, SpeedController rearLeft,
-            SpeedController rearRight) {
+    public Drive(RobotMap map) {
 
-        m_drive = new DifferentialDrive(new SpeedControllerGroup(frontLeft, rearLeft),
-                new SpeedControllerGroup(frontRight, rearRight));
+        m_drive = new DifferentialDrive(map.getLeftWheelMotors(), map.getRightWheelMotors());
 
         // SmartDashboard.putData("XBox", XboxArcade());
         // SmartDashboard.putData("Turn -45", TurnByDegrees(-45));
@@ -87,13 +82,13 @@ public class Drive extends Subsystem {
     public Command XboxArcade(final XboxController controller) {
         return new SubsystemCommand("XBoxArcade", this) {
             @Override
-            protected boolean isFinished() {
-                return false;
+            protected void execute() {
+                m_drive.arcadeDrive(-controller.getY(Hand.kLeft), controller.getX(Hand.kRight));
             }
 
             @Override
-            protected void execute() {
-                m_drive.arcadeDrive(-controller.getY(Hand.kLeft), controller.getX(Hand.kRight));
+            protected boolean isFinished() {
+                return false;
             }
         };
     }
@@ -141,7 +136,7 @@ public class Drive extends Subsystem {
 
             @Override
             protected void interrupted() {
-                drivePidController.disable();
+                end();
             }
         };
     }
@@ -241,7 +236,7 @@ public class Drive extends Subsystem {
 
             @Override
             protected void interrupted() {
-                drivePidController.disable();
+                end();
             }
         };
     }
