@@ -7,7 +7,9 @@ import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
@@ -24,8 +26,10 @@ public class Maverick implements RobotMap {
     DigitalOutputDutyCycle greenLED = new DigitalOutputDutyCycle(5);
     DigitalOutputDutyCycle blueLED = new DigitalOutputDutyCycle(6);
     // Drive
-    SpeedControllerGroup leftGroup = new SpeedControllerGroup(new WPI_VictorSPX(8), new WPI_VictorSPX(9));
-    SpeedControllerGroup rightGroup = new SpeedControllerGroup(new WPI_VictorSPX(4), new WPI_VictorSPX(5));
+    SpeedControllerGroup leftGroup = new SpeedControllerGroup(new WPI_TalonSRX(8),
+            new WPI_TalonSRX(9));
+    SpeedControllerGroup rightGroup = new SpeedControllerGroup(new WPI_TalonSRX(4),
+            new WPI_TalonSRX(5));
     Lidar driveLidar = new Lidar(Port.kOnboard, 0x10);
     AnalogGyro driveGyro = new AnalogGyro(1);
     // Manipulator
@@ -37,6 +41,8 @@ public class Maverick implements RobotMap {
     DoubleSolenoid outerManipSolenoid = new DoubleSolenoid(1, 0);
     AnalogInput manipIrSensor = new AnalogInput(2);
     AnalogPotentiometer manipPotentiometer = new AnalogPotentiometer(3);
+    // Lift
+    LiftMap lift = new TempestLift();
 
     public Maverick() {
         leftRoller.setInverted(false);
@@ -111,6 +117,60 @@ public class Maverick implements RobotMap {
     @Override
     public AnalogPotentiometer getManipPotentiometer() {
         return manipPotentiometer;
+    }
+
+    public class TempestLift implements LiftMap {
+        DigitalInput bottomLimitSwitch = new DigitalInput(
+                RobotMap.DigitalInputs.LIFT_LIMIT_SWITCH_BOTTOM);
+        DigitalInput topLimitSwitch = new DigitalInput(
+                RobotMap.DigitalInputs.LIFT_LIMIT_SWITCH_TOP);
+
+        Encoder liftEncoder = new Encoder(RobotMap.DigitalInputs.LIFT_A,
+                RobotMap.DigitalInputs.LIFT_B);
+
+        WPI_VictorSPX liftMotorA = new WPI_VictorSPX(RobotMap.CAN.LIFT_MOTOR_A);
+        WPI_VictorSPX liftMotorB = new WPI_VictorSPX(RobotMap.CAN.LIFT_MOTOR_B);
+        SpeedControllerGroup liftDrive = new SpeedControllerGroup(liftMotorA, liftMotorB);
+
+        DoubleSolenoid liftBrake = new DoubleSolenoid(RobotMap.Solenoids.LIFT_BRAKE_A,
+                RobotMap.Solenoids.LIFT_BRAKE_B);
+        DoubleSolenoid liftTransmission = new DoubleSolenoid(RobotMap.Solenoids.LIFT_TRANSMISSION_A,
+                RobotMap.Solenoids.LIFT_TRANSMISSION_B);
+
+        @Override
+        public SpeedController getLiftMotors() {
+            return liftDrive;
+        }
+
+        @Override
+        public DigitalInput getLiftTopLimit() {
+            return topLimitSwitch;
+        }
+
+        @Override
+        public DigitalInput getLiftBottomLimit() {
+            return bottomLimitSwitch;
+        }
+
+        @Override
+        public Encoder getLiftEncoder() {
+            return liftEncoder;
+        }
+
+        @Override
+        public DoubleSolenoid getLiftBrake() {
+            return liftBrake;
+        }
+
+        @Override
+        public DoubleSolenoid getLiftShifter() {
+            return liftTransmission;
+        }
+    }
+
+    @Override
+    public LiftMap getLift() {
+        return lift;
     }
 
 }

@@ -27,7 +27,7 @@ public class Robot extends TimedRobot {
     public static final LED led = new LED(robotMap);
     public static final Drive drive = new Drive(robotMap);
     public static final Manipulator manipulator = new Manipulator(robotMap);
-    public static final Lift lift = new Lift();
+    public static final Lift lift = new Lift(robotMap.getLift());
 
     // Joysticks
     public static ButtonJoystick leftDriveStick = new ButtonJoystick(0);
@@ -50,16 +50,23 @@ public class Robot extends TimedRobot {
         SmartDashboard.putData("Auto mode", m_chooser);
         SmartDashboard.putData("Turn 90", drive.TurnByDegrees(90));
         SmartDashboard.putData("Turn -90", drive.TurnByDegrees(-90));
-        CameraServer.getInstance().startAutomaticCapture();
+        CameraServer.getInstance()
+                .startAutomaticCapture();
 
-        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kY).whenPressed(manipulator.CloseOuterManipulator());
-        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kX).whenPressed(manipulator.OpenOuterManipulator());
+        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kY)
+                .whenPressed(manipulator.CloseOuterManipulator());
+        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kX)
+                .whenPressed(manipulator.OpenOuterManipulator());
 
-        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kA).whileHeld(manipulator.ManipulatorIntakeHeld());
-        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kB).whileHeld(manipulator.ManipulatorDischargeHeld());
+        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kA)
+                .whileHeld(manipulator.ManipulatorIntakeHeld());
+        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kB)
+                .whileHeld(manipulator.ManipulatorDischargeHeld());
 
-        rightDriveStick.getButton(1).whenPressed(manipulator.CubeDrop());
-        rightDriveStick.getButton(2).whenPressed(manipulator.CubeClamp());
+        rightDriveStick.getButton(1)
+                .whenPressed(manipulator.CubeDrop());
+        rightDriveStick.getButton(2)
+                .whenPressed(manipulator.CubeClamp());
     }
 
     /**
@@ -77,7 +84,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
-        Scheduler.getInstance().run();
+        Scheduler.getInstance()
+                .run();
     }
 
     /**
@@ -108,7 +116,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousPeriodic() {
-        Scheduler.getInstance().run();
+        Scheduler.getInstance()
+                .run();
     }
 
     @Override
@@ -125,7 +134,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
-        Scheduler.getInstance().run();
+        Scheduler.getInstance()
+                .run();
     }
 
     /**
@@ -137,12 +147,14 @@ public class Robot extends TimedRobot {
 
     public Command CrossLineAndDropCube() {
         return new CommandChain("Cross Line And Drop Cube").then(lift.MoveLiftByInches(-1))
-                .then(drive.DriveTime(3.6, 0.6), lift.MoveLiftByInches(26)).then(manipulator.CubeEject());
+                .then(drive.DriveTime(3.6, 0.6), lift.MoveLiftByInches(26))
+                .then(manipulator.CubeEject());
     }
 
     public Command MidAuto() {
         String gameData;
-        gameData = DriverStation.getInstance().getGameSpecificMessage();
+        gameData = DriverStation.getInstance()
+                .getGameSpecificMessage();
         double degrees = 0.0;
         if (gameData.length() > 0) {
             if (gameData.charAt(0) == 'R') {
@@ -158,7 +170,9 @@ public class Robot extends TimedRobot {
             }
         }
         Command cmdMidAuto = new CommandChain("Mid Auto").then(drive.DriveTime(.75, .6))
-                .then(drive.TurnByDegrees(degrees)).then(drive.DriveTime(.5, .6)).then(drive.TurnByDegrees(-degrees))
+                .then(drive.TurnByDegrees(degrees))
+                .then(drive.DriveTime(.5, .6))
+                .then(drive.TurnByDegrees(-degrees))
                 .then(drive.DriveTime(.3, .6), lift.RaiseLiftALittle());
         return cmdMidAuto;
 
@@ -183,7 +197,8 @@ public class Robot extends TimedRobot {
     }
 
     public Command CubePickupWithLights(int blinkCount) {
-        return new CommandChain("Cube Pickup with Lights").then(manipulator.CubePickup()).then(Rumble(xBoxTempest))
+        return new CommandChain("Cube Pickup with Lights").then(manipulator.CubePickup())
+                .then(Rumble(xBoxTempest))
                 .then(led.BlinkGreen(blinkCount));
     }
 

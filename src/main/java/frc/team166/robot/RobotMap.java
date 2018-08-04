@@ -4,7 +4,9 @@ import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import frc.team166.chopshoplib.outputs.DigitalOutputDutyCycle;
@@ -64,6 +66,21 @@ public interface RobotMap {
     public AnalogPotentiometer getManipPotentiometer();
     // #endregion
 
-    // #region
+    // #region Lift
+    public LiftMap getLift();
+
+    public interface LiftMap {
+        public SpeedController getLiftMotors();
+
+        public DigitalInput getLiftTopLimit();
+    
+        public DigitalInput getLiftBottomLimit();
+        
+        public Encoder getLiftEncoder();
+
+        public DoubleSolenoid getLiftBrake();
+    
+        public DoubleSolenoid getLiftShifter();
+    }
     // #endregion
 }
