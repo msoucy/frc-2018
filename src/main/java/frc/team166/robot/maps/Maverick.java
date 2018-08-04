@@ -13,7 +13,7 @@ import frc.team166.chopshoplib.outputs.DigitalOutputDutyCycle;
 import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.RobotMap;
 
-public class Tempest implements RobotMap {
+public class Maverick implements RobotMap {
 
     // Core
     Compressor compressor = new Compressor(1);
@@ -34,7 +34,7 @@ public class Tempest implements RobotMap {
     DoubleSolenoid innerSolenoid = new DoubleSolenoid(3, 2);
     DoubleSolenoid outerSolenoid = new DoubleSolenoid(1, 0);
 
-    public Tempest() {
+    public Maverick() {
         leftRoller.setInverted(false);
         rightRoller.setInverted(true);
     }

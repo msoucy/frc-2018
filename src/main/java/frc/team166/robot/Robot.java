@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.controls.ButtonJoystick;
 import frc.team166.chopshoplib.controls.ButtonXboxController;
-import frc.team166.robot.maps.Tempest;
+import frc.team166.robot.maps.Maverick;
 import frc.team166.robot.subsystems.Drive;
 import frc.team166.robot.subsystems.LED;
 import frc.team166.robot.subsystems.Lift;
@@ -21,7 +21,7 @@ import frc.team166.robot.subsystems.Manipulator;
 
 public class Robot extends TimedRobot {
     // Initialize the mapping for the production robot
-    public static RobotMap robotMap = new Tempest();
+    public static RobotMap robotMap = new Maverick();
 
     // Initialize subsystems and their members
     public static final LED led = new LED(robotMap);
