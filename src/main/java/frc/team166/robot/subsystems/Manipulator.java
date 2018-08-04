@@ -1,6 +1,5 @@
 package frc.team166.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -22,16 +21,9 @@ public class Manipulator extends PIDSubsystem {
 
     WPI_VictorSPX deploymentMotor = new WPI_VictorSPX(RobotMap.CAN.DEPLOYMENT_MOTOR);
 
-    WPI_VictorSPX leftRoller = new WPI_VictorSPX(RobotMap.CAN.ROLLER_LEFT);
-    WPI_TalonSRX rightRoller = new WPI_TalonSRX(RobotMap.CAN.ROLLER_RIGHT);
-
-    SpeedControllerGroup rollers = new SpeedControllerGroup(leftRoller, rightRoller);
-
-    DoubleSolenoid innerSolenoid = new DoubleSolenoid(RobotMap.Solenoids.MANIPULATOR_SOLENOID_INNER_A,
-            RobotMap.Solenoids.MANIPULATOR_SOLENOID_INNER_B);
-
-    DoubleSolenoid outerSolenoid = new DoubleSolenoid(RobotMap.Solenoids.MANIPULATOR_SOLENOID_OUTER_A,
-            RobotMap.Solenoids.MANIPULATOR_SOLENOID_OUTER_B);
+    SpeedControllerGroup rollers;
+    DoubleSolenoid innerSolenoid;
+    DoubleSolenoid outerSolenoid;
 
     AnalogInput irSensor = new AnalogInput(RobotMap.AnalogInputs.IR);
 
@@ -47,12 +39,15 @@ public class Manipulator extends PIDSubsystem {
     private static double kD = 0;
     private static double kF = 0;
 
-    public Manipulator() {
+    public Manipulator(RobotMap map) {
         super("Manipulator", kP, kI, kD, kF);
 
         setAbsoluteTolerance(5);
 
-        addChild(rollers);
+        rollers = map.getRollers();
+        innerSolenoid = map.getInnerManipSolenoid();
+        outerSolenoid = map.getOuterManipSolenoid();
+
         addChild("IR", irSensor);
         addChild("Potentiometer", potentiometer);
         addChild("Deploy Motor", deploymentMotor);
@@ -60,8 +55,6 @@ public class Manipulator extends PIDSubsystem {
         addChild("Inner", innerSolenoid);
         addChild("Outer", outerSolenoid);
 
-        leftRoller.setInverted(false);
-        rightRoller.setInverted(true);
         deploymentMotor.setInverted(true);
 
         // Adding Commands To SmartDashboard

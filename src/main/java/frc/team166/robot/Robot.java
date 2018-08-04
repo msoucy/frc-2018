@@ -26,7 +26,7 @@ public class Robot extends TimedRobot {
     // Initialize subsystems and their members
     public static final LED led = new LED(robotMap);
     public static final Drive drive = new Drive(robotMap);
-    public static final Manipulator manipulator = new Manipulator();
+    public static final Manipulator manipulator = new Manipulator(robotMap);
     public static final Lift lift = new Lift();
 
     // Joysticks
