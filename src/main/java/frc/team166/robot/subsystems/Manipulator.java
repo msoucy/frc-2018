@@ -1,12 +1,11 @@
 package frc.team166.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.XboxController;
@@ -19,15 +18,12 @@ import frc.team166.robot.RobotMap;
 
 public class Manipulator extends PIDSubsystem {
 
-    WPI_VictorSPX deploymentMotor = new WPI_VictorSPX(RobotMap.CAN.DEPLOYMENT_MOTOR);
-
+    SpeedController deploymentMotor;
     SpeedControllerGroup rollers;
     DoubleSolenoid innerSolenoid;
     DoubleSolenoid outerSolenoid;
-
-    AnalogInput irSensor = new AnalogInput(RobotMap.AnalogInputs.IR);
-
-    AnalogPotentiometer potentiometer = new AnalogPotentiometer(RobotMap.AnalogInputs.MANIPULATOR_POTENTIOMETER);
+    AnalogInput irSensor;
+    AnalogPotentiometer potentiometer;
 
     // inches:
     final static double ROLLER_RADIUS = 1.4375;
@@ -44,13 +40,16 @@ public class Manipulator extends PIDSubsystem {
 
         setAbsoluteTolerance(5);
 
+        deploymentMotor = map.getDeploymentMotor();
         rollers = map.getRollers();
         innerSolenoid = map.getInnerManipSolenoid();
         outerSolenoid = map.getOuterManipSolenoid();
+        irSensor = map.getManipIrSensor();
+        potentiometer = map.getManipPotentiometer();
 
         addChild("IR", irSensor);
         addChild("Potentiometer", potentiometer);
-        addChild("Deploy Motor", deploymentMotor);
+        // addChild("Deploy Motor", deploymentMotor);
         addChild("Rollers", rollers);
         addChild("Inner", innerSolenoid);
         addChild("Outer", outerSolenoid);

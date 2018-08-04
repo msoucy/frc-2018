@@ -4,6 +4,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.I2C.Port;
@@ -30,9 +32,11 @@ public class Maverick implements RobotMap {
     WPI_VictorSPX leftRoller = new WPI_VictorSPX(3);
     WPI_TalonSRX rightRoller = new WPI_TalonSRX(2);
     SpeedControllerGroup rollers = new SpeedControllerGroup(leftRoller, rightRoller);
-
+    WPI_VictorSPX deploymentMotor = new WPI_VictorSPX(1);
     DoubleSolenoid innerManipSolenoid = new DoubleSolenoid(3, 2);
     DoubleSolenoid outerManipSolenoid = new DoubleSolenoid(1, 0);
+    AnalogInput manipIrSensor = new AnalogInput(2);
+    AnalogPotentiometer manipPotentiometer = new AnalogPotentiometer(3);
 
     public Maverick() {
         leftRoller.setInverted(false);
@@ -92,6 +96,21 @@ public class Maverick implements RobotMap {
     @Override
     public DoubleSolenoid getOuterManipSolenoid() {
         return outerManipSolenoid;
+    }
+
+    @Override
+    public SpeedController getDeploymentMotor() {
+        return deploymentMotor;
+    }
+
+    @Override
+    public AnalogInput getManipIrSensor() {
+        return manipIrSensor;
+    }
+
+    @Override
+    public AnalogPotentiometer getManipPotentiometer() {
+        return manipPotentiometer;
     }
 
 }
