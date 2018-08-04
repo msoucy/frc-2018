@@ -2,6 +2,9 @@ package frc.team166.robot;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedController;
 import frc.team166.chopshoplib.outputs.DigitalOutputDutyCycle;
 import frc.team166.chopshoplib.sensors.Lidar;
@@ -58,4 +61,20 @@ public interface RobotMap {
     public Lidar getDriveLidar();
 
     public AnalogGyro getDriveGyro();
+
+    public LiftMap getLift();
+
+    public interface LiftMap {
+        public SpeedController getLiftMotors();
+
+        public DigitalInput getLiftTopLimit();
+    
+        public DigitalInput getLiftBottomLimit();
+        
+        public Encoder getLiftEncoder();
+
+        public DoubleSolenoid getLiftBrake();
+    
+        public DoubleSolenoid getLiftShifter();
+    }
 }

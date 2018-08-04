@@ -1,7 +1,5 @@
 package frc.team166.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -9,7 +7,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
@@ -22,21 +20,16 @@ import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
 public class Lift extends PIDSubsystem {
-    // Defines Limit Switches (Digital imputs)
-    DigitalInput bottomLimitSwitch = new DigitalInput(RobotMap.DigitalInputs.LIFT_LIMIT_SWITCH_BOTTOM);
-    DigitalInput topLimitSwitch = new DigitalInput(RobotMap.DigitalInputs.LIFT_LIMIT_SWITCH_TOP);
-    // Defines Encoders and sets the the distance per Tick
-    Encoder liftEncoder = new Encoder(RobotMap.DigitalInputs.LIFT_A, RobotMap.DigitalInputs.LIFT_B);
     // This is for one inch
     private final double encoderDistancePerTick = 0.01636;
-    // Defines Motors
-    WPI_VictorSPX liftMotorA = new WPI_VictorSPX(RobotMap.CAN.LIFT_MOTOR_A);
-    WPI_VictorSPX liftMotorB = new WPI_VictorSPX(RobotMap.CAN.LIFT_MOTOR_B);
-    // Defines the previus motors as one motor
-    SpeedControllerGroup liftDrive = new SpeedControllerGroup(liftMotorA, liftMotorB);
-    DoubleSolenoid liftBrake = new DoubleSolenoid(RobotMap.Solenoids.LIFT_BRAKE_A, RobotMap.Solenoids.LIFT_BRAKE_B);
-    DoubleSolenoid liftTransmission = new DoubleSolenoid(RobotMap.Solenoids.LIFT_TRANSMISSION_A,
-            RobotMap.Solenoids.LIFT_TRANSMISSION_B);
+
+
+    DigitalInput bottomLimitSwitch; 
+    DigitalInput topLimitSwitch;
+    Encoder Encoder;
+    SpeedController liftDrive;
+    DoubleSolenoid liftBrake;
+    DoubleSolenoid liftTransmission;
 
     // TODO we need to calculate these
     // these define the PID values for the lift
@@ -67,20 +60,28 @@ public class Lift extends PIDSubsystem {
     // sets the maximum lidar distance before switching to the encoder
     private final static double kMaxLidarDistance = 60;
 
-    public Lift() {
+    public Lift(RobotMap map) {
         super("Lift", kP, kI, kD, kF);
+        bottomLimitSwitch = map.getLift().getLiftBottomLimit();
+        topLimitSwitch = map.getLift().getLiftTopLimit();
+        Encoder = map.getLift().getLiftEncoder();
+        liftDrive = map.getLift().getLiftMotors();
+
+        liftBrake = map.getLift().getLiftBrake();
+        liftTransmission = map.getLift().getLiftShifter();
+
         setOutputRange(-1, 1);
         setAbsoluteTolerance(0.05);
-        liftEncoder.setDistancePerPulse(encoderDistancePerTick);
+        Encoder.setDistancePerPulse(encoderDistancePerTick);
         // creates a child for the encoders and other stuff
         // (limit switches, lidar, etc.)
-        addChild("Encoder", liftEncoder);
+        addChild("Encoder", Encoder);
         addChild("Top", topLimitSwitch);
         addChild("Bottom", bottomLimitSwitch);
         addChild("LiDAR", liftLidar);
         addChild("Transmission", liftTransmission);
         addChild("Brake", liftBrake);
-        addChild("Drive", liftDrive);
+        // addChild("Drive", liftDrive);
         addChild(findLiftHeight());
 
         liftDrive.setInverted(true);
@@ -143,10 +144,10 @@ public class Lift extends PIDSubsystem {
             if (liftLidar.getDistance(true) > kMaxLidarDistance) {
                 return (liftLidar.getDistance(true));
             } else {
-                return (liftEncoder.getDistance());
+                return (Encoder.getDistance());
             }
         } else {
-            return (liftEncoder.getDistance());
+            return (Encoder.getDistance());
         }
     }
 
@@ -273,8 +274,8 @@ public class Lift extends PIDSubsystem {
             protected void initialize() {
                 disable();
                 disengageBrake();
-                LiftDestinationHeight = liftEncoder.getDistance() + inches;
-                if (LiftDestinationHeight > liftEncoder.getDistance()) {
+                LiftDestinationHeight = Encoder.getDistance() + inches;
+                if (LiftDestinationHeight > Encoder.getDistance()) {
                     liftDrive.set(0.75);
                 } else {
                     liftDrive.set(-0.50);
@@ -284,11 +285,11 @@ public class Lift extends PIDSubsystem {
             @Override
             protected boolean isFinished() {
                 if (liftDrive.get() > 0) {
-                    if (liftEncoder.getDistance() >= LiftDestinationHeight) {
+                    if (Encoder.getDistance() >= LiftDestinationHeight) {
                         return true;
                     }
                 } else {
-                    if (liftEncoder.getDistance() <= LiftDestinationHeight) {
+                    if (Encoder.getDistance() <= LiftDestinationHeight) {
                         return true;
                     }
                 }

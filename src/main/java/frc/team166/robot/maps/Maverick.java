@@ -1,5 +1,5 @@
 package frc.team166.robot.maps;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
@@ -14,18 +14,18 @@ import frc.team166.chopshoplib.outputs.DigitalOutputDutyCycle;
 import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.RobotMap;
 
-public class Tempest implements RobotMap {
+public class Maverick implements RobotMap {
 
     Compressor compressor = new Compressor(1);
     DigitalOutputDutyCycle redLED = new DigitalOutputDutyCycle(4);
     DigitalOutputDutyCycle greenLED = new DigitalOutputDutyCycle(5);
     DigitalOutputDutyCycle blueLED = new DigitalOutputDutyCycle(6);
-    SpeedControllerGroup leftGroup = new SpeedControllerGroup(new WPI_TalonSRX(8), new WPI_TalonSRX(9));
-    SpeedControllerGroup rightGroup = new SpeedControllerGroup(new WPI_TalonSRX(4), new WPI_TalonSRX(5));
+    SpeedControllerGroup leftGroup = new SpeedControllerGroup(new WPI_VictorSPX(8), new WPI_VictorSPX(9));
+    SpeedControllerGroup rightGroup = new SpeedControllerGroup(new WPI_VictorSPX(4), new WPI_VictorSPX(5));
     Lidar driveLidar = new Lidar(Port.kOnboard, 0x10);
     AnalogGyro driveGyro = new AnalogGyro(1);
 
-    LiftMap lift = new TempestLift();
+    LiftMap lift = new MaverickLift();
 
     @Override
     public Compressor getCompressor() {
@@ -66,12 +66,13 @@ public class Tempest implements RobotMap {
     public AnalogGyro getDriveGyro() {
         return driveGyro;
     }
+
     @Override
     public LiftMap getLift() {
         return lift;
     }
 
-    public class TempestLift implements LiftMap {
+    public class MaverickLift implements LiftMap {
         DigitalInput bottomLimitSwitch = new DigitalInput(RobotMap.DigitalInputs.LIFT_LIMIT_SWITCH_BOTTOM);
         DigitalInput topLimitSwitch = new DigitalInput(RobotMap.DigitalInputs.LIFT_LIMIT_SWITCH_TOP);
 
@@ -115,4 +116,5 @@ public class Tempest implements RobotMap {
             return liftTransmission;
         }
     }
+
 }
