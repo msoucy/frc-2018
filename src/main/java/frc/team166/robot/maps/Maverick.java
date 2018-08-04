@@ -31,8 +31,8 @@ public class Maverick implements RobotMap {
     WPI_TalonSRX rightRoller = new WPI_TalonSRX(2);
     SpeedControllerGroup rollers = new SpeedControllerGroup(leftRoller, rightRoller);
 
-    DoubleSolenoid innerSolenoid = new DoubleSolenoid(3, 2);
-    DoubleSolenoid outerSolenoid = new DoubleSolenoid(1, 0);
+    DoubleSolenoid innerManipSolenoid = new DoubleSolenoid(3, 2);
+    DoubleSolenoid outerManipSolenoid = new DoubleSolenoid(1, 0);
 
     public Maverick() {
         leftRoller.setInverted(false);
@@ -86,12 +86,12 @@ public class Maverick implements RobotMap {
 
     @Override
     public DoubleSolenoid getInnerManipSolenoid() {
-        return innerSolenoid;
+        return innerManipSolenoid;
     }
 
     @Override
     public DoubleSolenoid getOuterManipSolenoid() {
-        return outerSolenoid;
+        return outerManipSolenoid;
     }
 
 }
