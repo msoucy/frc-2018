@@ -11,11 +11,10 @@ import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.commands.TimeoutCommand;
 
 /**
- * A simple language meant for creating series of commands
- * Sets of commands are separated with semicolons
- * Commands to be run at the same time are separated by pipes
- * Command names are separated from their optional double arguments by whitespace
- * A command can be given a timeout with `timeout 5 mycommand`
+ * A simple language meant for creating series of commands Sets of commands are
+ * separated with semicolons Commands to be run at the same time are separated
+ * by pipes Command names are separated from their optional double arguments by
+ * whitespace A command can be given a timeout with `timeout 5 mycommand`
  */
 public class SimpleEngine implements Engine {
     HashMap<String, Function<String, Command>> handlers = new HashMap<>();
@@ -30,8 +29,12 @@ public class SimpleEngine implements Engine {
 
     /**
      * Register a command function with the given prefix
-     * @param prefix The prefix for use in scripts
-     * @param func The function that creates the given command, given a double parameter
+     * 
+     * @param prefix
+     *            The prefix for use in scripts
+     * @param func
+     *            The function that creates the given command, given a double
+     *            parameter
      */
     public void registerHandler(String prefix, Function<String, Command> func) {
         handlers.put(prefix, func);
@@ -40,8 +43,11 @@ public class SimpleEngine implements Engine {
     /**
      * Unregister a command function with the given prefix
      *
-     * If no new command is specified for this prefix, its usage in scripts will be an error
-     * @param prefix The prefix for use in scripts
+     * If no new command is specified for this prefix, its usage in scripts will be
+     * an error
+     * 
+     * @param prefix
+     *            The prefix for use in scripts
      */
     public void unregister(String prefix) {
         handlers.remove(prefix);
@@ -53,8 +59,11 @@ public class SimpleEngine implements Engine {
     public Command parseScript(String script) {
         CommandChain result = new CommandChain(script);
         if (!"".equals(script)) {
-            for (String groupStr : script.trim().split(";")) {
-                Command[] cmds = Arrays.stream(groupStr.split("\\|")).map(String::trim).map(this::parseSingleCommand)
+            for (String groupStr : script.trim()
+                    .split(";")) {
+                Command[] cmds = Arrays.stream(groupStr.split("\\|"))
+                        .map(String::trim)
+                        .map(this::parseSingleCommand)
                         .toArray(Command[]::new);
                 result.then(cmds);
             }
@@ -64,7 +73,9 @@ public class SimpleEngine implements Engine {
 
     /**
      * Create a command from a string
-     * @param cmd The name of the command to look up
+     * 
+     * @param cmd
+     *            The name of the command to look up
      */
     Command parseSingleCommand(String cmd) {
         String[] args = cmd.split("[\\s,]+");
@@ -91,7 +102,9 @@ public class SimpleEngine implements Engine {
 
     /**
      * Create a command from a string
-     * @param args The split arguments, including command name
+     * 
+     * @param args
+     *            The split arguments, including command name
      */
     Command parseArgs(String[] args) {
         Function<String, Command> constructor = handlers.get(args[0]);

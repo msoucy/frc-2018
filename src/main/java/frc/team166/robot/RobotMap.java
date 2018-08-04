@@ -73,13 +73,13 @@ public interface RobotMap {
         public SpeedController getLiftMotors();
 
         public DigitalInput getLiftTopLimit();
-    
+
         public DigitalInput getLiftBottomLimit();
-        
+
         public Encoder getLiftEncoder();
 
         public DoubleSolenoid getLiftBrake();
-    
+
         public DoubleSolenoid getLiftShifter();
     }
     // #endregion

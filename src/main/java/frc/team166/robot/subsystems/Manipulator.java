@@ -230,7 +230,8 @@ public class Manipulator extends PIDSubsystem {
             protected void initialize() {
                 setTimeout(5.0);
                 String gameData;
-                gameData = DriverStation.getInstance().getGameSpecificMessage();
+                gameData = DriverStation.getInstance()
+                        .getGameSpecificMessage();
 
                 if (gameData.length() > 0) {
                     if (gameData.charAt(0) == 'R') {

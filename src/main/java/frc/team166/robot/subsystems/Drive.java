@@ -36,10 +36,11 @@ public class Drive extends Subsystem {
 
     // PIDController loop used to find the power of the motors needed to keep the
     // angle of the gyro at 0
-    PIDController drivePidController = new PIDController(kP, kI, kD, kF, tempestGyro, (double value) -> {
-        // this assigns the output to the angle (double) defined later in the code)
-        angleCorrection = value;
-    });
+    PIDController drivePidController = new PIDController(kP, kI, kD, kF, tempestGyro,
+            (double value) -> {
+                // this assigns the output to the angle (double) defined later in the code)
+                angleCorrection = value;
+            });
 
     // this makes children that control the tempestGyro, drive motors, and
     // PIDController loop.
@@ -120,8 +121,8 @@ public class Drive extends Subsystem {
 
             @Override
             protected void execute() {
-                m_drive.arcadeDrive(controller.getTriggerAxis(Hand.kRight) - controller.getTriggerAxis(Hand.kLeft),
-                        angleCorrection);
+                m_drive.arcadeDrive(controller.getTriggerAxis(Hand.kRight)
+                        - controller.getTriggerAxis(Hand.kLeft), angleCorrection);
             }
 
             @Override
@@ -243,8 +244,13 @@ public class Drive extends Subsystem {
     }
 
     public Command DriveBox() {
-        return new CommandChain("Box Drive").then(DriveTime(1, .8)).then(TurnByDegrees(90)).then(DriveTime(.5, .8))
-                .then(TurnByDegrees(90)).then(DriveTime(1, .8)).then(TurnByDegrees(90)).then(DriveTime(.5, .8))
+        return new CommandChain("Box Drive").then(DriveTime(1, .8))
+                .then(TurnByDegrees(90))
+                .then(DriveTime(.5, .8))
+                .then(TurnByDegrees(90))
+                .then(DriveTime(1, .8))
+                .then(TurnByDegrees(90))
+                .then(DriveTime(.5, .8))
                 .then(TurnByDegrees(90));
 
     }

@@ -45,19 +45,28 @@ public class Lidar extends SensorBase implements PIDSource {
 
     public static class Settings {
         public enum opMode {
-            SINGLESTEP, CONTINOUS, INVALID
+            SINGLESTEP,
+            CONTINOUS,
+            INVALID
         }
 
         public enum ledIndicator {
-            ON, OFF, MEASUREMENT
+            ON,
+            OFF,
+            MEASUREMENT
         }
 
         public enum presetConfiguration {
-            HIGHSPEED, LONGRANGE, HIGHACCURACY, TINYLIDAR, CUSTOM
+            HIGHSPEED,
+            LONGRANGE,
+            HIGHACCURACY,
+            TINYLIDAR,
+            CUSTOM
         }
 
         public enum offsetCalFlag {
-            CUSTOM, DEFAULT
+            CUSTOM,
+            DEFAULT
         }
 
         public opMode operationMode;
@@ -78,9 +87,11 @@ public class Lidar extends SensorBase implements PIDSource {
         /**
          * This will process the response from a settings query.
          * 
-         * This will process the byte array and turn it into a more easily accessible object. 
+         * This will process the byte array and turn it into a more easily accessible
+         * object.
          * 
-         * @param response A byte array with the response from a settings query
+         * @param response
+         *            A byte array with the response from a settings query
          */
         Settings(byte[] response) {
             /* Process the zeroth byte */
@@ -109,11 +120,13 @@ public class Lidar extends SensorBase implements PIDSource {
                 preset = presetConfiguration.CUSTOM;
             }
             /* Process the 2nd & 3rd bytes */
-            signalRateLimit = ByteBuffer.wrap(response, 2, 2).getShort() / 65536.0;
+            signalRateLimit = ByteBuffer.wrap(response, 2, 2)
+                    .getShort() / 65536.0;
             /* Process the 4th byte */
             sigmaEstimateLimate = response[4];
             /* Process the 5th & 6th bytes */
-            timingBudgetInMS = ByteBuffer.wrap(response, 5, 2).getShort();
+            timingBudgetInMS = ByteBuffer.wrap(response, 5, 2)
+                    .getShort();
             /* Process the 7th byte */
             if (response[7] == 0x0e) {
                 preRangeVcselPeriod = 14;
@@ -149,9 +162,11 @@ public class Lidar extends SensorBase implements PIDSource {
                 watchdogTimer = false;
             }
             /* Process the 15th, 16th, 17th, & 18th bytes */
-            offsetCalibrationValue = ByteBuffer.wrap(response, 15, 4).getInt() / 1000;
+            offsetCalibrationValue = ByteBuffer.wrap(response, 15, 4)
+                    .getInt() / 1000;
             /* Process the 19th, 20th, 21th, & 22th bytes */
-            crosstalkCalibrationValue = ByteBuffer.wrap(response, 19, 4).getInt() / 65536;
+            crosstalkCalibrationValue = ByteBuffer.wrap(response, 19, 4)
+                    .getInt() / 65536;
         }
 
     }
@@ -159,9 +174,12 @@ public class Lidar extends SensorBase implements PIDSource {
     /**
      * Create a LIDAR object
      * 
-     * @param port The I2C port the sensor is connected to
-     * @param kAddress The I2C address the sensor is found at
-     * @param averageOver The number of samples to average
+     * @param port
+     *            The I2C port the sensor is connected to
+     * @param kAddress
+     *            The I2C address the sensor is found at
+     * @param averageOver
+     *            The number of samples to average
      */
     public Lidar(Port port, int kAddress, int averageOver) {
         i2cDevice = new I2C(port, kAddress);
@@ -181,8 +199,10 @@ public class Lidar extends SensorBase implements PIDSource {
     /**
      * Create a LIDAR object
      * 
-     * @param port The I2C port the sensor is connected to
-     * @param kAddress The I2C address the sensor is found at
+     * @param port
+     *            The I2C port the sensor is connected to
+     * @param kAddress
+     *            The I2C address the sensor is found at
      */
     public Lidar(Port port, int kAddress) {
         // Default to averaging over 10 samples
@@ -190,9 +210,11 @@ public class Lidar extends SensorBase implements PIDSource {
     }
 
     /**
-     * Set the maximum allowed standard deviation before the input is considered invalid
+     * Set the maximum allowed standard deviation before the input is considered
+     * invalid
      * 
-     * @param sdLimit The maximum standard deviation expected
+     * @param sdLimit
+     *            The maximum standard deviation expected
      */
     public void setStandardDeviationLimit(double sdLimit) {
         standardDeviationLimit = sdLimit;
@@ -211,7 +233,10 @@ public class Lidar extends SensorBase implements PIDSource {
 
     /**
      * This function gets the distance from a LiDAR sensor
-     * @param bFlag True requests the distance in inches, false requests the distance in mm
+     * 
+     * @param bFlag
+     *            True requests the distance in inches, false requests the distance
+     *            in mm
      */
     public Optional<Double> getDistanceOptional(Boolean bFlag) {
         if (isValid == false) {
@@ -226,7 +251,10 @@ public class Lidar extends SensorBase implements PIDSource {
 
     /**
      * This function gets the distance from a LiDAR sensor
-     * @param bFlag True requests the distance in inches, false requests the distance in mm
+     * 
+     * @param bFlag
+     *            True requests the distance in inches, false requests the distance
+     *            in mm
      */
     public double getDistance(Boolean bFlag) {
         if (bFlag == true) {
@@ -250,7 +278,8 @@ public class Lidar extends SensorBase implements PIDSource {
                 sampleIndex = 0;
             }
             distanceMM = new Mean().evaluate(samples, 0, reset ? sampleIndex : samples.length);
-            // If the standard deviation is really high then the sensor likely doesn't have a valid reading.
+            // If the standard deviation is really high then the sensor likely doesn't have
+            // a valid reading.
             standardDeviationValue = sd.evaluate(samples, 0, reset ? sampleIndex : samples.length);
             if (standardDeviationValue >= standardDeviationLimit) {
                 isValid = false;
@@ -262,7 +291,9 @@ public class Lidar extends SensorBase implements PIDSource {
 
     /**
      * Change the mode of the LiDAR sensor
-     * @param mode Which mode to change to
+     * 
+     * @param mode
+     *            Which mode to change to
      */
     public void setMode(Settings.opMode mode) {
         if (mode == Settings.opMode.CONTINOUS) {

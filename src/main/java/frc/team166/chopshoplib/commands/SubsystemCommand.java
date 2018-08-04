@@ -9,7 +9,9 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public abstract class SubsystemCommand extends Command {
     /**
      * Create a command that depends on a system
-     * @param subsystem The subsystem to depend on
+     * 
+     * @param subsystem
+     *            The subsystem to depend on
      */
     public SubsystemCommand(Subsystem subsystem) {
         setSubsystem(subsystem.getName());
@@ -18,8 +20,11 @@ public abstract class SubsystemCommand extends Command {
 
     /**
      * Create a command that depends on a system
-     * @param name The name of the command
-     * @param subsystem The subsystem to depend on
+     * 
+     * @param name
+     *            The name of the command
+     * @param subsystem
+     *            The subsystem to depend on
      */
     public SubsystemCommand(String name, Subsystem subsystem) {
         this(subsystem);
@@ -28,7 +33,9 @@ public abstract class SubsystemCommand extends Command {
 
     /**
      * Create a command with a name
-     * @param name The name of the command
+     * 
+     * @param name
+     *            The name of the command
      */
     public SubsystemCommand(String name) {
         setSubsystem(name);

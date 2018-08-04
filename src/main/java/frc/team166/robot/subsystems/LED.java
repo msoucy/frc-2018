@@ -51,7 +51,8 @@ public class LED extends Subsystem {
     }
 
     private boolean isBlueTeam() {
-        Alliance team = DriverStation.getInstance().getAlliance();
+        Alliance team = DriverStation.getInstance()
+                .getAlliance();
         return (team == DriverStation.Alliance.Blue);
     }
 
