@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import frc.team166.chopshoplib.outputs.DigitalOutputDutyCycle;
+import frc.team166.chopshoplib.outputs.SendableSpeedController;
 import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.RobotMap;
 
@@ -105,8 +106,8 @@ public class Maverick implements RobotMap {
     }
 
     @Override
-    public SpeedController getDeploymentMotor() {
-        return deploymentMotor;
+    public SendableSpeedController getDeploymentMotor() {
+        return SendableSpeedController.wrap(deploymentMotor);
     }
 
     @Override
@@ -138,8 +139,8 @@ public class Maverick implements RobotMap {
                 RobotMap.Solenoids.LIFT_TRANSMISSION_B);
 
         @Override
-        public SpeedController getLiftMotors() {
-            return liftDrive;
+        public SendableSpeedController getLiftMotors() {
+            return SendableSpeedController.wrap(liftDrive);
         }
 
         @Override

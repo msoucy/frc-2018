@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
@@ -15,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
+import frc.team166.chopshoplib.outputs.SendableSpeedController;
 import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
@@ -26,7 +26,7 @@ public class Lift extends PIDSubsystem {
     DigitalInput bottomLimitSwitch;
     DigitalInput topLimitSwitch;
     Encoder Encoder;
-    SpeedController liftDrive;
+    SendableSpeedController liftDrive;
     DoubleSolenoid liftBrake;
     DoubleSolenoid liftTransmission;
 
@@ -87,15 +87,15 @@ public class Lift extends PIDSubsystem {
         addChild("LiDAR", liftLidar);
         addChild("Transmission", liftTransmission);
         addChild("Brake", liftBrake);
-        // addChild("Drive", liftDrive);
+        addChild("Drive", liftDrive);
         addChild(findLiftHeight());
 
         liftDrive.setInverted(true);
 
-        if (!Preferences.getInstance()
-                .containsKey("Use LIDAR")) {
-            Preferences.getInstance()
-                    .putBoolean("Use LIDAR", false);
+        Preferences prefs = Preferences.getInstance();
+
+        if (!prefs.containsKey("Use LIDAR")) {
+            prefs.putBoolean("Use LIDAR", false);
         }
 
         registerCommands();

@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.XboxController;
@@ -13,12 +12,13 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
+import frc.team166.chopshoplib.outputs.SendableSpeedController;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
 public class Manipulator extends PIDSubsystem {
 
-    SpeedController deploymentMotor;
+    SendableSpeedController deploymentMotor;
     SpeedControllerGroup rollers;
     DoubleSolenoid innerSolenoid;
     DoubleSolenoid outerSolenoid;
@@ -49,7 +49,7 @@ public class Manipulator extends PIDSubsystem {
 
         addChild("IR", irSensor);
         addChild("Potentiometer", potentiometer);
-        // addChild("Deploy Motor", deploymentMotor);
+        addChild("Deploy Motor", deploymentMotor);
         addChild("Rollers", rollers);
         addChild("Inner", innerSolenoid);
         addChild("Outer", outerSolenoid);

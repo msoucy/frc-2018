@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import frc.team166.chopshoplib.outputs.DigitalOutputDutyCycle;
+import frc.team166.chopshoplib.outputs.SendableSpeedController;
 import frc.team166.chopshoplib.sensors.Lidar;
 
 public interface RobotMap {
@@ -59,7 +60,7 @@ public interface RobotMap {
 
     public DoubleSolenoid getOuterManipSolenoid();
 
-    public SpeedController getDeploymentMotor();
+    public SendableSpeedController getDeploymentMotor();
 
     public AnalogInput getManipIrSensor();
 
@@ -70,7 +71,7 @@ public interface RobotMap {
     public LiftMap getLift();
 
     public interface LiftMap {
-        public SpeedController getLiftMotors();
+        public SendableSpeedController getLiftMotors();
 
         public DigitalInput getLiftTopLimit();
 
