@@ -48,13 +48,11 @@ public interface Engine {
     /**
      * Register a command function with the given prefix
      * 
-     * @param prefix
-     *            The prefix for use in scripts
-     * @param func
-     *            The function that creates the given command
+     * @param scriptable
+     *            The scriptable object to register
      */
-    default void register(Scriptable s) {
-        s.registerScriptable(this);
+    default void register(Scriptable scriptable) {
+        scriptable.registerScriptable(this);
     }
 
     /**

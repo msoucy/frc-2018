@@ -2,6 +2,7 @@ package frc.team166.chopshoplib.commands.scripting;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -17,7 +18,8 @@ import frc.team166.chopshoplib.commands.TimeoutCommand;
  * whitespace A command can be given a timeout with `timeout 5 mycommand`
  */
 public class SimpleEngine implements Engine {
-    HashMap<String, Function<String, Command>> handlers = new HashMap<>();
+    private final Map<String, Function<String, Command>> handlers =
+        new HashMap<String, Function<String, Command>>();
 
     /**
      * Initialize the default handlers
@@ -36,7 +38,8 @@ public class SimpleEngine implements Engine {
      *            The function that creates the given command, given a double
      *            parameter
      */
-    public void registerHandler(String prefix, Function<String, Command> func) {
+    @Override
+    public void registerHandler(final String prefix, final Function<String, Command> func) {
         handlers.put(prefix, func);
     }
 
@@ -49,19 +52,20 @@ public class SimpleEngine implements Engine {
      * @param prefix
      *            The prefix for use in scripts
      */
-    public void unregister(String prefix) {
+    @Override
+    public void unregister(final String prefix) {
         handlers.remove(prefix);
     }
 
     /**
      * Parse the entire script into a command group
      */
-    public Command parseScript(String script) {
-        CommandChain result = new CommandChain(script);
+    @Override
+    public Command parseScript(final String script) {
+        final CommandChain result = new CommandChain(script);
         if (!"".equals(script)) {
-            for (String groupStr : script.trim()
-                    .split(";")) {
-                Command[] cmds = Arrays.stream(groupStr.split("\\|"))
+            for (final String groupStr : script.trim().split(";")) {
+                final Command[] cmds = Arrays.stream(groupStr.split("\\|"))
                         .map(String::trim)
                         .map(this::parseSingleCommand)
                         .toArray(Command[]::new);
@@ -77,20 +81,17 @@ public class SimpleEngine implements Engine {
      * @param cmd
      *            The name of the command to look up
      */
-    Command parseSingleCommand(String cmd) {
-        String[] args = cmd.split("[\\s,]+");
+    private Command parseSingleCommand(final String cmd) {
+        final String[] args = cmd.split("[\\s,]+");
         if (args.length == 0) {
             // Something is terribly wrong
             return null;
         }
 
         if (args.length > 2 && args[0].equals("timeout")) {
-            double timeoutLength = Double.parseDouble(args[1]);
-            String[] cmdargs = new String[args.length - 2];
-            for (int i = 0; i < args.length - 2; i++) {
-                cmdargs[i] = args[i + 2];
-            }
-            Command wrapped = parseArgs(cmdargs);
+            final double timeoutLength = Double.parseDouble(args[1]);
+            final String[] cmdargs = Arrays.copyOfRange(args, 2, args.length);
+            final Command wrapped = parseArgs(cmdargs);
             if (wrapped != null) {
                 return new TimeoutCommand(wrapped, timeoutLength);
             }
@@ -106,16 +107,16 @@ public class SimpleEngine implements Engine {
      * @param args
      *            The split arguments, including command name
      */
-    Command parseArgs(String[] args) {
-        Function<String, Command> constructor = handlers.get(args[0]);
-        if (constructor != null) {
+    private Command parseArgs(final String... args) {
+        final Function<String, Command> constructor = handlers.get(args[0]);
+        if (constructor == null) {
+            return null;
+        } else {
             String argument = "";
             if (args.length > 1) {
                 argument = args[1];
             }
             return constructor.apply(argument);
-        } else {
-            return null;
         }
     }
 }

@@ -16,7 +16,7 @@ import frc.team166.chopshoplib.outputs.SendableSpeedController;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
-public class Manipulator extends PIDSubsystem {
+public final class Manipulator extends PIDSubsystem {
 
     SendableSpeedController deploymentMotor;
     SpeedControllerGroup rollers;
@@ -75,23 +75,23 @@ public class Manipulator extends PIDSubsystem {
         deploymentMotor.stopMotor();
     }
 
-    private void openInnerManipulator() {
+    void openInnerManipulator() {
         innerSolenoid.set(Value.kForward);
     }
 
-    private void closeInnerManipulator() {
+    void closeInnerManipulator() {
         innerSolenoid.set(Value.kReverse);
     }
 
-    private void openOuterManipulator() {
+    void openOuterManipulator() {
         outerSolenoid.set(Value.kForward);
     }
 
-    private void closeOuterManipulator() {
+    void closeOuterManipulator() {
         outerSolenoid.set(Value.kReverse);
     }
 
-    private double getIRDistance() {
+    double getIRDistance() {
         return irSensor.getVoltage();
     }
 
@@ -107,20 +107,20 @@ public class Manipulator extends PIDSubsystem {
 
     /**
      * Sets motors to intake mode
-     * <p>
-     * Turns motors on to intake a cube
+     *
+     * <p>Turns motors on to intake a cube
      */
-    private void setMotorsToIntake() {
+    void setMotorsToIntake() {
         // change once you find optimal motor speed
         rollers.set(-0.6);
     }
 
     /**
      * Sets motors to discharge mode
-     * <p>
-     * Turns motors on to discharge a cube
+     *
+     * <p>Turns motors on to discharge a cube
      */
-    private void setMotorsToDischarge() {
+    void setMotorsToDischarge() {
         // change once you find optimal motor speed
         rollers.set(0.6);
     }
@@ -233,10 +233,8 @@ public class Manipulator extends PIDSubsystem {
                 gameData = DriverStation.getInstance()
                         .getGameSpecificMessage();
 
-                if (gameData.length() > 0) {
-                    if (gameData.charAt(0) == 'R') {
-                        setMotorsToDischarge();
-                    }
+                if (gameData.length() > 0 && gameData.charAt(0) == 'R') {
+                    setMotorsToDischarge();
                 }
             }
 
@@ -297,7 +295,7 @@ public class Manipulator extends PIDSubsystem {
     }
 
     public Command DeployManipulatorWithJoystick(final XboxController controller) {
-        return new SubsystemCommand("Deploy Manipulator With Joystick") {
+        return new SubsystemCommand("Deploy Manipulator With Joystick", this) {
             @Override
             protected void initialize() {
                 disable();

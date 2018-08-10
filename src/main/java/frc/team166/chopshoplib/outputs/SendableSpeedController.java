@@ -14,67 +14,67 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
  * but at the same time want to access it as one of two disconnected interfaces.
  */
 public interface SendableSpeedController extends Sendable, SpeedController {
-    static <T extends Sendable & SpeedController> SendableSpeedController wrap(T t) {
+    static <T extends Sendable & SpeedController> SendableSpeedController wrap(T wrapped) {
         return new SendableSpeedController() {
 
             @Override
             public String getName() {
-                return t.getName();
+                return wrapped.getName();
             }
 
             @Override
             public void setName(String name) {
-                t.setName(name);
+                wrapped.setName(name);
             }
 
             @Override
             public String getSubsystem() {
-                return t.getSubsystem();
+                return wrapped.getSubsystem();
             }
 
             @Override
             public void setSubsystem(String subsystem) {
-                t.setSubsystem(subsystem);
+                wrapped.setSubsystem(subsystem);
             }
 
             @Override
             public void initSendable(SendableBuilder builder) {
-                t.initSendable(builder);
+                wrapped.initSendable(builder);
             }
 
             @Override
             public void set(double speed) {
-                t.set(speed);
+                wrapped.set(speed);
             }
 
             @Override
             public double get() {
-                return t.get();
+                return wrapped.get();
             }
 
             @Override
             public void setInverted(boolean isInverted) {
-                t.setInverted(isInverted);
+                wrapped.setInverted(isInverted);
             }
 
             @Override
             public boolean getInverted() {
-                return t.getInverted();
+                return wrapped.getInverted();
             }
 
             @Override
             public void disable() {
-                t.disable();
+                wrapped.disable();
             }
 
             @Override
             public void stopMotor() {
-                t.stopMotor();
+                wrapped.stopMotor();
             }
 
             @Override
             public void pidWrite(double output) {
-                t.pidWrite(output);
+                wrapped.pidWrite(output);
             }
         };
     }

@@ -4,20 +4,20 @@ import edu.wpi.first.wpilibj.DigitalOutput;
 
 public class DigitalOutputDutyCycle extends DigitalOutput {
 
-    private double mRate = 0;
+    private double mRate;
 
     public DigitalOutputDutyCycle(final int channel) {
         super(channel);
     }
 
     @Override
-    public void updateDutyCycle(double rate) {
+    public void updateDutyCycle(final double rate) {
         mRate = rate;
         super.updateDutyCycle(rate);
     }
 
     @Override
-    public void enablePWM(double initialDutyCycle) {
+    public void enablePWM(final double initialDutyCycle) {
         mRate = initialDutyCycle;
         super.enablePWM(initialDutyCycle);
     }

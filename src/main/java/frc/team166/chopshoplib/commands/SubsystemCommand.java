@@ -13,7 +13,8 @@ public abstract class SubsystemCommand extends Command {
      * @param subsystem
      *            The subsystem to depend on
      */
-    public SubsystemCommand(Subsystem subsystem) {
+    public SubsystemCommand(final Subsystem subsystem) {
+        super();
         setSubsystem(subsystem.getName());
         requires(subsystem);
     }
@@ -26,19 +27,8 @@ public abstract class SubsystemCommand extends Command {
      * @param subsystem
      *            The subsystem to depend on
      */
-    public SubsystemCommand(String name, Subsystem subsystem) {
+    public SubsystemCommand(final String name, final Subsystem subsystem) {
         this(subsystem);
-        setName(name);
-    }
-
-    /**
-     * Create a command with a name
-     * 
-     * @param name
-     *            The name of the command
-     */
-    public SubsystemCommand(String name) {
-        setSubsystem(name);
         setName(name);
     }
 

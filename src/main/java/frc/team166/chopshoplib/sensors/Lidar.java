@@ -119,6 +119,7 @@ public class Lidar extends SensorBase implements PIDSource {
                 break;
             default:
                 preset = PresetConfiguration.CUSTOM;
+                break;
             }
             /* Process the 2nd & 3rd bytes */
             signalRateLimit = ByteBuffer.wrap(response, 2, 2)
@@ -141,10 +142,10 @@ public class Lidar extends SensorBase implements PIDSource {
             /* Process the 11th, 12th, & 13th bytes */
             stPalApi = String.format("%d.%d.%d", response[11], response[12], response[13]);
             /* Process the 14th byte */
-            if (((response[14] >> 3) & 1) != 0) {
-                offsetCalibration = OffsetCalFlag.CUSTOM;
-            } else {
+            if (((response[14] >> 3) & 1) == 0) {
                 offsetCalibration = OffsetCalFlag.DEFAULT;
+            } else {
+                offsetCalibration = OffsetCalFlag.CUSTOM;
             }
             switch ((response[14] & 0x6) >> 1) {
             case 0:
@@ -160,11 +161,7 @@ public class Lidar extends SensorBase implements PIDSource {
                 ledIndicatorMode = LedIndicator.UNKNOWN;
                 break;
             }
-            if ((response[14] & 1) != 0) {
-                watchdogTimer = true;
-            } else {
-                watchdogTimer = false;
-            }
+            watchdogTimer = ((response[14] & 1) != 0);
             /* Process the 15th, 16th, 17th, & 18th bytes */
             offsetCalibrationValue = ByteBuffer.wrap(response, 15, 4)
                     .getInt() / 1000;
@@ -220,19 +217,23 @@ public class Lidar extends SensorBase implements PIDSource {
      * @param sdLimit
      *            The maximum standard deviation expected
      */
-    public synchronized void setStandardDeviationLimit(double sdLimit) {
-        standardDeviationLimit = sdLimit;
+    public void setStandardDeviationLimit(double sdLimit) {
+        synchronized(this) {
+            standardDeviationLimit = sdLimit;
+        }
     }
 
     /**
      * Clear the samples
      */
-    public synchronized void reset() {
-        for (int i = 0; i < samples.length; i++) {
-            samples[i] = 0;
+    public void reset() {
+        synchronized(this) {
+                for (int i = 0; i < samples.length; i++) {
+                samples[i] = 0;
+            }
+            sampleIndex = 0;
+            reset = true;
         }
-        sampleIndex = 0;
-        reset = true;
     }
 
     /**
@@ -244,11 +245,11 @@ public class Lidar extends SensorBase implements PIDSource {
      */
     public Optional<Double> getDistanceOptional(Boolean bFlag) {
         synchronized(this) {
-            if (isValid == false) {
+            if (!isValid) {
                 return Optional.empty();
             }
         }
-        if (bFlag == true) {
+        if (bFlag) {
             return Optional.of((distanceMM / 25.4));
         } else {
             return Optional.of(new Double(distanceMM));
@@ -263,14 +264,14 @@ public class Lidar extends SensorBase implements PIDSource {
      *            in mm
      */
     public double getDistance(Boolean bFlag) {
-        if (bFlag == true) {
+        if (bFlag) {
             return distanceMM / 25.4;
         } else {
             return distanceMM;
         }
     }
 
-    private void readDistance() {
+    void readDistance() {
         byte[] dataBuffer = new byte[2];
 
         i2cDevice.write(0x44, 0x1);

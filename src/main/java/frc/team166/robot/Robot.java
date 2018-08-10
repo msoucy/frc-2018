@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.controls.ButtonJoystick;
 import frc.team166.chopshoplib.controls.ButtonXboxController;
+import frc.team166.chopshoplib.controls.ButtonXboxController.XBoxButton;
 import frc.team166.robot.maps.Maverick;
 import frc.team166.robot.subsystems.Drive;
 import frc.team166.robot.subsystems.LED;
@@ -60,14 +61,14 @@ public class Robot extends TimedRobot {
         CameraServer.getInstance()
                 .startAutomaticCapture();
 
-        xBoxTempest.getButton(ButtonXboxController.XBoxButton.kY)
+        xBoxTempest.getButton(XBoxButton.kY)
                 .whenPressed(manipulator.CloseOuterManipulator());
-        xBoxTempest.getButton(ButtonXboxController.XBoxButton.kX)
+        xBoxTempest.getButton(XBoxButton.kX)
                 .whenPressed(manipulator.OpenOuterManipulator());
 
-        xBoxTempest.getButton(ButtonXboxController.XBoxButton.kA)
+        xBoxTempest.getButton(XBoxButton.kA)
                 .whileHeld(manipulator.ManipulatorIntakeHeld());
-        xBoxTempest.getButton(ButtonXboxController.XBoxButton.kB)
+        xBoxTempest.getButton(XBoxButton.kB)
                 .whileHeld(manipulator.ManipulatorDischargeHeld());
 
         rightDriveStick.getButton(1)
@@ -133,6 +134,7 @@ public class Robot extends TimedRobot {
         // continue until interrupted by another command, remove
         // this line or comment it out.
         //
+        m_autonomousCommand.cancel();
     }
 
     /**
@@ -149,31 +151,28 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void testPeriodic() {
+        // Do nothing special.
     }
 
 
     void logTelemetry() {
-        String branch = getResource("branch.txt");
-        System.out.println("Branch: " + branch);
+        final String branch = getResource("branch.txt");
         SmartDashboard.putString("branch", branch);
 
-        String commit = getResource("commit.txt");
-        System.out.println("Commit: " + commit);
+        final String commit = getResource("commit.txt");
         SmartDashboard.putString("commit", commit);
 
-        String changes = getResource("changes.txt");
-        System.out.println("Changes: " + changes);
+        final String changes = getResource("changes.txt");
         SmartDashboard.putString("changes", changes);
 
-        String buildtime = getResource("buildtime.txt");
-        System.out.println("Buildtime: " + buildtime);
+        final String buildtime = getResource("buildtime.txt");
         SmartDashboard.putString("buildtime", buildtime);
     }
 
-    String getResource(String path) {
-        try(InputStream stream = getClass().getResourceAsStream("/" + path);
-            InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
-            BufferedReader bufferedReader = new BufferedReader(reader)
+    String getResource(final String path) {
+        try(final InputStream stream = getClass().getResourceAsStream("/" + path);
+            final InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
+            final BufferedReader bufferedReader = new BufferedReader(reader)
         ) {
             return bufferedReader.lines()
                 .collect(Collectors.joining("\n"));
@@ -196,14 +195,12 @@ public class Robot extends TimedRobot {
         if (gameData.length() > 0) {
             if (gameData.charAt(0) == 'R') {
                 // "R" is for RIGHT NOT RED
-                degrees = 90;
                 // turning right
-                System.out.println("Right");
+                degrees = 90;
 
             } else {
-                degrees = -90.00;
                 // turning left
-                System.out.println("Left");
+                degrees = -90.00;
             }
         }
         return new CommandChain("Mid Auto").then(drive.DriveTime(.75, .6))

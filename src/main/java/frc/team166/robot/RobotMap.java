@@ -14,74 +14,58 @@ import frc.team166.chopshoplib.outputs.SendableSpeedController;
 import frc.team166.chopshoplib.sensors.Lidar;
 
 public interface RobotMap {
-    public static class CAN {
-        public final static int LIFT_MOTOR_A = 6;
-        public final static int LIFT_MOTOR_B = 7;
-    }
 
-    public static class Solenoids {
-        public final static int LIFT_TRANSMISSION_A = 4;
-        public final static int LIFT_TRANSMISSION_B = 5;
-        public final static int LIFT_BRAKE_A = 7;
-        public final static int LIFT_BRAKE_B = 6;
-    }
-
-    public static class DigitalInputs {
-        public final static int LIFT_LIMIT_SWITCH_BOTTOM = 9;
-        public final static int LIFT_LIMIT_SWITCH_TOP = 8;
-        public final static int LIFT_A = 0;
-        public final static int LIFT_B = 1;
-    }
-
-    public Compressor getCompressor();
+    Compressor getCompressor();
 
     // #region LED
-    public DigitalOutputDutyCycle getRedLED();
+    DigitalOutputDutyCycle getRedLED();
 
-    public DigitalOutputDutyCycle getGreenLED();
+    DigitalOutputDutyCycle getGreenLED();
 
-    public DigitalOutputDutyCycle getBlueLED();
+    DigitalOutputDutyCycle getBlueLED();
     // #endregion
 
     // #region drive
-    public SpeedController getLeftWheelMotors();
+    SpeedController getLeftWheelMotors();
 
-    public SpeedController getRightWheelMotors();
+    SpeedController getRightWheelMotors();
 
-    public Lidar getDriveLidar();
+    Lidar getDriveLidar();
 
-    public AnalogGyro getDriveGyro();
+    AnalogGyro getDriveGyro();
     // #endregion
 
     // #region Manipulator
-    public SpeedControllerGroup getRollers();
+    SpeedControllerGroup getRollers();
 
-    public DoubleSolenoid getInnerManipSolenoid();
+    DoubleSolenoid getInnerManipSolenoid();
 
-    public DoubleSolenoid getOuterManipSolenoid();
+    DoubleSolenoid getOuterManipSolenoid();
 
-    public SendableSpeedController getDeploymentMotor();
+    SendableSpeedController getDeploymentMotor();
 
-    public AnalogInput getManipIrSensor();
+    AnalogInput getManipIrSensor();
 
-    public AnalogPotentiometer getManipPotentiometer();
+    AnalogPotentiometer getManipPotentiometer();
     // #endregion
 
     // #region Lift
-    public LiftMap getLift();
+    LiftMap getLift();
 
-    public interface LiftMap {
-        public SendableSpeedController getLiftMotors();
+    interface LiftMap {
+        SendableSpeedController getMotors();
 
-        public DigitalInput getLiftTopLimit();
+        DigitalInput getTopLimit();
 
-        public DigitalInput getLiftBottomLimit();
+        DigitalInput getBottomLimit();
 
-        public Encoder getLiftEncoder();
+        Encoder getEncoder();
 
-        public DoubleSolenoid getLiftBrake();
+        DoubleSolenoid getBrake();
 
-        public DoubleSolenoid getLiftShifter();
+        DoubleSolenoid getShifter();
+
+        Lidar getLidar();
     }
     // #endregion
 }

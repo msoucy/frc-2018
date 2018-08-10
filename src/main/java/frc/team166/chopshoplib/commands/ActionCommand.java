@@ -8,14 +8,18 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  * the subsystems
  */
 public class ActionCommand extends InstantCommand {
+
+    private final Runnable action;
+    
     /**
      * Create a command that calls the given action when run
      * 
      * @param action
      *            The action to take when the command is run
      */
-    public ActionCommand(Runnable action) {
-        m_action = action;
+    public ActionCommand(final Runnable action) {
+        super();
+        this.action = action;
     }
 
     /**
@@ -27,9 +31,10 @@ public class ActionCommand extends InstantCommand {
      * @param action
      *            The action to take when the command is run
      */
-    public ActionCommand(Subsystem subsystem, Runnable action) {
+    public ActionCommand(final Subsystem subsystem, final Runnable action) {
+        super();
         useSubsystem(subsystem);
-        m_action = action;
+        this.action = action;
     }
 
     /**
@@ -40,9 +45,9 @@ public class ActionCommand extends InstantCommand {
      * @param action
      *            The action to take when the command is run
      */
-    public ActionCommand(String name, Runnable action) {
+    public ActionCommand(final String name, final Runnable action) {
         super(name);
-        m_action = action;
+        this.action = action;
     }
 
     /**
@@ -56,10 +61,10 @@ public class ActionCommand extends InstantCommand {
      * @param action
      *            The action to take when the command is run
      */
-    public ActionCommand(String name, Subsystem subsystem, Runnable action) {
+    public ActionCommand(final String name, final Subsystem subsystem, final Runnable action) {
         super(name);
         useSubsystem(subsystem);
-        m_action = action;
+        this.action = action;
     }
 
     /**
@@ -68,8 +73,8 @@ public class ActionCommand extends InstantCommand {
      */
     @Override
     protected void initialize() {
-        if (m_action != null) {
-            m_action.run();
+        if (action != null) {
+            action.run();
         }
     }
 
@@ -79,10 +84,8 @@ public class ActionCommand extends InstantCommand {
      * @param subsystem
      *            The subsystem to depend on
      */
-    private void useSubsystem(Subsystem subsystem) {
+    private void useSubsystem(final Subsystem subsystem) {
         setSubsystem(subsystem.getName());
         requires(subsystem);
     }
-
-    Runnable m_action = null;
 }

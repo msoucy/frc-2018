@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
@@ -19,7 +18,7 @@ import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
-public class Lift extends PIDSubsystem {
+public final class Lift extends PIDSubsystem {
     // This is for one inch
     private static final double encoderDistancePerTick = 0.01636;
 
@@ -30,7 +29,6 @@ public class Lift extends PIDSubsystem {
     DoubleSolenoid liftBrake;
     DoubleSolenoid liftTransmission;
 
-    // TODO we need to calculate these
     // these define the PID values for the lift
     private static double kP = 0;
     private static double kI = 0;
@@ -38,7 +36,7 @@ public class Lift extends PIDSubsystem {
     private static double kF = 0;
 
     // this adds the LIDAR sensor
-    private Lidar liftLidar = new Lidar(Port.kOnboard, 0x60);
+    private Lidar liftLidar;
 
     // enumerator that will be pulled from for the GoToHeight Command
     public enum LiftHeights {
@@ -68,13 +66,13 @@ public class Lift extends PIDSubsystem {
 
     public Lift(RobotMap.LiftMap map) {
         super("Lift", kP, kI, kD, kF);
-        bottomLimitSwitch = map.getLiftBottomLimit();
-        topLimitSwitch = map.getLiftTopLimit();
-        Encoder = map.getLiftEncoder();
-        liftDrive = map.getLiftMotors();
-
-        liftBrake = map.getLiftBrake();
-        liftTransmission = map.getLiftShifter();
+        bottomLimitSwitch = map.getBottomLimit();
+        topLimitSwitch = map.getTopLimit();
+        Encoder = map.getEncoder();
+        liftDrive = map.getMotors();
+        liftBrake = map.getBrake();
+        liftTransmission = map.getShifter();
+        liftLidar = map.getLidar();
 
         setOutputRange(-1, 1);
         setAbsoluteTolerance(0.05);
@@ -101,7 +99,7 @@ public class Lift extends PIDSubsystem {
         registerCommands();
     }
 
-    private void registerCommands() {
+    void registerCommands() {
         // SmartDashboard.putData("Brake", Brake());
         // SmartDashboard.putData("Shift to Low Gear", ShiftToLowGear());
         // SmartDashboard.putData("Shift to High Gear", ShiftToHighGear());
@@ -112,29 +110,29 @@ public class Lift extends PIDSubsystem {
         return findLiftHeight();
     }
 
-    private void raiseLift() {
+    void raiseLift() {
         liftDrive.set(-0.75);
     }
 
-    private void lowerLift() {
+    void lowerLift() {
         liftDrive.set(-0.5);
     }
 
-    private void engageBrake() {
+    void engageBrake() {
         liftBrake.set(Value.kForward);
     }
 
-    private void disengageBrake() {
+    void disengageBrake() {
         liftBrake.set(Value.kReverse);
     }
 
     protected void usePIDOutput(double output) {
-        if (topLimitSwitch.get() == false && output > 0) {
+        if (!topLimitSwitch.get() && output > 0) {
             setSetpoint(LiftHeights.kMaxHeight.get());
             liftDrive.stopMotor();
             return;
         }
-        if (bottomLimitSwitch.get() == false && output < 0) {
+        if (!bottomLimitSwitch.get() && output < 0) {
             // liftEncoder.reset();
             setSetpoint(LiftHeights.kFloor.get());
             liftDrive.stopMotor();
@@ -149,14 +147,14 @@ public class Lift extends PIDSubsystem {
 
     public double findLiftHeight() {
         if (Preferences.getInstance()
-                .getBoolean("Use LIDAR", false) == true) {
+                .getBoolean("Use LIDAR", false)) {
             if (liftLidar.getDistance(true) > kMaxLidarDistance) {
-                return (liftLidar.getDistance(true));
+                return liftLidar.getDistance(true);
             } else {
-                return (Encoder.getDistance());
+                return Encoder.getDistance();
             }
         } else {
-            return (Encoder.getDistance());
+            return Encoder.getDistance();
         }
     }
 
@@ -192,7 +190,6 @@ public class Lift extends PIDSubsystem {
 
             @Override
             protected boolean isFinished() {
-
                 return isTimedOut();
             }
 
@@ -215,7 +212,7 @@ public class Lift extends PIDSubsystem {
             @Override
             protected void initialize() {
                 disengageBrake();
-                if (isHighGear == true) {
+                if (isHighGear) {
                     shiftToHighGear();
                 } else {
                     shiftToLowGear();

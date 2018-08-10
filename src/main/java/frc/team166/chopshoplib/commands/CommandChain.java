@@ -14,6 +14,7 @@ public class CommandChain extends CommandGroup {
      * Create a CommandChain
      */
     public CommandChain() {
+        super();
     }
 
     /**
@@ -22,7 +23,7 @@ public class CommandChain extends CommandGroup {
      * @param name
      *            The name of the command chain
      */
-    public CommandChain(String name) {
+    public CommandChain(final String name) {
         super(name);
     }
 
@@ -32,7 +33,8 @@ public class CommandChain extends CommandGroup {
      * @param cmds
      *            The first commands to run
      */
-    public CommandChain(Command... cmds) {
+    public CommandChain(final Command... cmds) {
+        super();
         addCommands(cmds);
     }
 
@@ -44,7 +46,7 @@ public class CommandChain extends CommandGroup {
      * @param cmds
      *            The first commands to run
      */
-    public CommandChain(String name, Command... cmds) {
+    public CommandChain(final String name, final Command... cmds) {
         super(name);
         addCommands(cmds);
     }
@@ -57,7 +59,7 @@ public class CommandChain extends CommandGroup {
      * @param cmds
      *            The commands to run next
      */
-    public CommandChain then(Command... cmds) {
+    public CommandChain then(final Command... cmds) {
         addCommands(cmds);
         return this;
     }
@@ -70,7 +72,7 @@ public class CommandChain extends CommandGroup {
      * @param cmds
      *            The commands to run next
      */
-    public CommandChain then(double timeout, Command... cmds) {
+    public CommandChain then(final double timeout, final Command... cmds) {
         addCommands(timeout, cmds);
         return this;
     }
@@ -82,13 +84,13 @@ public class CommandChain extends CommandGroup {
      * @param cmds
      *            The commands to run next
      */
-    private void addCommands(Command... cmds) {
+    private void addCommands(final Command... cmds) {
         if (cmds.length == 1) {
             if (cmds[0] != null) {
                 addSequential(cmds[0]);
             }
         } else if (cmds.length != 0) {
-            for (Command c : cmds) {
+            for (final Command c : cmds) {
                 if (c != null) {
                     addParallel(c);
                 }
@@ -105,13 +107,13 @@ public class CommandChain extends CommandGroup {
      * @param cmds
      *            The commands to run next
      */
-    private void addCommands(double timeout, Command... cmds) {
+    private void addCommands(final double timeout, final Command... cmds) {
         if (cmds.length == 1) {
             if (cmds[0] != null) {
                 addSequential(cmds[0], timeout);
             }
         } else if (cmds.length != 0) {
-            for (Command c : cmds) {
+            for (final Command c : cmds) {
                 if (c != null) {
                     addParallel(c, timeout);
                 }

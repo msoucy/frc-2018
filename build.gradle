@@ -2,8 +2,8 @@ import java.text.SimpleDateFormat
 
 plugins {
     id "java"
-    //id "checkstyle"
     id "findbugs"
+    id "pmd"
     id "edu.wpi.first.GradleRIO" version "2019.0.0-alpha-3"
 }
 
@@ -95,6 +95,13 @@ tasks.withType(FindBugs) {
 findbugs {
     ignoreFailures = true
     excludeFilter = file("$rootProject.projectDir/config/findbugs-ignore.xml")
+}
+
+pmd {
+    toolVersion = "6.6.0"
+    ignoreFailures = true
+    ruleSets = []
+    ruleSetFiles = files("$rootProject.projectDir/config/pmd-ruleset.xml")
 }
 
 wrapper {

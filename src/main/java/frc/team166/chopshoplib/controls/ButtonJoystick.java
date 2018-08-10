@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
  * This class serves as a wrapper for a Joystick and all it's buttons.
  */
 public class ButtonJoystick extends Joystick {
-    Map<Integer, Button> buttons = new HashMap<Integer, Button>();
+    private final Map<Integer, Button> buttons = new HashMap<Integer, Button>();
 
     /**
      * Construct an instance of a joystick along with each button the joystick has.
@@ -22,7 +22,7 @@ public class ButtonJoystick extends Joystick {
      *            The USB port that the joystick is connected to on the Driver
      *            Station
      */
-    public ButtonJoystick(int port) {
+    public ButtonJoystick(final int port) {
         super(port);
     }
 
@@ -36,7 +36,7 @@ public class ButtonJoystick extends Joystick {
      *            The index of the button to accesss
      * @return The button object for the given ID
      */
-    public Button getButton(int buttonId) {
+    public Button getButton(final int buttonId) {
         if(!buttons.containsKey(buttonId)) {
             buttons.put(buttonId, new JoystickButton(this, buttonId));
         }

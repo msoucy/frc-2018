@@ -6,11 +6,12 @@ import java.util.function.Supplier;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class Commands {
-    public static Command repeat(final int n, Command c) {
-        class RepeatedCommand extends Command {
-            int numTimesRun = 0;
-            Command cmd = c;
+public class CommandUtils {
+    private CommandUtils() {}
+    
+    public static Command repeat(final int numTimesToRun, final Command cmd) {
+        return new Command() {
+            private int numTimesRun;
 
             @Override
             protected void initialize() {
@@ -28,33 +29,31 @@ public class Commands {
 
             @Override
             protected boolean isFinished() {
-                return numTimesRun >= n;
+                return numTimesRun >= numTimesToRun;
             }
 
             @Override
             protected void end() {
                 numTimesRun = 0;
             }
-        }
-        return new RepeatedCommand();
+        };
     }
 
-    public static Command repeat(final int n, Supplier<Command> c) {
+    public static Command repeat(final int numTimesToRun, final Supplier<Command> cmd) {
         class RepeatedCommand extends CommandGroup {
-
             public RepeatedCommand() {
-                for (int i = 0; i < n; i++) {
-                    addSequential(c.get());
+                super();
+                for (int i = 0; i < numTimesToRun; i++) {
+                    addSequential(cmd.get());
                 }
             }
         }
         return new RepeatedCommand();
     }
 
-    public static Command repeatWhile(BooleanSupplier cond, Command c) {
-        class RepeatedCommand extends Command {
-            Command cmd = c;
-            boolean shouldFinish = false;
+    public static Command repeatWhile(final BooleanSupplier cond, final Command cmd) {
+        return new Command() {
+            private boolean shouldFinish;
 
             @Override
             protected void execute() {
@@ -71,15 +70,14 @@ public class Commands {
             protected boolean isFinished() {
                 return shouldFinish;
             }
-        }
-        return new RepeatedCommand();
+        };
     }
 
-    public static Command from(Runnable func) {
+    public static Command from(final Runnable func) {
         return new ActionCommand(func);
     }
 
-    public static Command first(Command... cs) {
-        return new CommandChain(cs);
+    public static Command first(final Command... cmds) {
+        return new CommandChain(cmds);
     }
 }

@@ -15,7 +15,7 @@ import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
-public class Drive extends Subsystem {
+public final class Drive extends Subsystem {
 
     Lidar frontLidar;
     AnalogGyro tempestGyro;
@@ -41,6 +41,7 @@ public class Drive extends Subsystem {
     // this makes children that control the tempestGyro, drive motors, and
     // PIDController loop.
     public Drive(RobotMap map) {
+        super();
 
         m_drive = new DifferentialDrive(map.getLeftWheelMotors(), map.getRightWheelMotors());
         tempestGyro = map.getDriveGyro();

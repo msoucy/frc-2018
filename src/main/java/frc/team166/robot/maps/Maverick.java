@@ -121,51 +121,53 @@ public class Maverick implements RobotMap {
     }
 
     public static class MaverickLift implements LiftMap {
-        DigitalInput bottomLimitSwitch = new DigitalInput(
-                RobotMap.DigitalInputs.LIFT_LIMIT_SWITCH_BOTTOM);
-        DigitalInput topLimitSwitch = new DigitalInput(
-                RobotMap.DigitalInputs.LIFT_LIMIT_SWITCH_TOP);
+        DigitalInput bottomLimitSwitch = new DigitalInput(9);
+        DigitalInput topLimitSwitch = new DigitalInput(8);
 
-        Encoder liftEncoder = new Encoder(RobotMap.DigitalInputs.LIFT_A,
-                RobotMap.DigitalInputs.LIFT_B);
+        Encoder liftEncoder = new Encoder(0, 1);
 
-        WPI_VictorSPX liftMotorA = new WPI_VictorSPX(RobotMap.CAN.LIFT_MOTOR_A);
-        WPI_VictorSPX liftMotorB = new WPI_VictorSPX(RobotMap.CAN.LIFT_MOTOR_B);
+        WPI_VictorSPX liftMotorA = new WPI_VictorSPX(6);
+        WPI_VictorSPX liftMotorB = new WPI_VictorSPX(7);
         SpeedControllerGroup liftDrive = new SpeedControllerGroup(liftMotorA, liftMotorB);
 
-        DoubleSolenoid liftBrake = new DoubleSolenoid(RobotMap.Solenoids.LIFT_BRAKE_A,
-                RobotMap.Solenoids.LIFT_BRAKE_B);
-        DoubleSolenoid liftTransmission = new DoubleSolenoid(RobotMap.Solenoids.LIFT_TRANSMISSION_A,
-                RobotMap.Solenoids.LIFT_TRANSMISSION_B);
+        DoubleSolenoid liftBrake = new DoubleSolenoid(7, 6);
+        DoubleSolenoid liftTransmission = new DoubleSolenoid(4, 5);
+
+        Lidar lidar = new Lidar(Port.kOnboard, 0x60);
 
         @Override
-        public SendableSpeedController getLiftMotors() {
+        public SendableSpeedController getMotors() {
             return SendableSpeedController.wrap(liftDrive);
         }
 
         @Override
-        public DigitalInput getLiftTopLimit() {
+        public DigitalInput getTopLimit() {
             return topLimitSwitch;
         }
 
         @Override
-        public DigitalInput getLiftBottomLimit() {
+        public DigitalInput getBottomLimit() {
             return bottomLimitSwitch;
         }
 
         @Override
-        public Encoder getLiftEncoder() {
+        public Encoder getEncoder() {
             return liftEncoder;
         }
 
         @Override
-        public DoubleSolenoid getLiftBrake() {
+        public DoubleSolenoid getBrake() {
             return liftBrake;
         }
 
         @Override
-        public DoubleSolenoid getLiftShifter() {
+        public DoubleSolenoid getShifter() {
             return liftTransmission;
+        }
+
+        @Override
+        public Lidar getLidar() {
+            return lidar;
         }
     }
 

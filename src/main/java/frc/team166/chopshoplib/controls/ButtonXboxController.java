@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
  * This class serves as a wrapper for a Joystick and all it's buttons.
  */
 public class ButtonXboxController extends XboxController {
-    Map<Integer, Button> buttons = new HashMap<Integer, Button>();
+    private final Map<Integer, Button> buttons = new HashMap<Integer, Button>();
 
     /**
      * Construct an instance of a joystick along with each button the joystick has.
@@ -22,7 +22,7 @@ public class ButtonXboxController extends XboxController {
      *            The USB port that the joystick is connected to on the Driver
      *            Station
      */
-    public ButtonXboxController(int port) {
+    public ButtonXboxController(final int port) {
         super(port);
     }
 
@@ -36,18 +36,18 @@ public class ButtonXboxController extends XboxController {
      *            The index of the button to accesss
      * @return The button object for the given ID
      */
-    public Button getButton(int buttonId) {
+    public Button getButton(final int buttonId) {
         if(!buttons.containsKey(buttonId)) {
             buttons.put(buttonId, new JoystickButton(this, buttonId));
         }
         return buttons.get(buttonId);
     }
 
-    public Button getButton(XBoxButton buttonId) {
+    public Button getButton(final XBoxButton buttonId) {
         return getButton(buttonId.get());
     }
 
-    public static enum XBoxButton {
+    public enum XBoxButton {
         kBumperLeft(5),
         kBumperRight(6),
         kStickLeft(9),
@@ -59,9 +59,9 @@ public class ButtonXboxController extends XboxController {
         kBack(7),
         kStart(8);
 
-        private int value;
+        private final int value;
 
-        XBoxButton(int value) {
+        XBoxButton(final int value) {
             this.value = value;
         }
 

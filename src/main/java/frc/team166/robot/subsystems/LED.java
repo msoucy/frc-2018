@@ -12,18 +12,19 @@ import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.chopshoplib.outputs.DigitalOutputDutyCycle;
 import frc.team166.robot.RobotMap;
 
-public class LED extends Subsystem {
+public final class LED extends Subsystem {
+    
+    DigitalOutputDutyCycle red;
+    DigitalOutputDutyCycle green;
+    DigitalOutputDutyCycle blue;
 
     @Override
     public void initDefaultCommand() {
         setDefaultCommand(BreathTeamColor());
     }
 
-    DigitalOutputDutyCycle red;
-    DigitalOutputDutyCycle green;
-    DigitalOutputDutyCycle blue;
-
     public LED(RobotMap map) {
+        super();
         registerCommands();
 
         red = map.getRedLED();
@@ -37,26 +38,26 @@ public class LED extends Subsystem {
     }
 
     // METHODS
-    private void registerCommands() {
+    void registerCommands() {
         SmartDashboard.putData("Breath Blue", Breath(blue, 10));
         SmartDashboard.putData("All Off", new ActionCommand("OFF GERALD", this, this::allOff));
         SmartDashboard.putData("STEVIE WONDER THEM", NotSeizure(1000));
         SmartDashboard.putData("NYAN", Rainbow(1000));
     }
 
-    private void allOff() {
+    void allOff() {
         red.set(false);
         green.set(false);
         blue.set(false);
     }
 
-    private boolean isBlueTeam() {
+    boolean isBlueTeam() {
         Alliance team = DriverStation.getInstance()
                 .getAlliance();
         return (team == DriverStation.Alliance.Blue);
     }
 
-    private void setTeamColor(boolean turnOn) {
+    void setTeamColor(boolean turnOn) {
         if (isBlueTeam()) {
             red.set(false);
             blue.set(turnOn);
@@ -138,7 +139,7 @@ public class LED extends Subsystem {
         };
     }
 
-    private Command ColorOn(DigitalOutputDutyCycle color) {
+    Command ColorOn(DigitalOutputDutyCycle color) {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
@@ -228,7 +229,7 @@ public class LED extends Subsystem {
 
             @Override
             protected void execute() {
-                if (isDutyCycleIncreasing == true) {
+                if (isDutyCycleIncreasing) {
                     color.updateDutyCycle(color.getPWMRate() + changeAmount);
                 } else {
                     color.updateDutyCycle(color.getPWMRate() - changeAmount);
@@ -246,7 +247,7 @@ public class LED extends Subsystem {
         };
     }
 
-    private Command BreathTeamColor() {
+    Command BreathTeamColor() {
         return new ActionCommand("Breath Team Color", this, () -> {
             if (isBlueTeam()) {
                 red.disablePWM();
@@ -343,5 +344,4 @@ public class LED extends Subsystem {
             }
         };
     }
-
 }
