@@ -29,21 +29,21 @@ import frc.team166.robot.subsystems.Manipulator;
 
 public class Robot extends TimedRobot {
     // Initialize the mapping for the production robot
-    public static final RobotMap robotMap = new Maverick();
+    public final RobotMap robotMap = new Maverick();
 
     // Initialize subsystems and their members
-    public static final LED led = new LED(robotMap);
-    public static final Drive drive = new Drive(robotMap);
-    public static final Manipulator manipulator = new Manipulator(robotMap);
-    public static final Lift lift = new Lift(robotMap.getLift());
+    public final LED led = new LED(robotMap);
+    public final Drive drive = new Drive(robotMap);
+    public final Manipulator manipulator = new Manipulator(robotMap);
+    public final Lift lift = new Lift(robotMap.getLift());
 
     // Joysticks
     public static final ButtonJoystick leftDriveStick = new ButtonJoystick(0);
     public static final ButtonJoystick rightDriveStick = new ButtonJoystick(1);
     public static final ButtonXboxController xBoxTempest = new ButtonXboxController(2);
 
-    Command m_autonomousCommand;
-    SendableChooser<Command> m_chooser = new SendableChooser<>();
+    private Command autoCommand;
+    final private SendableChooser<Command> autoChooser = new SendableChooser<>();
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -51,13 +51,14 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
+        logTelemetry();
 
-        m_chooser.addDefault("Default Auto", drive.DriveTime(3, 0.6));
-        m_chooser.addObject("Mid Auto", midAuto());
-        m_chooser.addObject("Cross Line And Drop Cube", crossLineAndDropCube());
-        SmartDashboard.putData("Auto mode", m_chooser);
-        SmartDashboard.putData("Turn 90", drive.TurnByDegrees(90));
-        SmartDashboard.putData("Turn -90", drive.TurnByDegrees(-90));
+        autoChooser.addDefault("Default Auto", drive.driveTime(3, 0.6));
+        autoChooser.addObject("Mid Auto", midAuto());
+        autoChooser.addObject("Cross Line And Drop Cube", crossLineAndDropCube());
+        SmartDashboard.putData("Auto mode", autoChooser);
+        SmartDashboard.putData("Turn 90", drive.turnByDegrees(90));
+        SmartDashboard.putData("Turn -90", drive.turnByDegrees(-90));
         CameraServer.getInstance()
                 .startAutomaticCapture();
 
@@ -110,11 +111,11 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        m_autonomousCommand = m_chooser.getSelected();
+        autoCommand = autoChooser.getSelected();
 
         // schedule the autonomous command (example)
-        if (m_autonomousCommand != null) {
-            m_autonomousCommand.start();
+        if (autoCommand != null) {
+            autoCommand.start();
         }
     }
 
@@ -134,7 +135,7 @@ public class Robot extends TimedRobot {
         // continue until interrupted by another command, remove
         // this line or comment it out.
         //
-        m_autonomousCommand.cancel();
+        autoCommand.cancel();
     }
 
     /**
@@ -155,7 +156,7 @@ public class Robot extends TimedRobot {
     }
 
 
-    void logTelemetry() {
+    private void logTelemetry() {
         final String branch = getResource("branch.txt");
         SmartDashboard.putString("branch", branch);
 
@@ -169,7 +170,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putString("buildtime", buildtime);
     }
 
-    String getResource(final String path) {
+    private String getResource(final String path) {
         try(InputStream stream = getClass().getResourceAsStream("/" + path);
             InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
             BufferedReader bufferedReader = new BufferedReader(reader)
@@ -183,7 +184,7 @@ public class Robot extends TimedRobot {
 
     public Command crossLineAndDropCube() {
         return new CommandChain("Cross Line And Drop Cube").then(lift.MoveLiftByInches(-1))
-                .then(drive.DriveTime(3.6, 0.6), lift.MoveLiftByInches(26))
+                .then(drive.driveTime(3.6, 0.6), lift.MoveLiftByInches(26))
                 .then(manipulator.CubeEject());
     }
 
@@ -201,11 +202,11 @@ public class Robot extends TimedRobot {
                 degrees = -90.00;
             }
         }
-        return new CommandChain("Mid Auto").then(drive.DriveTime(.75, .6))
-                .then(drive.TurnByDegrees(degrees))
-                .then(drive.DriveTime(.5, .6))
-                .then(drive.TurnByDegrees(-degrees))
-                .then(drive.DriveTime(.3, .6), lift.RaiseLiftALittle());
+        return new CommandChain("Mid Auto").then(drive.driveTime(.75, .6))
+                .then(drive.turnByDegrees(degrees))
+                .then(drive.driveTime(.5, .6))
+                .then(drive.turnByDegrees(-degrees))
+                .then(drive.driveTime(.3, .6), lift.RaiseLiftALittle());
     }
 
     public Command rumble(final XboxController controller) {
@@ -229,7 +230,7 @@ public class Robot extends TimedRobot {
     public Command cubePickupWithLights(final int blinkCount) {
         return new CommandChain("Cube Pickup with Lights").then(manipulator.CubePickup())
                 .then(rumble(xBoxTempest))
-                .then(led.BlinkGreen(blinkCount));
+                .then(led.blinkGreen(blinkCount));
     }
 
 }

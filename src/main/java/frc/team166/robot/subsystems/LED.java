@@ -14,16 +14,16 @@ import frc.team166.robot.RobotMap;
 
 public final class LED extends Subsystem {
     
-    DigitalOutputDutyCycle red;
-    DigitalOutputDutyCycle green;
-    DigitalOutputDutyCycle blue;
+    private final DigitalOutputDutyCycle red;
+    private final DigitalOutputDutyCycle green;
+    private final DigitalOutputDutyCycle blue;
 
     @Override
     public void initDefaultCommand() {
-        setDefaultCommand(BreathTeamColor());
+        setDefaultCommand(breathTeamColor());
     }
 
-    public LED(RobotMap map) {
+    public LED(final RobotMap map) {
         super();
         registerCommands();
 
@@ -38,26 +38,25 @@ public final class LED extends Subsystem {
     }
 
     // METHODS
-    void registerCommands() {
-        SmartDashboard.putData("Breath Blue", Breath(blue, 10));
+    private void registerCommands() {
+        SmartDashboard.putData("Breath Blue", breath(blue, 10));
         SmartDashboard.putData("All Off", new ActionCommand("OFF GERALD", this, this::allOff));
-        SmartDashboard.putData("STEVIE WONDER THEM", NotSeizure(1000));
-        SmartDashboard.putData("NYAN", Rainbow(1000));
+        SmartDashboard.putData("STEVIE WONDER THEM", notSeizure(1000));
+        SmartDashboard.putData("NYAN", rainbow(1000));
     }
 
-    void allOff() {
+    private void allOff() {
         red.set(false);
         green.set(false);
         blue.set(false);
     }
 
-    boolean isBlueTeam() {
-        Alliance team = DriverStation.getInstance()
-                .getAlliance();
-        return (team == DriverStation.Alliance.Blue);
+    private boolean isBlueTeam() {
+        final Alliance team = DriverStation.getInstance().getAlliance();
+        return team == DriverStation.Alliance.Blue;
     }
 
-    void setTeamColor(boolean turnOn) {
+    private void setTeamColor(final boolean turnOn) {
         if (isBlueTeam()) {
             red.set(false);
             blue.set(turnOn);
@@ -68,15 +67,14 @@ public final class LED extends Subsystem {
     }
 
     // COMMANDS
-    public Command BlinkGreen(int numberOfBlinks) {
+    public Command blinkGreen(final int numberOfBlinks) {
         return new SubsystemCommand(this) {
-            double lastUpdateTime = System.currentTimeMillis();
-            boolean isOn = true;
-            double count = 0;
+            private double lastUpdateTime = System.currentTimeMillis();
+            private boolean isOn = true;
+            private double count;
 
             @Override
             protected void initialize() {
-                count = 0;
                 green.set(true);
             }
 
@@ -98,7 +96,7 @@ public final class LED extends Subsystem {
 
             @Override
             protected boolean isFinished() {
-                return (count >= numberOfBlinks);
+                return count >= numberOfBlinks;
             }
 
             @Override
@@ -108,10 +106,10 @@ public final class LED extends Subsystem {
         };
     }
 
-    public Command BlinkTeamColor() {
+    public Command blinkTeamColor() {
         return new SubsystemCommand(this) {
-            double lastUpdateTime = System.currentTimeMillis();
-            boolean isOn = true;
+            private double lastUpdateTime = System.currentTimeMillis();
+            private boolean isOn = true;
 
             @Override
             protected void initialize() {
@@ -139,7 +137,7 @@ public final class LED extends Subsystem {
         };
     }
 
-    Command ColorOn(DigitalOutputDutyCycle color) {
+    private Command colorOn(final DigitalOutputDutyCycle color) {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
@@ -158,19 +156,19 @@ public final class LED extends Subsystem {
         };
     }
 
-    public Command RedOn() {
-        return ColorOn(red);
+    public Command redOn() {
+        return colorOn(red);
     }
 
-    public Command GreenOn() {
-        return ColorOn(green);
+    public Command greenOn() {
+        return colorOn(green);
     }
 
-    public Command BlueOn() {
-        return ColorOn(blue);
+    public Command blueOn() {
+        return colorOn(blue);
     }
 
-    public Command CyanOn() {
+    public Command cyanOn() {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
@@ -191,7 +189,7 @@ public final class LED extends Subsystem {
         };
     }
 
-    public Command LightTeamColor() {
+    public Command lightTeamColor() {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
@@ -210,32 +208,29 @@ public final class LED extends Subsystem {
         };
     }
 
-    public Command Breath(DigitalOutputDutyCycle color, int frequency) {
+    public Command breath(final DigitalOutputDutyCycle color, final int frequency) {
         return new SubsystemCommand("fade", this) {
-            boolean isDutyCycleIncreasing = true;
-            double period;
             // Approx how often execute is called
-            static final double executePeriod = 20 * 0.001;
-            static final double dutyCycleChangePerPeriod = 2.0;
-            double changeAmount;
+            private static final double EXEC_PERIOD = 20 * 0.001;
+            private static final double DUTY_CYCLE_CHANGE = 2.0;
+            private boolean isIncreasing = true;
+            private final double period = 1.0 / frequency;
+            private final double changeAmount = DUTY_CYCLE_CHANGE / (period / EXEC_PERIOD);
 
             @Override
             protected void initialize() {
-                period = (1.0 / frequency);
-                changeAmount = dutyCycleChangePerPeriod / ((period / executePeriod));
                 color.enablePWM(0);
-                isDutyCycleIncreasing = true;
             }
 
             @Override
             protected void execute() {
-                if (isDutyCycleIncreasing) {
+                if (isIncreasing) {
                     color.updateDutyCycle(color.getPWMRate() + changeAmount);
                 } else {
                     color.updateDutyCycle(color.getPWMRate() - changeAmount);
                 }
-                if ((color.getPWMRate() >= 1) || (color.getPWMRate() <= 0)) {
-                    isDutyCycleIncreasing = !isDutyCycleIncreasing;
+                if (color.getPWMRate() >= 1 || color.getPWMRate() <= 0) {
+                    isIncreasing = !isIncreasing;
                 }
 
             }
@@ -247,32 +242,30 @@ public final class LED extends Subsystem {
         };
     }
 
-    Command BreathTeamColor() {
+    public Command breathTeamColor() {
         return new ActionCommand("Breath Team Color", this, () -> {
             if (isBlueTeam()) {
                 red.disablePWM();
                 green.disablePWM();
-                Breath(blue, 2).start();
+                breath(blue, 2).start();
 
             } else {
                 blue.disablePWM();
                 green.disablePWM();
-                Breath(red, 2).start();
+                breath(red, 2).start();
 
             }
         });
     }
 
-    public Command NotSeizure(int numberOfBlinks) {
-
+    public Command notSeizure(final int numberOfBlinks) {
         return new SubsystemCommand(this) {
-            double lastUpdateTime = System.currentTimeMillis();
-            boolean isOn = true;
-            double count = 0;
+            private double lastUpdateTime = System.currentTimeMillis();
+            private boolean isOn = true;
+            private double count;
 
             @Override
             protected void initialize() {
-                count = 0;
                 blue.set(true);
             }
 
@@ -289,14 +282,13 @@ public final class LED extends Subsystem {
                         blue.set(true);
                         red.set(false);
                         isOn = true;
-
                     }
                 }
             }
 
             @Override
             protected boolean isFinished() {
-                return (count >= numberOfBlinks);
+                return count >= numberOfBlinks;
             }
 
             @Override
@@ -307,16 +299,14 @@ public final class LED extends Subsystem {
         };
     }
 
-    public Command Rainbow(int numberOfBlinks) {
-
+    public Command rainbow(final int numberOfBlinks) {
         return new SubsystemCommand(this) {
-            double lastUpdateTime = System.currentTimeMillis();
-            Random r = new Random();
-            double count = 0;
+            private double lastUpdateTime = System.currentTimeMillis();
+            private final Random rand = new Random();
+            private double count;
 
             @Override
             protected void initialize() {
-                count = 0;
                 blue.set(true);
             }
 
@@ -324,16 +314,16 @@ public final class LED extends Subsystem {
             protected void execute() {
                 if (System.currentTimeMillis() >= lastUpdateTime + 15) {
                     lastUpdateTime = System.currentTimeMillis();
-                    blue.set(r.nextBoolean());
-                    red.set(r.nextBoolean());
-                    green.set(r.nextBoolean());
+                    blue.set(rand.nextBoolean());
+                    red.set(rand.nextBoolean());
+                    green.set(rand.nextBoolean());
                     count++;
                 }
             }
 
             @Override
             protected boolean isFinished() {
-                return (count >= numberOfBlinks);
+                return count >= numberOfBlinks;
             }
 
             @Override

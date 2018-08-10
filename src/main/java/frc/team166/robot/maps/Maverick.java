@@ -21,29 +21,29 @@ import frc.team166.robot.RobotMap;
 public class Maverick implements RobotMap {
 
     // Core
-    Compressor compressor = new Compressor(1);
+    private final Compressor compressor = new Compressor(1);
     // LED
-    DigitalOutputDutyCycle redLED = new DigitalOutputDutyCycle(4);
-    DigitalOutputDutyCycle greenLED = new DigitalOutputDutyCycle(5);
-    DigitalOutputDutyCycle blueLED = new DigitalOutputDutyCycle(6);
+    private final DigitalOutputDutyCycle redLED = new DigitalOutputDutyCycle(4);
+    private final DigitalOutputDutyCycle greenLED = new DigitalOutputDutyCycle(5);
+    private final DigitalOutputDutyCycle blueLED = new DigitalOutputDutyCycle(6);
     // Drive
-    SpeedControllerGroup leftGroup = new SpeedControllerGroup(new WPI_TalonSRX(8),
+    private final SpeedControllerGroup leftGroup = new SpeedControllerGroup(new WPI_TalonSRX(8),
             new WPI_TalonSRX(9));
-    SpeedControllerGroup rightGroup = new SpeedControllerGroup(new WPI_TalonSRX(4),
+    private final SpeedControllerGroup rightGroup = new SpeedControllerGroup(new WPI_TalonSRX(4),
             new WPI_TalonSRX(5));
-    Lidar driveLidar = new Lidar(Port.kOnboard, 0x10);
-    AnalogGyro driveGyro = new AnalogGyro(1);
+    private final Lidar driveLidar = new Lidar(Port.kOnboard, 0x10);
+    private final AnalogGyro driveGyro = new AnalogGyro(1);
     // Manipulator
-    WPI_VictorSPX leftRoller = new WPI_VictorSPX(3);
-    WPI_TalonSRX rightRoller = new WPI_TalonSRX(2);
-    SpeedControllerGroup rollers = new SpeedControllerGroup(leftRoller, rightRoller);
-    WPI_VictorSPX deploymentMotor = new WPI_VictorSPX(1);
-    DoubleSolenoid innerManipSolenoid = new DoubleSolenoid(3, 2);
-    DoubleSolenoid outerManipSolenoid = new DoubleSolenoid(1, 0);
-    AnalogInput manipIrSensor = new AnalogInput(2);
-    AnalogPotentiometer manipPotentiometer = new AnalogPotentiometer(3);
+    private final WPI_VictorSPX leftRoller = new WPI_VictorSPX(3);
+    private final WPI_TalonSRX rightRoller = new WPI_TalonSRX(2);
+    private final SpeedControllerGroup rollers = new SpeedControllerGroup(leftRoller, rightRoller);
+    private final WPI_VictorSPX deploymentMotor = new WPI_VictorSPX(1);
+    private final DoubleSolenoid innerManipSolenoid = new DoubleSolenoid(3, 2);
+    private final DoubleSolenoid outerManipSolenoid = new DoubleSolenoid(1, 0);
+    private final AnalogInput manipIrSensor = new AnalogInput(2);
+    private final AnalogPotentiometer manipPotentiometer = new AnalogPotentiometer(3);
     // Lift
-    LiftMap lift = new MaverickLift();
+    private final LiftMap lift = new MaverickLift();
 
     public Maverick() {
         leftRoller.setInverted(false);
