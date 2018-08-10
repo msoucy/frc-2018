@@ -22,12 +22,12 @@ public final class Lift extends PIDSubsystem {
     // This is for one inch
     private static final double encoderDistancePerTick = 0.01636;
 
-    DigitalInput bottomLimitSwitch;
-    DigitalInput topLimitSwitch;
-    Encoder Encoder;
-    SendableSpeedController liftDrive;
-    DoubleSolenoid liftBrake;
-    DoubleSolenoid liftTransmission;
+    private final DigitalInput bottomLimitSwitch;
+    private final DigitalInput topLimitSwitch;
+    private final Encoder Encoder;
+    private final SendableSpeedController liftDrive;
+    private final DoubleSolenoid liftBrake;
+    private final DoubleSolenoid liftTransmission;
 
     // these define the PID values for the lift
     private static double kP = 0;
@@ -52,7 +52,7 @@ public final class Lift extends PIDSubsystem {
 
         private double value;
 
-        LiftHeights(double value) {
+        LiftHeights(final double value) {
             this.value = value;
         }
 
@@ -64,7 +64,7 @@ public final class Lift extends PIDSubsystem {
     // sets the maximum lidar distance before switching to the encoder
     private final static double kMaxLidarDistance = 60;
 
-    public Lift(RobotMap.LiftMap map) {
+    public Lift(final RobotMap.LiftMap map) {
         super("Lift", kP, kI, kD, kF);
         bottomLimitSwitch = map.getBottomLimit();
         topLimitSwitch = map.getTopLimit();
@@ -90,7 +90,7 @@ public final class Lift extends PIDSubsystem {
 
         liftDrive.setInverted(true);
 
-        Preferences prefs = Preferences.getInstance();
+        final Preferences prefs = Preferences.getInstance();
 
         if (!prefs.containsKey("Use LIDAR")) {
             prefs.putBoolean("Use LIDAR", false);
@@ -99,34 +99,20 @@ public final class Lift extends PIDSubsystem {
         registerCommands();
     }
 
-    void registerCommands() {
+    private void registerCommands() {
         // SmartDashboard.putData("Brake", Brake());
         // SmartDashboard.putData("Shift to Low Gear", ShiftToLowGear());
         // SmartDashboard.putData("Shift to High Gear", ShiftToHighGear());
-        SmartDashboard.putData("Go up distance", MoveLiftByInches(8));
+        SmartDashboard.putData("Go up distance", moveLiftByInches(8));
     }
 
+    @Override
     protected double returnPIDInput() {
         return findLiftHeight();
     }
 
-    void raiseLift() {
-        liftDrive.set(-0.75);
-    }
-
-    void lowerLift() {
-        liftDrive.set(-0.5);
-    }
-
-    void engageBrake() {
-        liftBrake.set(Value.kForward);
-    }
-
-    void disengageBrake() {
-        liftBrake.set(Value.kReverse);
-    }
-
-    protected void usePIDOutput(double output) {
+    @Override
+    protected void usePIDOutput(final double output) {
         if (!topLimitSwitch.get() && output > 0) {
             setSetpoint(LiftHeights.kMaxHeight.get());
             liftDrive.stopMotor();
@@ -139,6 +125,14 @@ public final class Lift extends PIDSubsystem {
             return;
         }
         liftDrive.set(output);
+    }
+
+    private void raiseLift() {
+        liftDrive.set(0.75);
+    }
+
+    private void lowerLift() {
+        liftDrive.set(-0.5);
     }
 
     public void reset() {
@@ -158,27 +152,18 @@ public final class Lift extends PIDSubsystem {
         }
     }
 
-    // gear changes
-    public void shiftToHighGear() {
-        liftTransmission.set(Value.kReverse);
-    }
-
-    public void shiftToLowGear() {
-        liftTransmission.set(Value.kForward);
-    }
-
     // does not do anything
     @Override
     public void initDefaultCommand() {
-        setDefaultCommand(ManualLift(Robot.xBoxTempest));
+        setDefaultCommand(manualLift(Robot.xBoxTempest));
     }
 
-    public Command RaiseLiftALittle() {
+    public Command raiseLiftALittle() {
         return new SubsystemCommand("Raise Lift A Little", this) {
             @Override
             protected void initialize() {
                 setTimeout(2.5);
-                disengageBrake();
+                doDisengageBrake();
                 liftDrive.set(0.9);
             }
 
@@ -196,7 +181,7 @@ public final class Lift extends PIDSubsystem {
             @Override
             protected void end() {
                 liftDrive.stopMotor();
-                engageBrake();
+                doEngageBrake();
                 liftDrive.set(0);
             }
 
@@ -207,15 +192,15 @@ public final class Lift extends PIDSubsystem {
         };
     }
 
-    public Command GoToHeight(LiftHeights height, boolean isHighGear) {
+    public Command goToHeight(final LiftHeights height, final boolean isHighGear) {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
-                disengageBrake();
+                doDisengageBrake();
                 if (isHighGear) {
-                    shiftToHighGear();
+                    setGear(Gear.High);
                 } else {
-                    shiftToLowGear();
+                    setGear(Gear.Low);
                 }
                 setSetpoint(height.get());
             }
@@ -227,28 +212,28 @@ public final class Lift extends PIDSubsystem {
         };
     }
 
-    public Command ManualLift(final XboxController controller) {
+    public Command manualLift(final XboxController controller) {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
-                // disengageBrake();
+                // doDisengageBrake();
                 disable();
             }
 
             @Override
             protected void execute() {
-                double elevatorControl = controller.getTriggerAxis(Hand.kRight)
+                final double elevatorControl = controller.getTriggerAxis(Hand.kRight)
                         - controller.getTriggerAxis(Hand.kLeft);
 
                 if (elevatorControl >= .1 || elevatorControl <= -0.1) {
-                    disengageBrake();
+                    doDisengageBrake();
                 } else {
-                    engageBrake();
+                    doEngageBrake();
 
                 }
                 if (elevatorControl > 0 && !topLimitSwitch.get()) {
                     liftDrive.set(controller.getTriggerAxis(Hand.kLeft));
-                } else if ((elevatorControl < 0 && !bottomLimitSwitch.get())) {
+                } else if (elevatorControl < 0 && !bottomLimitSwitch.get()) {
                     liftDrive.set(controller.getTriggerAxis(Hand.kRight));
                 } else {
                     liftDrive.set(elevatorControl);
@@ -273,16 +258,16 @@ public final class Lift extends PIDSubsystem {
         };
     }
 
-    public Command MoveLiftByInches(double inches) {
+    public Command moveLiftByInches(final double inches) {
         return new SubsystemCommand(this) {
-            double LiftDestinationHeight;
+            private double destinationHeight;
 
             @Override
             protected void initialize() {
                 disable();
-                disengageBrake();
-                LiftDestinationHeight = Encoder.getDistance() + inches;
-                if (LiftDestinationHeight > Encoder.getDistance()) {
+                doDisengageBrake();
+                destinationHeight = Encoder.getDistance() + inches;
+                if (destinationHeight > Encoder.getDistance()) {
                     liftDrive.set(0.75);
                 } else {
                     liftDrive.set(-0.50);
@@ -292,11 +277,11 @@ public final class Lift extends PIDSubsystem {
             @Override
             protected boolean isFinished() {
                 if (liftDrive.get() > 0) {
-                    if (Encoder.getDistance() >= LiftDestinationHeight) {
+                    if (Encoder.getDistance() >= destinationHeight) {
                         return true;
                     }
                 } else {
-                    if (Encoder.getDistance() <= LiftDestinationHeight) {
+                    if (Encoder.getDistance() <= destinationHeight) {
                         return true;
                     }
                 }
@@ -306,7 +291,7 @@ public final class Lift extends PIDSubsystem {
             @Override
             protected void end() {
                 liftDrive.set(0);
-                engageBrake();
+                doEngageBrake();
             }
 
             @Override
@@ -316,11 +301,11 @@ public final class Lift extends PIDSubsystem {
         };
     }
 
-    public Command GoUp() {
+    public Command goUp() {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
-                disengageBrake();
+                doDisengageBrake();
             }
 
             @Override
@@ -335,11 +320,11 @@ public final class Lift extends PIDSubsystem {
         };
     }
 
-    public Command GoDown() {
+    public Command goDown() {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
-                disengageBrake();
+                doDisengageBrake();
             }
 
             @Override
@@ -355,11 +340,11 @@ public final class Lift extends PIDSubsystem {
         };
     }
 
-    public Command LowerLiftToLimitSwitch() {
+    public Command lowerLiftToLimitSwitch() {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
-                disengageBrake();
+                doDisengageBrake();
             }
 
             @Override
@@ -374,28 +359,52 @@ public final class Lift extends PIDSubsystem {
         };
     }
 
-    public Command ClimbUp() {
-        return new CommandChain("Climb Up").then(DisengageBrake())
-                .then(ShiftToHighGear())
-                .then(GoToHeight(LiftHeights.kClimb, true))
-                .then(ShiftToLowGear())
-                .then(GoToHeight(LiftHeights.kScaleLow, false))
-                .then(Brake());
+    public Command climbUp() {
+        return new CommandChain("Climb Up").then(disengageBrake())
+                .then(shiftToHighGear())
+                .then(goToHeight(LiftHeights.kClimb, true))
+                .then(shiftToLowGear())
+                .then(goToHeight(LiftHeights.kScaleLow, false))
+                .then(engageBrake());
     }
 
-    public Command ShiftToHighGear() {
-        return new ActionCommand("Shift To High Gear", this, this::shiftToHighGear);
+    public Command shiftToHighGear() {
+        return new ActionCommand("Shift To High Gear", this, () -> {
+            setGear(Gear.High);
+        });
     }
 
-    public Command ShiftToLowGear() {
-        return new ActionCommand("Shift To Low Gear", this, this::shiftToLowGear);
+    public Command shiftToLowGear() {
+        return new ActionCommand("Shift To Low Gear", this, () -> {
+            setGear(Gear.Low);
+        });
     }
 
-    public Command Brake() {
-        return new ActionCommand("Brake", this, this::engageBrake);
+    private enum Gear {
+        Low, High
     }
 
-    public Command DisengageBrake() {
-        return new ActionCommand("Don't Brake", this, this::disengageBrake);
+    private void setGear(final Gear gear) {
+        if(gear == Gear.Low) {
+            liftTransmission.set(Value.kForward);
+        } else {
+            liftTransmission.set(Value.kReverse);
+        }
+    }
+
+    public Command engageBrake() {
+        return new ActionCommand("Brake", this, this::doEngageBrake);
+    }
+
+    private void doEngageBrake() {
+        liftBrake.set(Value.kReverse);
+    }
+
+    public Command disengageBrake() {
+        return new ActionCommand("Don't Brake", this, this::doDisengageBrake);
+    }
+
+    private void doDisengageBrake() {
+        liftBrake.set(Value.kReverse);
     }
 }

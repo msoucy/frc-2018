@@ -183,8 +183,8 @@ public class Robot extends TimedRobot {
     }
 
     public Command crossLineAndDropCube() {
-        return new CommandChain("Cross Line And Drop Cube").then(lift.MoveLiftByInches(-1))
-                .then(drive.driveTime(3.6, 0.6), lift.MoveLiftByInches(26))
+        return new CommandChain("Cross Line And Drop Cube").then(lift.moveLiftByInches(-1))
+                .then(drive.driveTime(3.6, 0.6), lift.moveLiftByInches(26))
                 .then(manipulator.CubeEject());
     }
 
@@ -206,7 +206,7 @@ public class Robot extends TimedRobot {
                 .then(drive.turnByDegrees(degrees))
                 .then(drive.driveTime(.5, .6))
                 .then(drive.turnByDegrees(-degrees))
-                .then(drive.driveTime(.3, .6), lift.RaiseLiftALittle());
+                .then(drive.driveTime(.3, .6), lift.raiseLiftALittle());
     }
 
     public Command rumble(final XboxController controller) {
