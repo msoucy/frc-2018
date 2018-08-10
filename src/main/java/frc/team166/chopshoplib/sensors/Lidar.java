@@ -44,19 +44,20 @@ public class Lidar extends SensorBase implements PIDSource {
     }
 
     public static class Settings {
-        public enum opMode {
+        public enum OpMode {
             SINGLESTEP,
             CONTINOUS,
             INVALID
         }
 
-        public enum ledIndicator {
+        public enum LedIndicator {
             ON,
             OFF,
-            MEASUREMENT
+            MEASUREMENT,
+            UNKNOWN
         }
 
-        public enum presetConfiguration {
+        public enum PresetConfiguration {
             HIGHSPEED,
             LONGRANGE,
             HIGHACCURACY,
@@ -64,13 +65,13 @@ public class Lidar extends SensorBase implements PIDSource {
             CUSTOM
         }
 
-        public enum offsetCalFlag {
+        public enum OffsetCalFlag {
             CUSTOM,
             DEFAULT
         }
 
-        public opMode operationMode;
-        public presetConfiguration preset;
+        public OpMode operationMode;
+        public PresetConfiguration preset;
         public double signalRateLimit;
         public int sigmaEstimateLimate;
         public int timingBudgetInMS;
@@ -78,8 +79,8 @@ public class Lidar extends SensorBase implements PIDSource {
         public int finalRangeVcselPeriod;
         public String fwVersion;
         public String stPalApi;
-        public offsetCalFlag offsetCalibration;
-        public ledIndicator ledIndicatorMode;
+        public OffsetCalFlag offsetCalibration;
+        public LedIndicator ledIndicatorMode;
         public boolean watchdogTimer;
         public int offsetCalibrationValue;
         public int crosstalkCalibrationValue;
@@ -96,28 +97,28 @@ public class Lidar extends SensorBase implements PIDSource {
         Settings(byte[] response) {
             /* Process the zeroth byte */
             if (response[0] == 0x43) {
-                operationMode = opMode.CONTINOUS;
+                operationMode = OpMode.CONTINOUS;
             } else if (response[0] == 0x53) {
-                operationMode = opMode.SINGLESTEP;
+                operationMode = OpMode.SINGLESTEP;
             } else {
-                operationMode = opMode.INVALID;
+                operationMode = OpMode.INVALID;
             }
             /* Process the first byte */
             switch (response[1]) {
             case 0x53:
-                preset = presetConfiguration.HIGHSPEED;
+                preset = PresetConfiguration.HIGHSPEED;
                 break;
             case 0x52:
-                preset = presetConfiguration.LONGRANGE;
+                preset = PresetConfiguration.LONGRANGE;
                 break;
             case 0x41:
-                preset = presetConfiguration.HIGHACCURACY;
+                preset = PresetConfiguration.HIGHACCURACY;
                 break;
             case 0x54:
-                preset = presetConfiguration.TINYLIDAR;
+                preset = PresetConfiguration.TINYLIDAR;
                 break;
             default:
-                preset = presetConfiguration.CUSTOM;
+                preset = PresetConfiguration.CUSTOM;
             }
             /* Process the 2nd & 3rd bytes */
             signalRateLimit = ByteBuffer.wrap(response, 2, 2)
@@ -141,19 +142,22 @@ public class Lidar extends SensorBase implements PIDSource {
             stPalApi = String.format("%d.%d.%d", response[11], response[12], response[13]);
             /* Process the 14th byte */
             if (((response[14] >> 3) & 1) != 0) {
-                offsetCalibration = offsetCalFlag.CUSTOM;
+                offsetCalibration = OffsetCalFlag.CUSTOM;
             } else {
-                offsetCalibration = offsetCalFlag.DEFAULT;
+                offsetCalibration = OffsetCalFlag.DEFAULT;
             }
             switch ((response[14] & 0x6) >> 1) {
             case 0:
-                ledIndicatorMode = ledIndicator.OFF;
+                ledIndicatorMode = LedIndicator.OFF;
                 break;
             case 1:
-                ledIndicatorMode = ledIndicator.ON;
+                ledIndicatorMode = LedIndicator.ON;
                 break;
             case 2:
-                ledIndicatorMode = ledIndicator.MEASUREMENT;
+                ledIndicatorMode = LedIndicator.MEASUREMENT;
+                break;
+            default:
+                ledIndicatorMode = LedIndicator.UNKNOWN;
                 break;
             }
             if ((response[14] & 1) != 0) {
@@ -216,7 +220,7 @@ public class Lidar extends SensorBase implements PIDSource {
      * @param sdLimit
      *            The maximum standard deviation expected
      */
-    public void setStandardDeviationLimit(double sdLimit) {
+    public synchronized void setStandardDeviationLimit(double sdLimit) {
         standardDeviationLimit = sdLimit;
     }
 
@@ -239,8 +243,10 @@ public class Lidar extends SensorBase implements PIDSource {
      *            in mm
      */
     public Optional<Double> getDistanceOptional(Boolean bFlag) {
-        if (isValid == false) {
-            return Optional.empty();
+        synchronized(this) {
+            if (isValid == false) {
+                return Optional.empty();
+            }
         }
         if (bFlag == true) {
             return Optional.of((distanceMM / 25.4));
@@ -295,10 +301,10 @@ public class Lidar extends SensorBase implements PIDSource {
      * @param mode
      *            Which mode to change to
      */
-    public void setMode(Settings.opMode mode) {
-        if (mode == Settings.opMode.CONTINOUS) {
+    public void setMode(Settings.OpMode mode) {
+        if (mode == Settings.OpMode.CONTINOUS) {
             i2cDevice.writeBulk(new byte[] { 0x4d, 0x43 });
-        } else if (mode == Settings.opMode.SINGLESTEP) {
+        } else if (mode == Settings.OpMode.SINGLESTEP) {
             i2cDevice.writeBulk(new byte[] { 0x4d, 0x53 });
         }
     }
@@ -318,8 +324,10 @@ public class Lidar extends SensorBase implements PIDSource {
         NetworkTableEntry isValidEntry = builder.getEntry("isValid");
         builder.setUpdateTable(() -> {
             mmDistance.setDouble(getDistance(true));
-            isValidEntry.setBoolean(isValid);
-            standardDeviation.setDouble(standardDeviationValue);
+            synchronized(this) {
+                isValidEntry.setBoolean(isValid);
+                standardDeviation.setDouble(standardDeviationValue);
+            }
         });
     }
 

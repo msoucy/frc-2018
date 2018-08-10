@@ -92,6 +92,11 @@ tasks.withType(FindBugs) {
     }
 }
 
+findbugs {
+    ignoreFailures = true
+    excludeFilter = file("$rootProject.projectDir/config/findbugs-ignore.xml")
+}
+
 wrapper {
     gradleVersion = '4.9'
 }
