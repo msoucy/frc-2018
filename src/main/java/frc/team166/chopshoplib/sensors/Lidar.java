@@ -15,20 +15,27 @@ import edu.wpi.first.wpilibj.SensorBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
 public class Lidar extends SensorBase implements PIDSource {
-    I2C i2cDevice;
-    Thread t;
+    private I2C i2cDevice;
+    private Thread accessThread;
     private double distanceMM;
 
     private boolean isValid;
     private double samples[];
     private int sampleIndex;
-    private boolean reset;
+    private boolean isReset;
 
-    private StandardDeviation sd;
-    private double standardDeviationValue;
-    double standardDeviationLimit;
+    private final StandardDeviation stdDev = new StandardDeviation();
+    private double stdDevValue;
+    private double stdDevLimit = 100;
 
     private class PollSensor implements Runnable {
+
+        public PollSensor()
+        {
+            super();
+        }
+
+        @Override
         public void run() {
             while (true) {
                 /* Get the distance from the sensor */
@@ -94,7 +101,7 @@ public class Lidar extends SensorBase implements PIDSource {
          * @param response
          *            A byte array with the response from a settings query
          */
-        Settings(byte[] response) {
+        public Settings(final byte[] response) {
             /* Process the zeroth byte */
             if (response[0] == 0x43) {
                 operationMode = OpMode.CONTINOUS;
@@ -161,7 +168,7 @@ public class Lidar extends SensorBase implements PIDSource {
                 ledIndicatorMode = LedIndicator.UNKNOWN;
                 break;
             }
-            watchdogTimer = ((response[14] & 1) != 0);
+            watchdogTimer = (response[14] & 1) != 0;
             /* Process the 15th, 16th, 17th, & 18th bytes */
             offsetCalibrationValue = ByteBuffer.wrap(response, 15, 4)
                     .getInt() / 1000;
@@ -182,19 +189,17 @@ public class Lidar extends SensorBase implements PIDSource {
      * @param averageOver
      *            The number of samples to average
      */
-    public Lidar(Port port, int kAddress, int averageOver) {
+    public Lidar(final Port port, final int kAddress, final int averageOver) {
+        super();
         i2cDevice = new I2C(port, kAddress);
         setName("Lidar", kAddress);
 
         // Objects related to statistics
         samples = new double[averageOver];
-        sd = new StandardDeviation();
-        standardDeviationLimit = 100;
-        reset = false;
 
-        t = new Thread(new PollSensor());
-        t.setName(String.format("LiDAR-0x%x", kAddress));
-        t.start();
+        accessThread = new Thread(new PollSensor());
+        accessThread.setName(String.format("LiDAR-0x%x", kAddress));
+        accessThread.start();
     }
 
     /**
@@ -205,8 +210,8 @@ public class Lidar extends SensorBase implements PIDSource {
      * @param kAddress
      *            The I2C address the sensor is found at
      */
-    public Lidar(Port port, int kAddress) {
-        // Default to averaging over 10 samples
+    public Lidar(final Port port, final int kAddress) {
+        // Default to averaging over 25 samples
         this(port, kAddress, 25);
     }
 
@@ -217,9 +222,9 @@ public class Lidar extends SensorBase implements PIDSource {
      * @param sdLimit
      *            The maximum standard deviation expected
      */
-    public void setStandardDeviationLimit(double sdLimit) {
+    public void setStandardDeviationLimit(final double sdLimit) {
         synchronized(this) {
-            standardDeviationLimit = sdLimit;
+            stdDevLimit = sdLimit;
         }
     }
 
@@ -232,7 +237,7 @@ public class Lidar extends SensorBase implements PIDSource {
                 samples[i] = 0;
             }
             sampleIndex = 0;
-            reset = true;
+            isReset = true;
         }
     }
 
@@ -243,17 +248,13 @@ public class Lidar extends SensorBase implements PIDSource {
      *            True requests the distance in inches, false requests the distance
      *            in mm
      */
-    public Optional<Double> getDistanceOptional(Boolean bFlag) {
+    public Optional<Double> getDistanceOptional(final Boolean bFlag) {
         synchronized(this) {
             if (!isValid) {
                 return Optional.empty();
             }
         }
-        if (bFlag) {
-            return Optional.of((distanceMM / 25.4));
-        } else {
-            return Optional.of(new Double(distanceMM));
-        }
+        return Optional.of(getDistance(bFlag));
     }
 
     /**
@@ -263,7 +264,7 @@ public class Lidar extends SensorBase implements PIDSource {
      *            True requests the distance in inches, false requests the distance
      *            in mm
      */
-    public double getDistance(Boolean bFlag) {
+    public double getDistance(final Boolean bFlag) {
         if (bFlag) {
             return distanceMM / 25.4;
         } else {
@@ -271,24 +272,24 @@ public class Lidar extends SensorBase implements PIDSource {
         }
     }
 
-    void readDistance() {
-        byte[] dataBuffer = new byte[2];
+    private void readDistance() {
+        final byte[] dataBuffer = new byte[2];
 
         i2cDevice.write(0x44, 0x1);
         i2cDevice.readOnly(dataBuffer, 2);
-        ByteBuffer bbConvert = ByteBuffer.wrap(dataBuffer);
+        final ByteBuffer bbConvert = ByteBuffer.wrap(dataBuffer);
         synchronized (this) {
             samples[sampleIndex] = bbConvert.getShort();
             sampleIndex++;
             if (sampleIndex == samples.length) {
-                reset = false;
+                isReset = false;
                 sampleIndex = 0;
             }
-            distanceMM = new Mean().evaluate(samples, 0, reset ? sampleIndex : samples.length);
+            distanceMM = new Mean().evaluate(samples, 0, isReset ? sampleIndex : samples.length);
             // If the standard deviation is really high then the sensor likely doesn't have
             // a valid reading.
-            standardDeviationValue = sd.evaluate(samples, 0, reset ? sampleIndex : samples.length);
-            if (standardDeviationValue >= standardDeviationLimit) {
+            stdDevValue = stdDev.evaluate(samples, 0, isReset ? sampleIndex : samples.length);
+            if (stdDevValue >= stdDevLimit) {
                 isValid = false;
             } else {
                 isValid = true;
@@ -302,7 +303,7 @@ public class Lidar extends SensorBase implements PIDSource {
      * @param mode
      *            Which mode to change to
      */
-    public void setMode(Settings.OpMode mode) {
+    public void setMode(final Settings.OpMode mode) {
         if (mode == Settings.OpMode.CONTINOUS) {
             i2cDevice.writeBulk(new byte[] { 0x4d, 0x43 });
         } else if (mode == Settings.OpMode.SINGLESTEP) {
@@ -311,29 +312,29 @@ public class Lidar extends SensorBase implements PIDSource {
     }
 
     public Settings querySettings() {
-        byte[] dataBuffer = new byte[23];
+        final byte[] dataBuffer = new byte[23];
         i2cDevice.writeBulk(new byte[] { 0x51 });
         i2cDevice.readOnly(dataBuffer, 23);
         return new Settings(dataBuffer);
     }
 
     @Override
-    public void initSendable(SendableBuilder builder) {
+    public void initSendable(final SendableBuilder builder) {
         builder.setSmartDashboardType("LiDAR");
-        NetworkTableEntry mmDistance = builder.getEntry("Distance");
-        NetworkTableEntry standardDeviation = builder.getEntry("Standard Deviation");
-        NetworkTableEntry isValidEntry = builder.getEntry("isValid");
+        final NetworkTableEntry mmDistance = builder.getEntry("Distance");
+        final NetworkTableEntry standardDeviation = builder.getEntry("Standard Deviation");
+        final NetworkTableEntry isValidEntry = builder.getEntry("isValid");
         builder.setUpdateTable(() -> {
             mmDistance.setDouble(getDistance(true));
             synchronized(this) {
                 isValidEntry.setBoolean(isValid);
-                standardDeviation.setDouble(standardDeviationValue);
+                standardDeviation.setDouble(stdDevValue);
             }
         });
     }
 
     @Override
-    public void setPIDSourceType(PIDSourceType pidSource) {
+    public void setPIDSourceType(final PIDSourceType pidSource) {
         if (pidSource != PIDSourceType.kDisplacement) {
             throw new IllegalArgumentException("Only displacement is supported");
         }

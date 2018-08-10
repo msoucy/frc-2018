@@ -170,9 +170,9 @@ public class Robot extends TimedRobot {
     }
 
     String getResource(final String path) {
-        try(final InputStream stream = getClass().getResourceAsStream("/" + path);
-            final InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
-            final BufferedReader bufferedReader = new BufferedReader(reader)
+        try(InputStream stream = getClass().getResourceAsStream("/" + path);
+            InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
+            BufferedReader bufferedReader = new BufferedReader(reader)
         ) {
             return bufferedReader.lines()
                 .collect(Collectors.joining("\n"));
@@ -188,9 +188,7 @@ public class Robot extends TimedRobot {
     }
 
     public Command midAuto() {
-        String gameData;
-        gameData = DriverStation.getInstance()
-                .getGameSpecificMessage();
+        final String gameData = DriverStation.getInstance().getGameSpecificMessage();
         double degrees = 0.0;
         if (gameData.length() > 0) {
             if (gameData.charAt(0) == 'R') {
@@ -228,7 +226,7 @@ public class Robot extends TimedRobot {
         };
     }
 
-    public Command cubePickupWithLights(int blinkCount) {
+    public Command cubePickupWithLights(final int blinkCount) {
         return new CommandChain("Cube Pickup with Lights").then(manipulator.CubePickup())
                 .then(rumble(xBoxTempest))
                 .then(led.BlinkGreen(blinkCount));
