@@ -43,7 +43,7 @@ public class Maverick implements RobotMap {
     AnalogInput manipIrSensor = new AnalogInput(2);
     AnalogPotentiometer manipPotentiometer = new AnalogPotentiometer(3);
     // Lift
-    LiftMap lift = new TempestLift();
+    LiftMap lift = new MaverickLift();
 
     public Maverick() {
         leftRoller.setInverted(false);
@@ -120,7 +120,7 @@ public class Maverick implements RobotMap {
         return manipPotentiometer;
     }
 
-    public class TempestLift implements LiftMap {
+    public class MaverickLift implements LiftMap {
         DigitalInput bottomLimitSwitch = new DigitalInput(
                 RobotMap.DigitalInputs.LIFT_LIMIT_SWITCH_BOTTOM);
         DigitalInput topLimitSwitch = new DigitalInput(
