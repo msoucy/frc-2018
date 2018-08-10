@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2019.0.0-alpha-3"
@@ -51,6 +53,33 @@ jar {
 compileJava {
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
+}
+
+def runCommand = { String... args ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine args
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+
+}
+
+def getGitHash = { -> runCommand "git", "rev-parse", "HEAD" }
+
+def getGitBranch = { -> runCommand "git", "rev-parse", "--abbrev-ref", "HEAD" }
+
+def getGitFilesChanged = { -> runCommand("git", "diff", "--name-only", "HEAD").replace("\n", ", ") }
+
+task versionTxt() {
+    doLast {
+        String resourcesDir = "$projectDir/src/main/resources"
+        new File("$resourcesDir/branch.txt").text = getGitBranch()
+        new File("$resourcesDir/commit.txt").text = getGitHash()
+        new File("$resourcesDir/changes.txt").text = getGitFilesChanged()
+        new File("$resourcesDir/buildtime.txt").text =
+                new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())
+    }
 }
 
 wrapper {

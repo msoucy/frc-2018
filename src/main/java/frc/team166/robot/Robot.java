@@ -1,5 +1,10 @@
 package frc.team166.robot;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.stream.Collectors;
+
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -143,6 +148,32 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void testPeriodic() {
+    }
+
+
+    void logTelemetry() {
+        String branch = getResource("branch.txt");
+        System.out.println("Branch: " + branch);
+        SmartDashboard.putString("branch", branch);
+
+        String commit = getResource("commit.txt");
+        System.out.println("Commit: " + commit);
+        SmartDashboard.putString("commit", commit);
+
+        String changes = getResource("changes.txt");
+        System.out.println("Changes: " + changes);
+        SmartDashboard.putString("changes", changes);
+
+        String buildtime = getResource("buildtime.txt");
+        System.out.println("Buildtime: " + buildtime);
+        SmartDashboard.putString("buildtime", buildtime);
+    }
+
+    String getResource(String path) {
+        InputStream stream = getClass().getResourceAsStream("/" + path);
+        return new BufferedReader(new InputStreamReader(stream))
+            .lines()
+            .collect(Collectors.joining("\n"));
     }
 
     public Command CrossLineAndDropCube() {
