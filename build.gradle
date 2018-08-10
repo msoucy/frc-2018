@@ -2,6 +2,8 @@ import java.text.SimpleDateFormat
 
 plugins {
     id "java"
+    //id "checkstyle"
+    id "findbugs"
     id "edu.wpi.first.GradleRIO" version "2019.0.0-alpha-3"
 }
 
@@ -79,6 +81,14 @@ task versionTxt() {
         new File("$resourcesDir/changes.txt").text = getGitFilesChanged()
         new File("$resourcesDir/buildtime.txt").text =
                 new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())
+    }
+}
+
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled false
+        html.enabled true
+        html.stylesheet resources.text.fromFile('config/xsl/fancy.xsl')
     }
 }
 

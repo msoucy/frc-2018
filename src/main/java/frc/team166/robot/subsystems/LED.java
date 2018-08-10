@@ -213,8 +213,9 @@ public class LED extends Subsystem {
         return new SubsystemCommand("fade", this) {
             boolean isDutyCycleIncreasing = true;
             double period;
-            final double executePeriod = 20 * 0.001; // Approx how often execute is called
-            final double dutyCycleChangePerPeriod = 2.0;
+            // Approx how often execute is called
+            static final double executePeriod = 20 * 0.001;
+            static final double dutyCycleChangePerPeriod = 2.0;
             double changeAmount;
 
             @Override

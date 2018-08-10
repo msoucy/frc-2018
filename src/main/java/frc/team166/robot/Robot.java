@@ -1,8 +1,10 @@
 package frc.team166.robot;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
 import edu.wpi.first.wpilibj.CameraServer;
@@ -26,7 +28,7 @@ import frc.team166.robot.subsystems.Manipulator;
 
 public class Robot extends TimedRobot {
     // Initialize the mapping for the production robot
-    public static RobotMap robotMap = new Maverick();
+    public static final RobotMap robotMap = new Maverick();
 
     // Initialize subsystems and their members
     public static final LED led = new LED(robotMap);
@@ -35,9 +37,9 @@ public class Robot extends TimedRobot {
     public static final Lift lift = new Lift(robotMap.getLift());
 
     // Joysticks
-    public static ButtonJoystick leftDriveStick = new ButtonJoystick(0);
-    public static ButtonJoystick rightDriveStick = new ButtonJoystick(1);
-    public static ButtonXboxController xBoxTempest = new ButtonXboxController(2);
+    public static final ButtonJoystick leftDriveStick = new ButtonJoystick(0);
+    public static final ButtonJoystick rightDriveStick = new ButtonJoystick(1);
+    public static final ButtonXboxController xBoxTempest = new ButtonXboxController(2);
 
     Command m_autonomousCommand;
     SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -50,22 +52,22 @@ public class Robot extends TimedRobot {
     public void robotInit() {
 
         m_chooser.addDefault("Default Auto", drive.DriveTime(3, 0.6));
-        m_chooser.addObject("Mid Auto", MidAuto());
-        m_chooser.addObject("Cross Line And Drop Cube", CrossLineAndDropCube());
+        m_chooser.addObject("Mid Auto", midAuto());
+        m_chooser.addObject("Cross Line And Drop Cube", crossLineAndDropCube());
         SmartDashboard.putData("Auto mode", m_chooser);
         SmartDashboard.putData("Turn 90", drive.TurnByDegrees(90));
         SmartDashboard.putData("Turn -90", drive.TurnByDegrees(-90));
         CameraServer.getInstance()
                 .startAutomaticCapture();
 
-        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kY)
+        xBoxTempest.getButton(ButtonXboxController.XBoxButton.kY)
                 .whenPressed(manipulator.CloseOuterManipulator());
-        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kX)
+        xBoxTempest.getButton(ButtonXboxController.XBoxButton.kX)
                 .whenPressed(manipulator.OpenOuterManipulator());
 
-        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kA)
+        xBoxTempest.getButton(ButtonXboxController.XBoxButton.kA)
                 .whileHeld(manipulator.ManipulatorIntakeHeld());
-        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kB)
+        xBoxTempest.getButton(ButtonXboxController.XBoxButton.kB)
                 .whileHeld(manipulator.ManipulatorDischargeHeld());
 
         rightDriveStick.getButton(1)
@@ -111,7 +113,6 @@ public class Robot extends TimedRobot {
 
         // schedule the autonomous command (example)
         if (m_autonomousCommand != null) {
-
             m_autonomousCommand.start();
         }
     }
@@ -170,19 +171,24 @@ public class Robot extends TimedRobot {
     }
 
     String getResource(String path) {
-        InputStream stream = getClass().getResourceAsStream("/" + path);
-        return new BufferedReader(new InputStreamReader(stream))
-            .lines()
-            .collect(Collectors.joining("\n"));
+        try(InputStream stream = getClass().getResourceAsStream("/" + path);
+            InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
+            BufferedReader bufferedReader = new BufferedReader(reader)
+        ) {
+            return bufferedReader.lines()
+                .collect(Collectors.joining("\n"));
+        } catch(IOException e) {
+            return "";
+        }
     }
 
-    public Command CrossLineAndDropCube() {
+    public Command crossLineAndDropCube() {
         return new CommandChain("Cross Line And Drop Cube").then(lift.MoveLiftByInches(-1))
                 .then(drive.DriveTime(3.6, 0.6), lift.MoveLiftByInches(26))
                 .then(manipulator.CubeEject());
     }
 
-    public Command MidAuto() {
+    public Command midAuto() {
         String gameData;
         gameData = DriverStation.getInstance()
                 .getGameSpecificMessage();
@@ -200,16 +206,14 @@ public class Robot extends TimedRobot {
                 System.out.println("Left");
             }
         }
-        Command cmdMidAuto = new CommandChain("Mid Auto").then(drive.DriveTime(.75, .6))
+        return new CommandChain("Mid Auto").then(drive.DriveTime(.75, .6))
                 .then(drive.TurnByDegrees(degrees))
                 .then(drive.DriveTime(.5, .6))
                 .then(drive.TurnByDegrees(-degrees))
                 .then(drive.DriveTime(.3, .6), lift.RaiseLiftALittle());
-        return cmdMidAuto;
-
     }
 
-    public Command Rumble(final XboxController controller) {
+    public Command rumble(final XboxController controller) {
 
         return new TimedCommand("Rumble", 0.1) {
 
@@ -227,9 +231,9 @@ public class Robot extends TimedRobot {
         };
     }
 
-    public Command CubePickupWithLights(int blinkCount) {
+    public Command cubePickupWithLights(int blinkCount) {
         return new CommandChain("Cube Pickup with Lights").then(manipulator.CubePickup())
-                .then(Rumble(xBoxTempest))
+                .then(rumble(xBoxTempest))
                 .then(led.BlinkGreen(blinkCount));
     }
 

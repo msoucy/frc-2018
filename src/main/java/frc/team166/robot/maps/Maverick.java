@@ -120,7 +120,7 @@ public class Maverick implements RobotMap {
         return manipPotentiometer;
     }
 
-    public class MaverickLift implements LiftMap {
+    public static class MaverickLift implements LiftMap {
         DigitalInput bottomLimitSwitch = new DigitalInput(
                 RobotMap.DigitalInputs.LIFT_LIMIT_SWITCH_BOTTOM);
         DigitalInput topLimitSwitch = new DigitalInput(

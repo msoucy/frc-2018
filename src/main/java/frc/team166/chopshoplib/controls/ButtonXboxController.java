@@ -48,11 +48,11 @@ public class ButtonXboxController extends XboxController {
         return buttons.get(buttonId);
     }
 
-    public Button getButton(xBoxButton buttonId) {
+    public Button getButton(XBoxButton buttonId) {
         return getButton(buttonId.get());
     }
 
-    public enum xBoxButton {
+    public enum XBoxButton {
         kBumperLeft(5),
         kBumperRight(6),
         kStickLeft(9),
@@ -66,7 +66,7 @@ public class ButtonXboxController extends XboxController {
 
         private int value;
 
-        xBoxButton(int value) {
+        XBoxButton(int value) {
             this.value = value;
         }
 

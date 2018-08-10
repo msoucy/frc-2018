@@ -21,7 +21,7 @@ import frc.team166.robot.RobotMap;
 
 public class Lift extends PIDSubsystem {
     // This is for one inch
-    private final double encoderDistancePerTick = 0.01636;
+    private static final double encoderDistancePerTick = 0.01636;
 
     DigitalInput bottomLimitSwitch;
     DigitalInput topLimitSwitch;

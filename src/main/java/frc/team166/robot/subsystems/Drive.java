@@ -36,11 +36,7 @@ public class Drive extends Subsystem {
 
     // PIDController loop used to find the power of the motors needed to keep the
     // angle of the gyro at 0
-    PIDController drivePidController = new PIDController(kP, kI, kD, kF, tempestGyro,
-            (double value) -> {
-                // this assigns the output to the angle (double) defined later in the code)
-                angleCorrection = value;
-            });
+    PIDController drivePidController;
 
     // this makes children that control the tempestGyro, drive motors, and
     // PIDController loop.
@@ -49,6 +45,12 @@ public class Drive extends Subsystem {
         m_drive = new DifferentialDrive(map.getLeftWheelMotors(), map.getRightWheelMotors());
         tempestGyro = map.getDriveGyro();
         frontLidar = map.getDriveLidar();
+
+        drivePidController = new PIDController(kP, kI, kD, kF, tempestGyro,
+            (double value) -> {
+                // this assigns the output to the angle (double) defined later in the code)
+                angleCorrection = value;
+            });
 
         // SmartDashboard.putData("XBox", XboxArcade());
         // SmartDashboard.putData("Turn -45", TurnByDegrees(-45));
