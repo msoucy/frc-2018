@@ -1,9 +1,11 @@
 package frc.team166.chopshoplib.controls;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.buttons.Button;
-import java.util.Vector;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
  * Represents a joystick along with it's associated buttons
@@ -11,7 +13,7 @@ import java.util.Vector;
  * This class serves as a wrapper for a Joystick and all it's buttons.
  */
 public class ButtonXboxController extends XboxController {
-    Vector<Button> buttons = new Vector<Button>();
+    Map<Integer, Button> buttons = new HashMap<Integer, Button>();
 
     /**
      * Construct an instance of a joystick along with each button the joystick has.
@@ -22,11 +24,6 @@ public class ButtonXboxController extends XboxController {
      */
     public ButtonXboxController(int port) {
         super(port);
-        // Just pad the vector to match the joysticks
-        buttons.add(0, null);
-        for (int i = 1; i <= this.getButtonCount(); i++) {
-            buttons.add(i, new JoystickButton(this, i));
-        }
     }
 
     /**
@@ -40,10 +37,8 @@ public class ButtonXboxController extends XboxController {
      * @return The button object for the given ID
      */
     public Button getButton(int buttonId) {
-        if (buttons.size() <= buttonId) {
-            for (int i = buttons.size(); i <= buttonId; i++) {
-                buttons.add(i, new JoystickButton(this, i));
-            }
+        if(!buttons.containsKey(buttonId)) {
+            buttons.put(buttonId, new JoystickButton(this, buttonId));
         }
         return buttons.get(buttonId);
     }
@@ -52,7 +47,7 @@ public class ButtonXboxController extends XboxController {
         return getButton(buttonId.get());
     }
 
-    public enum XBoxButton {
+    public static enum XBoxButton {
         kBumperLeft(5),
         kBumperRight(6),
         kStickLeft(9),
