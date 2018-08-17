@@ -18,6 +18,7 @@ import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.ShortVariable", "PMD.VariableNamingConventions"})
 public final class Lift extends PIDSubsystem {
     // This is for one inch
     private static final double encoderDistancePerTick = 0.01636;

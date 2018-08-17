@@ -27,6 +27,7 @@ import frc.team166.robot.subsystems.LED;
 import frc.team166.robot.subsystems.Lift;
 import frc.team166.robot.subsystems.Manipulator;
 
+@SuppressWarnings("PMD.TooManyMethods")
 public class Robot extends TimedRobot {
     // Initialize the mapping for the production robot
     public final RobotMap robotMap = new Maverick();

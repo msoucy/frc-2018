@@ -50,18 +50,23 @@ public class Lidar extends SensorBase implements PIDSource {
         }
     }
 
+    @SuppressWarnings("PMD.LongVariable")
     public static class Settings {
         public enum OpMode {
             SINGLESTEP,
             CONTINOUS,
-            INVALID
-        }
+            INVALID;
 
-        public enum LedIndicator {
-            ON,
-            OFF,
-            MEASUREMENT,
-            UNKNOWN
+            public static OpMode fromByte(final byte value)
+            {
+                if (value == 0x43) {
+                    return CONTINOUS;
+                } else if (value == 0x53) {
+                    return SINGLESTEP;
+                } else {
+                    return INVALID;
+                }
+            }
         }
 
         public enum PresetConfiguration {
@@ -69,7 +74,44 @@ public class Lidar extends SensorBase implements PIDSource {
             LONGRANGE,
             HIGHACCURACY,
             TINYLIDAR,
-            CUSTOM
+            CUSTOM;
+
+            public static PresetConfiguration fromByte(final byte value)
+            {
+                switch (value) {
+                case 0x53:
+                    return HIGHSPEED;
+                case 0x52:
+                    return LONGRANGE;
+                case 0x41:
+                    return HIGHACCURACY;
+                case 0x54:
+                    return TINYLIDAR;
+                default:
+                    return CUSTOM;
+                }
+            }
+        }
+
+        public enum LedIndicator {
+            OFF,
+            ON,
+            MEASUREMENT,
+            UNKNOWN;
+
+            public static LedIndicator fromInt(final int value)
+            {
+                switch (value) {
+                case 0:
+                    return OFF;
+                case 1:
+                    return ON;
+                case 2:
+                    return MEASUREMENT;
+                default:
+                    return UNKNOWN;
+                }
+            }
         }
 
         public enum OffsetCalFlag {
@@ -94,40 +136,18 @@ public class Lidar extends SensorBase implements PIDSource {
 
         /**
          * This will process the response from a settings query.
-         * 
+         *
          * This will process the byte array and turn it into a more easily accessible
          * object.
-         * 
+         *
          * @param response
          *            A byte array with the response from a settings query
          */
         public Settings(final byte[] response) {
             /* Process the zeroth byte */
-            if (response[0] == 0x43) {
-                operationMode = OpMode.CONTINOUS;
-            } else if (response[0] == 0x53) {
-                operationMode = OpMode.SINGLESTEP;
-            } else {
-                operationMode = OpMode.INVALID;
-            }
+            operationMode = OpMode.fromByte(response[0]);
             /* Process the first byte */
-            switch (response[1]) {
-            case 0x53:
-                preset = PresetConfiguration.HIGHSPEED;
-                break;
-            case 0x52:
-                preset = PresetConfiguration.LONGRANGE;
-                break;
-            case 0x41:
-                preset = PresetConfiguration.HIGHACCURACY;
-                break;
-            case 0x54:
-                preset = PresetConfiguration.TINYLIDAR;
-                break;
-            default:
-                preset = PresetConfiguration.CUSTOM;
-                break;
-            }
+            preset = PresetConfiguration.fromByte(response[1]);
             /* Process the 2nd & 3rd bytes */
             signalRateLimit = ByteBuffer.wrap(response, 2, 2)
                     .getShort() / 65536.0;
@@ -154,20 +174,7 @@ public class Lidar extends SensorBase implements PIDSource {
             } else {
                 offsetCalibration = OffsetCalFlag.CUSTOM;
             }
-            switch ((response[14] & 0x6) >> 1) {
-            case 0:
-                ledIndicatorMode = LedIndicator.OFF;
-                break;
-            case 1:
-                ledIndicatorMode = LedIndicator.ON;
-                break;
-            case 2:
-                ledIndicatorMode = LedIndicator.MEASUREMENT;
-                break;
-            default:
-                ledIndicatorMode = LedIndicator.UNKNOWN;
-                break;
-            }
+            ledIndicatorMode = LedIndicator.fromInt((response[14] & 0x6) >> 1);
             watchdogTimer = (response[14] & 1) != 0;
             /* Process the 15th, 16th, 17th, & 18th bytes */
             offsetCalibrationValue = ByteBuffer.wrap(response, 15, 4)
@@ -181,7 +188,7 @@ public class Lidar extends SensorBase implements PIDSource {
 
     /**
      * Create a LIDAR object
-     * 
+     *
      * @param port
      *            The I2C port the sensor is connected to
      * @param kAddress
@@ -204,7 +211,7 @@ public class Lidar extends SensorBase implements PIDSource {
 
     /**
      * Create a LIDAR object
-     * 
+     *
      * @param port
      *            The I2C port the sensor is connected to
      * @param kAddress
@@ -218,7 +225,7 @@ public class Lidar extends SensorBase implements PIDSource {
     /**
      * Set the maximum allowed standard deviation before the input is considered
      * invalid
-     * 
+     *
      * @param sdLimit
      *            The maximum standard deviation expected
      */
@@ -233,7 +240,7 @@ public class Lidar extends SensorBase implements PIDSource {
      */
     public void reset() {
         synchronized(this) {
-                for (int i = 0; i < samples.length; i++) {
+            for (int i = 0; i < samples.length; i++) {
                 samples[i] = 0;
             }
             sampleIndex = 0;
@@ -243,7 +250,7 @@ public class Lidar extends SensorBase implements PIDSource {
 
     /**
      * This function gets the distance from a LiDAR sensor
-     * 
+     *
      * @param bFlag
      *            True requests the distance in inches, false requests the distance
      *            in mm
@@ -259,7 +266,7 @@ public class Lidar extends SensorBase implements PIDSource {
 
     /**
      * This function gets the distance from a LiDAR sensor
-     * 
+     *
      * @param bFlag
      *            True requests the distance in inches, false requests the distance
      *            in mm
@@ -299,7 +306,7 @@ public class Lidar extends SensorBase implements PIDSource {
 
     /**
      * Change the mode of the LiDAR sensor
-     * 
+     *
      * @param mode
      *            Which mode to change to
      */

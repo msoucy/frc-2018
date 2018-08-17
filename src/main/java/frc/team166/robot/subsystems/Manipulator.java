@@ -16,26 +16,23 @@ import frc.team166.chopshoplib.outputs.SendableSpeedController;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.ShortVariable",
+                   "PMD.VariableNamingConventions", "PMD.MethodNamingConventions"})
 public final class Manipulator extends PIDSubsystem {
 
-    SendableSpeedController deploymentMotor;
-    SpeedControllerGroup rollers;
-    DoubleSolenoid innerSolenoid;
-    DoubleSolenoid outerSolenoid;
-    AnalogInput irSensor;
-    AnalogPotentiometer potentiometer;
-
-    // inches:
-    final static double ROLLER_RADIUS = 1.4375;
-    // ft:
-    final static double DIST_PER_PULSE_INTAKE = (((ROLLER_RADIUS * 2.0 * Math.PI) / 1024.0) / 12.0);
+    private final SendableSpeedController deploymentMotor;
+    private final SpeedControllerGroup rollers;
+    private final DoubleSolenoid innerSolenoid;
+    private final DoubleSolenoid outerSolenoid;
+    private final AnalogInput irSensor;
+    private final AnalogPotentiometer potentiometer;
 
     private static double kP = 0;
     private static double kI = 0;
     private static double kD = 0;
     private static double kF = 0;
 
-    public Manipulator(RobotMap map) {
+    public Manipulator(final RobotMap map) {
         super("Manipulator", kP, kI, kD, kF);
 
         setAbsoluteTolerance(5);
@@ -75,23 +72,23 @@ public final class Manipulator extends PIDSubsystem {
         deploymentMotor.stopMotor();
     }
 
-    void openInnerManipulator() {
+    private void openInnerManipulator() {
         innerSolenoid.set(Value.kForward);
     }
 
-    void closeInnerManipulator() {
+    private void closeInnerManipulator() {
         innerSolenoid.set(Value.kReverse);
     }
 
-    void openOuterManipulator() {
+    private void openOuterManipulator() {
         outerSolenoid.set(Value.kForward);
     }
 
-    void closeOuterManipulator() {
+    private void closeOuterManipulator() {
         outerSolenoid.set(Value.kReverse);
     }
 
-    double getIRDistance() {
+    private double getIRDistance() {
         return irSensor.getVoltage();
     }
 
@@ -101,7 +98,7 @@ public final class Manipulator extends PIDSubsystem {
     }
 
     @Override
-    protected void usePIDOutput(double output) {
+    protected void usePIDOutput(final double output) {
         deploymentMotor.set(output);
     }
 
@@ -110,7 +107,7 @@ public final class Manipulator extends PIDSubsystem {
      *
      * <p>Turns motors on to intake a cube
      */
-    void setMotorsToIntake() {
+    private void setMotorsToIntake() {
         // change once you find optimal motor speed
         rollers.set(-0.6);
     }
@@ -120,7 +117,7 @@ public final class Manipulator extends PIDSubsystem {
      *
      * <p>Turns motors on to discharge a cube
      */
-    void setMotorsToDischarge() {
+    private void setMotorsToDischarge() {
         // change once you find optimal motor speed
         rollers.set(0.6);
     }
@@ -207,7 +204,6 @@ public final class Manipulator extends PIDSubsystem {
             @Override
             protected boolean isFinished() {
                 return false;
-
             }
 
             @Override
@@ -229,9 +225,7 @@ public final class Manipulator extends PIDSubsystem {
             @Override
             protected void initialize() {
                 setTimeout(5.0);
-                String gameData;
-                gameData = DriverStation.getInstance()
-                        .getGameSpecificMessage();
+                final String gameData = DriverStation.getInstance().getGameSpecificMessage();
 
                 if (gameData.length() > 0 && gameData.charAt(0) == 'R') {
                     setMotorsToDischarge();
@@ -240,7 +234,6 @@ public final class Manipulator extends PIDSubsystem {
 
             @Override
             protected boolean isFinished() {
-
                 return isTimedOut();
             }
 
@@ -267,7 +260,7 @@ public final class Manipulator extends PIDSubsystem {
 
             @Override
             protected boolean isFinished() {
-                return (getIRDistance() > 0.5);
+                return getIRDistance() > 0.5;
             }
 
             @Override
@@ -288,7 +281,6 @@ public final class Manipulator extends PIDSubsystem {
 
             @Override
             protected boolean isFinished() {
-
                 return onTarget();
             }
         };
@@ -304,9 +296,7 @@ public final class Manipulator extends PIDSubsystem {
             @Override
             protected void execute() {
                 double rotation = Math.pow(controller.getY(Hand.kLeft), 2);
-
-                rotation *= (controller.getY(Hand.kLeft) / Math.abs(controller.getY(Hand.kLeft)));
-
+                rotation *= Math.signum(controller.getY(Hand.kLeft));
                 deploymentMotor.set(rotation);
             }
 

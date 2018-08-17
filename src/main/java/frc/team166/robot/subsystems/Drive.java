@@ -15,6 +15,7 @@ import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
+@SuppressWarnings({"PMD.ShortVariable", "PMD.VariableNamingConventions"})
 public final class Drive extends Subsystem {
 
     private final Lidar frontLidar;
