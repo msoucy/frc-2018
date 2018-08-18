@@ -18,8 +18,7 @@ import frc.team166.chopshoplib.commands.TimeoutCommand;
  * whitespace A command can be given a timeout with `timeout 5 mycommand`
  */
 public class SimpleEngine implements Engine {
-    private final Map<String, Function<String, Command>> handlers =
-        new HashMap<String, Function<String, Command>>();
+    private final Map<String, Function<String, Command>> handlers = new HashMap<String, Function<String, Command>>();
 
     /**
      * Initialize the default handlers
@@ -64,7 +63,8 @@ public class SimpleEngine implements Engine {
     public Command parseScript(final String script) {
         final CommandChain result = new CommandChain(script);
         if (!"".equals(script)) {
-            for (final String groupStr : script.trim().split(";")) {
+            for (final String groupStr : script.trim()
+                    .split(";")) {
                 final Command[] cmds = Arrays.stream(groupStr.split("\\|"))
                         .map(String::trim)
                         .map(this::parseSingleCommand)

@@ -27,7 +27,6 @@ import frc.team166.robot.subsystems.LED;
 import frc.team166.robot.subsystems.Lift;
 import frc.team166.robot.subsystems.Manipulator;
 
-@SuppressWarnings("PMD.TooManyMethods")
 public class Robot extends TimedRobot {
     // Initialize the mapping for the production robot
     public final RobotMap robotMap = new Maverick();
@@ -156,7 +155,6 @@ public class Robot extends TimedRobot {
         // Do nothing special.
     }
 
-
     private void logTelemetry() {
         final String branch = getResource("branch.txt");
         SmartDashboard.putString("branch", branch);
@@ -172,13 +170,12 @@ public class Robot extends TimedRobot {
     }
 
     private String getResource(final String path) {
-        try(InputStream stream = getClass().getResourceAsStream("/" + path);
-            InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
-            BufferedReader bufferedReader = new BufferedReader(reader)
-        ) {
+        try (InputStream stream = getClass().getResourceAsStream("/" + path);
+                InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
+                BufferedReader bufferedReader = new BufferedReader(reader)) {
             return bufferedReader.lines()
-                .collect(Collectors.joining("\n"));
-        } catch(IOException e) {
+                    .collect(Collectors.joining("\n"));
+        } catch (IOException e) {
             return "";
         }
     }
@@ -190,7 +187,8 @@ public class Robot extends TimedRobot {
     }
 
     public Command midAuto() {
-        final String gameData = DriverStation.getInstance().getGameSpecificMessage();
+        final String gameData = DriverStation.getInstance()
+                .getGameSpecificMessage();
         double degrees = 0.0;
         if (gameData.length() > 0) {
             if (gameData.charAt(0) == 'R') {

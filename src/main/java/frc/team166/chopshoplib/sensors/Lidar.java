@@ -30,8 +30,7 @@ public class Lidar extends SensorBase implements PIDSource {
 
     private class PollSensor implements Runnable {
 
-        public PollSensor()
-        {
+        public PollSensor() {
             super();
         }
 
@@ -50,15 +49,13 @@ public class Lidar extends SensorBase implements PIDSource {
         }
     }
 
-    @SuppressWarnings("PMD.LongVariable")
     public static class Settings {
         public enum OpMode {
             SINGLESTEP,
             CONTINOUS,
             INVALID;
 
-            public static OpMode fromByte(final byte value)
-            {
+            public static OpMode fromByte(final byte value) {
                 if (value == 0x43) {
                     return CONTINOUS;
                 } else if (value == 0x53) {
@@ -76,8 +73,7 @@ public class Lidar extends SensorBase implements PIDSource {
             TINYLIDAR,
             CUSTOM;
 
-            public static PresetConfiguration fromByte(final byte value)
-            {
+            public static PresetConfiguration fromByte(final byte value) {
                 switch (value) {
                 case 0x53:
                     return HIGHSPEED;
@@ -99,8 +95,7 @@ public class Lidar extends SensorBase implements PIDSource {
             MEASUREMENT,
             UNKNOWN;
 
-            public static LedIndicator fromInt(final int value)
-            {
+            public static LedIndicator fromInt(final int value) {
                 switch (value) {
                 case 0:
                     return OFF;
@@ -230,7 +225,7 @@ public class Lidar extends SensorBase implements PIDSource {
      *            The maximum standard deviation expected
      */
     public void setStandardDeviationLimit(final double sdLimit) {
-        synchronized(this) {
+        synchronized (this) {
             stdDevLimit = sdLimit;
         }
     }
@@ -239,7 +234,7 @@ public class Lidar extends SensorBase implements PIDSource {
      * Clear the samples
      */
     public void reset() {
-        synchronized(this) {
+        synchronized (this) {
             for (int i = 0; i < samples.length; i++) {
                 samples[i] = 0;
             }
@@ -256,7 +251,7 @@ public class Lidar extends SensorBase implements PIDSource {
      *            in mm
      */
     public Optional<Double> getDistanceOptional(final Boolean bFlag) {
-        synchronized(this) {
+        synchronized (this) {
             if (!isValid) {
                 return Optional.empty();
             }
@@ -325,6 +320,10 @@ public class Lidar extends SensorBase implements PIDSource {
         return new Settings(dataBuffer);
     }
 
+    public Thread getAccessThread() {
+        return accessThread;
+    }
+
     @Override
     public void initSendable(final SendableBuilder builder) {
         builder.setSmartDashboardType("LiDAR");
@@ -333,7 +332,7 @@ public class Lidar extends SensorBase implements PIDSource {
         final NetworkTableEntry isValidEntry = builder.getEntry("isValid");
         builder.setUpdateTable(() -> {
             mmDistance.setDouble(getDistance(true));
-            synchronized(this) {
+            synchronized (this) {
                 isValidEntry.setBoolean(isValid);
                 standardDeviation.setDouble(stdDevValue);
             }

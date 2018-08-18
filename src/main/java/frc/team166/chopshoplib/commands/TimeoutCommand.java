@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.command.TimedCommand;
 public class TimeoutCommand extends TimedCommand {
 
     private final Command m_command;
-    
+
     /**
      * Wrap the provided command with a timeout
      * 

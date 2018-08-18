@@ -15,7 +15,6 @@ import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
-@SuppressWarnings({"PMD.ShortVariable", "PMD.VariableNamingConventions"})
 public final class Drive extends Subsystem {
 
     private final Lidar frontLidar;
@@ -47,11 +46,10 @@ public final class Drive extends Subsystem {
         tempestGyro = map.getDriveGyro();
         frontLidar = map.getDriveLidar();
 
-        pidController = new PIDController(kP, kI, kD, kF, tempestGyro,
-            (double value) -> {
-                // this assigns the output to the angle (double) defined later in the code)
-                angleCorrection = value;
-            });
+        pidController = new PIDController(kP, kI, kD, kF, tempestGyro, (double value) -> {
+            // this assigns the output to the angle (double) defined later in the code)
+            angleCorrection = value;
+        });
 
         // SmartDashboard.putData("XBox", XboxArcade());
         // SmartDashboard.putData("Turn -45", TurnByDegrees(-45));

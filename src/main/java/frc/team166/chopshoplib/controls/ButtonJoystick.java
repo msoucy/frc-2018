@@ -37,7 +37,7 @@ public class ButtonJoystick extends Joystick {
      * @return The button object for the given ID
      */
     public Button getButton(final int buttonId) {
-        if(!buttons.containsKey(buttonId)) {
+        if (!buttons.containsKey(buttonId)) {
             buttons.put(buttonId, new JoystickButton(this, buttonId));
         }
         return buttons.get(buttonId);

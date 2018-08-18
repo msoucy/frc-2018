@@ -13,7 +13,7 @@ import frc.team166.chopshoplib.outputs.DigitalOutputDutyCycle;
 import frc.team166.robot.RobotMap;
 
 public final class LED extends Subsystem {
-    
+
     private final DigitalOutputDutyCycle red;
     private final DigitalOutputDutyCycle green;
     private final DigitalOutputDutyCycle blue;
@@ -52,7 +52,8 @@ public final class LED extends Subsystem {
     }
 
     private boolean isBlueTeam() {
-        final Alliance team = DriverStation.getInstance().getAlliance();
+        final Alliance team = DriverStation.getInstance()
+                .getAlliance();
         return team == DriverStation.Alliance.Blue;
     }
 

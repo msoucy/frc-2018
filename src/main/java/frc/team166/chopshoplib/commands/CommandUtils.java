@@ -7,8 +7,9 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class CommandUtils {
-    private CommandUtils() {}
-    
+    private CommandUtils() {
+    }
+
     public static Command repeat(final int numTimesToRun, final Command cmd) {
         return new Command() {
             private int numTimesRun;
@@ -79,5 +80,14 @@ public class CommandUtils {
 
     public static Command first(final Command... cmds) {
         return new CommandChain(cmds);
+    }
+
+    public static Command waitUntil(final BooleanSupplier condition) {
+        return new Command("Wait Until Condition") {
+            @Override
+            protected boolean isFinished() {
+                return condition.getAsBoolean();
+            }
+        };
     }
 }

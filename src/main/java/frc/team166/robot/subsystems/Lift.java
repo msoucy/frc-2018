@@ -18,7 +18,6 @@ import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.ShortVariable", "PMD.VariableNamingConventions"})
 public final class Lift extends PIDSubsystem {
     // This is for one inch
     private static final double encoderDistancePerTick = 0.01636;
@@ -31,10 +30,10 @@ public final class Lift extends PIDSubsystem {
     private final DoubleSolenoid liftTransmission;
 
     // these define the PID values for the lift
-    private static double kP = 0;
-    private static double kI = 0;
-    private static double kD = 0;
-    private static double kF = 0;
+    private static final double kP = 0;
+    private static final double kI = 0;
+    private static final double kD = 0;
+    private static final double kF = 0;
 
     // this adds the LIDAR sensor
     private Lidar liftLidar;
@@ -126,14 +125,6 @@ public final class Lift extends PIDSubsystem {
             return;
         }
         liftDrive.set(output);
-    }
-
-    private void raiseLift() {
-        liftDrive.set(0.75);
-    }
-
-    private void lowerLift() {
-        liftDrive.set(-0.5);
     }
 
     public void reset() {
@@ -334,7 +325,7 @@ public final class Lift extends PIDSubsystem {
 
             @Override
             protected void execute() {
-                lowerLift();
+                liftDrive.set(-0.5);
             }
 
             @Override
@@ -366,11 +357,12 @@ public final class Lift extends PIDSubsystem {
     }
 
     private enum Gear {
-        Low, High
+        Low,
+        High
     }
 
     private void setGear(final Gear gear) {
-        if(gear == Gear.Low) {
+        if (gear == Gear.Low) {
             liftTransmission.set(Value.kForward);
         } else {
             liftTransmission.set(Value.kReverse);

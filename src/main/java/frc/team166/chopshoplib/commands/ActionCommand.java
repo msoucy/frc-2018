@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class ActionCommand extends InstantCommand {
 
     private final Runnable action;
-    
+
     /**
      * Create a command that calls the given action when run
      * 

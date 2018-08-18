@@ -18,7 +18,6 @@ import frc.team166.chopshoplib.outputs.SendableSpeedController;
 import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.RobotMap;
 
-@SuppressWarnings("PMD.TooManyFields")
 public class Maverick implements RobotMap {
 
     // Core
@@ -129,7 +128,8 @@ public class Maverick implements RobotMap {
 
         private final WPI_VictorSPX liftMotorA = new WPI_VictorSPX(6);
         private final WPI_VictorSPX liftMotorB = new WPI_VictorSPX(7);
-        private final SpeedControllerGroup liftDrive = new SpeedControllerGroup(liftMotorA, liftMotorB);
+        private final SpeedControllerGroup liftDrive = new SpeedControllerGroup(liftMotorA,
+                liftMotorB);
 
         private final DoubleSolenoid liftBrake = new DoubleSolenoid(7, 6);
         private final DoubleSolenoid liftTransmission = new DoubleSolenoid(4, 5);

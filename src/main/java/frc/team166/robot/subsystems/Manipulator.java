@@ -16,8 +16,6 @@ import frc.team166.chopshoplib.outputs.SendableSpeedController;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.ShortVariable",
-                   "PMD.VariableNamingConventions", "PMD.MethodNamingConventions"})
 public final class Manipulator extends PIDSubsystem {
 
     private final SendableSpeedController deploymentMotor;
@@ -27,10 +25,10 @@ public final class Manipulator extends PIDSubsystem {
     private final AnalogInput irSensor;
     private final AnalogPotentiometer potentiometer;
 
-    private static double kP = 0;
-    private static double kI = 0;
-    private static double kD = 0;
-    private static double kF = 0;
+    private static final double kP = 0;
+    private static final double kI = 0;
+    private static final double kD = 0;
+    private static final double kF = 0;
 
     public Manipulator(final RobotMap map) {
         super("Manipulator", kP, kI, kD, kF);
@@ -105,7 +103,8 @@ public final class Manipulator extends PIDSubsystem {
     /**
      * Sets motors to intake mode
      *
-     * <p>Turns motors on to intake a cube
+     * <p>
+     * Turns motors on to intake a cube
      */
     private void setMotorsToIntake() {
         // change once you find optimal motor speed
@@ -115,7 +114,8 @@ public final class Manipulator extends PIDSubsystem {
     /**
      * Sets motors to discharge mode
      *
-     * <p>Turns motors on to discharge a cube
+     * <p>
+     * Turns motors on to discharge a cube
      */
     private void setMotorsToDischarge() {
         // change once you find optimal motor speed
@@ -213,7 +213,8 @@ public final class Manipulator extends PIDSubsystem {
             @Override
             protected void initialize() {
                 setTimeout(5.0);
-                final String gameData = DriverStation.getInstance().getGameSpecificMessage();
+                final String gameData = DriverStation.getInstance()
+                        .getGameSpecificMessage();
 
                 if (gameData.length() > 0 && gameData.charAt(0) == 'R') {
                     setMotorsToDischarge();

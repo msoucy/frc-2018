@@ -6,12 +6,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
 /**
  * An object that is both a Sendable and a SpeedController.
- * 
- * <p>Provides a single utility method to wrap an appropriate object.
- * 
- * <p>This is used in a few select scenarios,
- * when we want to keep the exact type of an object general,
- * but at the same time want to access it as one of two disconnected interfaces.
+ * <p>
+ * Provides a single utility method to wrap an appropriate object.
+ * <p>
+ * This is used in a few select scenarios, when we want to keep the exact type
+ * of an object general, but at the same time want to access it as one of two
+ * disconnected interfaces.
  */
 public interface SendableSpeedController extends Sendable, SpeedController {
     static <T extends Sendable & SpeedController> SendableSpeedController wrap(T wrapped) {
