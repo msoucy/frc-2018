@@ -138,11 +138,6 @@ public final class Drive extends Subsystem {
             protected void end() {
                 pidController.disable();
             }
-
-            @Override
-            protected void interrupted() {
-                end();
-            }
         };
     }
 
@@ -169,11 +164,6 @@ public final class Drive extends Subsystem {
             @Override
             protected void end() {
                 pidController.disable();
-            }
-
-            @Override
-            protected void interrupted() {
-                end();
             }
         };
     }
@@ -205,11 +195,6 @@ public final class Drive extends Subsystem {
             protected void end() {
                 pidController.disable();
             }
-
-            @Override
-            protected void interrupted() {
-                end();
-            }
         };
     }
 
@@ -238,11 +223,6 @@ public final class Drive extends Subsystem {
                 pidController.disable();
                 m_drive.stopMotor();
             }
-
-            @Override
-            protected void interrupted() {
-                end();
-            }
         };
     }
 
@@ -256,5 +236,4 @@ public final class Drive extends Subsystem {
                 .then(driveTime(.5, .8))
                 .then(turnByDegrees(90));
     }
-
 }

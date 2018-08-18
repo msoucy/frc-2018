@@ -184,12 +184,6 @@ public final class Manipulator extends PIDSubsystem {
             protected void end() {
                 rollers.set(0);
             }
-
-            @Override
-            protected void interrupted() {
-                end();
-            }
-
         };
     }
 
@@ -210,12 +204,6 @@ public final class Manipulator extends PIDSubsystem {
             protected void end() {
                 rollers.set(0);
             }
-
-            @Override
-            protected void interrupted() {
-                end();
-            }
-
         };
     }
 
@@ -240,11 +228,6 @@ public final class Manipulator extends PIDSubsystem {
             @Override
             protected void end() {
                 rollers.stopMotor();
-            }
-
-            @Override
-            protected void interrupted() {
-                end();
             }
         };
     }

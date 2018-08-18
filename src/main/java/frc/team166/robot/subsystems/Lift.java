@@ -171,7 +171,6 @@ public final class Lift extends PIDSubsystem {
             @Override
             protected void execute() {
                 liftDrive.set(0.5);
-
             }
 
             @Override
@@ -184,11 +183,6 @@ public final class Lift extends PIDSubsystem {
                 liftDrive.stopMotor();
                 doEngageBrake();
                 liftDrive.set(0);
-            }
-
-            @Override
-            protected void interrupted() {
-                end();
             }
         };
     }
@@ -251,11 +245,6 @@ public final class Lift extends PIDSubsystem {
             protected void end() {
                 enable();
             }
-
-            @Override
-            protected void interrupted() {
-                enable();
-            }
         };
     }
 
@@ -293,11 +282,6 @@ public final class Lift extends PIDSubsystem {
             protected void end() {
                 liftDrive.set(0);
                 doEngageBrake();
-            }
-
-            @Override
-            protected void interrupted() {
-                end();
             }
         };
     }
