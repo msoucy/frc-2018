@@ -74,18 +74,11 @@ public final class Lift extends PIDSubsystem {
         liftTransmission = map.getShifter();
         liftLidar = map.getLidar();
 
+        map.addChildren(this);
+
         setOutputRange(-1, 1);
         setAbsoluteTolerance(0.05);
         Encoder.setDistancePerPulse(encoderDistancePerTick);
-        // creates a child for the encoders and other stuff
-        // (limit switches, lidar, etc.)
-        addChild("Encoder", Encoder);
-        addChild("Top", topLimitSwitch);
-        addChild("Bottom", bottomLimitSwitch);
-        addChild("LiDAR", liftLidar);
-        addChild("Transmission", liftTransmission);
-        addChild("Brake", liftBrake);
-        addChild("Drive", liftDrive);
         addChild(findLiftHeight());
 
         liftDrive.setInverted(true);
