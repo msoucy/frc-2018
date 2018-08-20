@@ -23,9 +23,7 @@ public class Maverick implements RobotMap {
     // Core
     private final Compressor compressor = new Compressor(1);
     // LED
-    private final DigitalOutputDutyCycle redLED = new DigitalOutputDutyCycle(4);
-    private final DigitalOutputDutyCycle greenLED = new DigitalOutputDutyCycle(5);
-    private final DigitalOutputDutyCycle blueLED = new DigitalOutputDutyCycle(6);
+    private final LEDMap led = new MaverickLED();
     // Drive
     private final SpeedControllerGroup leftGroup = new SpeedControllerGroup(new WPI_TalonSRX(8),
             new WPI_TalonSRX(9));
@@ -56,18 +54,29 @@ public class Maverick implements RobotMap {
     }
 
     @Override
-    public DigitalOutputDutyCycle getRedLED() {
-        return redLED;
+    public LEDMap getLEDMap() {
+        return led;
     }
 
-    @Override
-    public DigitalOutputDutyCycle getGreenLED() {
-        return greenLED;
-    }
+    public static class MaverickLED implements LEDMap {
+        private final DigitalOutputDutyCycle redLED = new DigitalOutputDutyCycle(4);
+        private final DigitalOutputDutyCycle greenLED = new DigitalOutputDutyCycle(5);
+        private final DigitalOutputDutyCycle blueLED = new DigitalOutputDutyCycle(6);
 
-    @Override
-    public DigitalOutputDutyCycle getBlueLED() {
-        return blueLED;
+        @Override
+        public DigitalOutputDutyCycle getRed() {
+            return redLED;
+        }
+
+        @Override
+        public DigitalOutputDutyCycle getGreen() {
+            return greenLED;
+        }
+
+        @Override
+        public DigitalOutputDutyCycle getBlue() {
+            return blueLED;
+        }
     }
 
     @Override

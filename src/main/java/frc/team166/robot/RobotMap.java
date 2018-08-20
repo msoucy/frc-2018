@@ -17,13 +17,15 @@ public interface RobotMap {
 
     Compressor getCompressor();
 
-    // #region LED
-    DigitalOutputDutyCycle getRedLED();
+    LEDMap getLEDMap();
 
-    DigitalOutputDutyCycle getGreenLED();
+    interface LEDMap {
+        DigitalOutputDutyCycle getRed();
 
-    DigitalOutputDutyCycle getBlueLED();
-    // #endregion
+        DigitalOutputDutyCycle getGreen();
+
+        DigitalOutputDutyCycle getBlue();
+    }
 
     // #region drive
     SpeedController getLeftWheelMotors();
@@ -49,7 +51,6 @@ public interface RobotMap {
     AnalogPotentiometer getManipPotentiometer();
     // #endregion
 
-    // #region Lift
     LiftMap getLift();
 
     interface LiftMap {
@@ -67,5 +68,4 @@ public interface RobotMap {
 
         Lidar getLidar();
     }
-    // #endregion
 }

@@ -158,14 +158,6 @@ public final class Manipulator extends PIDSubsystem {
         return new ActionCommand("Intake Manipulator", this, this::setMotorsToIntake);
     }
 
-    public Command CubeDrop() {
-        return new ActionCommand("Drop Cube", this, this::openInnerManipulator);
-    }
-
-    public Command CubeClamp() {
-        return new ActionCommand("Cube Clamp", this, this::closeInnerManipulator);
-    }
-
     public Command ManipulatorIntakeHeld() {
         return new SubsystemCommand("Intake", this) {
 

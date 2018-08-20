@@ -25,7 +25,7 @@ public class Robot extends CommandRobot {
     public final RobotMap robotMap = new Maverick();
 
     // Initialize subsystems and their members
-    public final LED led = new LED(robotMap);
+    public final LED led = new LED(robotMap.getLEDMap());
     public final Drive drive = new Drive(robotMap);
     public final Manipulator manipulator = new Manipulator(robotMap);
     public final Lift lift = new Lift(robotMap.getLift());
@@ -68,9 +68,9 @@ public class Robot extends CommandRobot {
                 .whileHeld(manipulator.ManipulatorDischargeHeld());
 
         rightDriveStick.getButton(1)
-                .whenPressed(manipulator.CubeDrop());
+                .whenPressed(manipulator.OpenInnerManipulator());
         rightDriveStick.getButton(2)
-                .whenPressed(manipulator.CubeClamp());
+                .whenPressed(manipulator.CloseInnerManipulator());
     }
 
     /**

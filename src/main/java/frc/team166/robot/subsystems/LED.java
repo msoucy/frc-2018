@@ -23,17 +23,17 @@ public final class LED extends Subsystem {
         setDefaultCommand(breathTeamColor());
     }
 
-    public LED(final RobotMap map) {
+    public LED(final RobotMap.LEDMap map) {
         super();
         registerCommands();
 
-        red = map.getRedLED();
+        red = map.getRed();
         addChild("Red", red);
 
-        green = map.getGreenLED();
+        green = map.getGreen();
         addChild("Green", green);
 
-        blue = map.getBlueLED();
+        blue = map.getBlue();
         addChild("Blue", blue);
     }
 
