@@ -1,22 +1,15 @@
 package frc.team166.robot;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.stream.Collectors;
-
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.command.TimedCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.team166.chopshoplib.CommandRobot;
+import frc.team166.chopshoplib.Telemetry;
 import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.controls.ButtonJoystick;
 import frc.team166.chopshoplib.controls.ButtonXboxController;
@@ -27,7 +20,7 @@ import frc.team166.robot.subsystems.LED;
 import frc.team166.robot.subsystems.Lift;
 import frc.team166.robot.subsystems.Manipulator;
 
-public class Robot extends TimedRobot {
+public class Robot extends CommandRobot {
     // Initialize the mapping for the production robot
     public final RobotMap robotMap = new Maverick();
 
@@ -45,13 +38,15 @@ public class Robot extends TimedRobot {
     private Command autoCommand;
     final private SendableChooser<Command> autoChooser = new SendableChooser<>();
 
+    final private Telemetry telemetry = new Telemetry();
+
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
      */
     @Override
     public void robotInit() {
-        logTelemetry();
+        telemetry.log();
 
         autoChooser.addDefault("Default Auto", drive.driveTime(3, 0.6));
         autoChooser.addObject("Mid Auto", midAuto());
@@ -91,12 +86,6 @@ public class Robot extends TimedRobot {
 
     }
 
-    @Override
-    public void disabledPeriodic() {
-        Scheduler.getInstance()
-                .run();
-    }
-
     /**
      * This autonomous (along with the chooser code above) shows how to select
      * between different autonomous modes using the dashboard. The sendable chooser
@@ -119,15 +108,6 @@ public class Robot extends TimedRobot {
         }
     }
 
-    /**
-     * This function is called periodically during autonomous.
-     */
-    @Override
-    public void autonomousPeriodic() {
-        Scheduler.getInstance()
-                .run();
-    }
-
     @Override
     public void teleopInit() {
         // This makes sure that the autonomous stops running when
@@ -136,48 +116,6 @@ public class Robot extends TimedRobot {
         // this line or comment it out.
         //
         autoCommand.cancel();
-    }
-
-    /**
-     * This function is called periodically during operator control.
-     */
-    @Override
-    public void teleopPeriodic() {
-        Scheduler.getInstance()
-                .run();
-    }
-
-    /**
-     * This function is called periodically during test mode.
-     */
-    @Override
-    public void testPeriodic() {
-        // Do nothing special.
-    }
-
-    private void logTelemetry() {
-        final String branch = getResource("branch.txt");
-        SmartDashboard.putString("branch", branch);
-
-        final String commit = getResource("commit.txt");
-        SmartDashboard.putString("commit", commit);
-
-        final String changes = getResource("changes.txt");
-        SmartDashboard.putString("changes", changes);
-
-        final String buildtime = getResource("buildtime.txt");
-        SmartDashboard.putString("buildtime", buildtime);
-    }
-
-    private String getResource(final String path) {
-        try (InputStream stream = getClass().getResourceAsStream("/" + path);
-                InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
-                BufferedReader bufferedReader = new BufferedReader(reader)) {
-            return bufferedReader.lines()
-                    .collect(Collectors.joining("\n"));
-        } catch (IOException e) {
-            return "";
-        }
     }
 
     public Command crossLineAndDropCube() {
@@ -209,9 +147,7 @@ public class Robot extends TimedRobot {
     }
 
     public Command rumble(final XboxController controller) {
-
         return new TimedCommand("Rumble", 0.1) {
-
             @Override
             protected void initialize() {
                 controller.setRumble(RumbleType.kLeftRumble, 1);
