@@ -9,13 +9,15 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.team166.chopshoplib.AutoChildren;
 import frc.team166.chopshoplib.commands.CommandChain;
+import frc.team166.chopshoplib.commands.DefaultDashboard;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
-public final class Drive extends Subsystem {
+public final class Drive extends Subsystem implements AutoChildren {
 
     private final Lidar frontLidar;
     private final AnalogGyro tempestGyro;
@@ -52,8 +54,6 @@ public final class Drive extends Subsystem {
         });
 
         // SmartDashboard.putData("XBox", XboxArcade());
-        // SmartDashboard.putData("Turn -45", TurnByDegrees(-45));
-        // SmartDashboard.putData("Turn 45", TurnByDegrees(45));
         // SmartDashboard.putData("Drive 2s", DriveTime(2, .6));
         // SmartDashboard.putData("Drive Box", DriveBox());
 
@@ -69,6 +69,8 @@ public final class Drive extends Subsystem {
         pidController.setInputRange(0, 360);
         pidController.setContinuous();
         pidController.setAbsoluteTolerance(ABS_TOLERANCE_ANGLE);
+
+        addChildren(this);
     }
 
     // the default command for this code is supposed to rotate the robot so that
@@ -166,6 +168,8 @@ public final class Drive extends Subsystem {
         };
     }
 
+    @DefaultDashboard(45)
+    @DefaultDashboard(-45)
     public Command turnByDegrees(final double degrees) {
         return new SubsystemCommand("Turn " + degrees, this) {
             @Override
@@ -196,8 +200,9 @@ public final class Drive extends Subsystem {
         };
     }
 
+    @DefaultDashboard({ 2.0, 0.6 })
     public Command driveTime(final double seconds, final double speed) {
-        return new SubsystemCommand("Drive Time", this) {
+        return new SubsystemCommand("Drive " + seconds + "s", this) {
             @Override
             protected void initialize() {
                 pidController.reset();

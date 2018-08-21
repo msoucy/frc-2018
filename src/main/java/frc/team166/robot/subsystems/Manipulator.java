@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import frc.team166.chopshoplib.AutoChildren;
 import frc.team166.chopshoplib.commands.ActionCommand;
+import frc.team166.chopshoplib.commands.DefaultDashboard;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.chopshoplib.outputs.SendableSpeedController;
 import frc.team166.robot.Robot;
@@ -46,18 +47,6 @@ public final class Manipulator extends PIDSubsystem implements AutoChildren {
         addChildren(this);
 
         deploymentMotor.setInverted(true);
-
-        // Adding Commands To SmartDashboard
-        // SmartDashboard.putData("Close Outer", CloseOuterManipulator());
-        // SmartDashboard.putData("Open Outer", OpenOuterManipulator());
-        // SmartDashboard.putData("Close Inner", CloseInnerManipulator());
-        // SmartDashboard.putData("Open Inner", OpenInnerManipulator());
-        // SmartDashboard.putData("Cube Eject", CubeEject());
-        // SmartDashboard.putData("Cube Pickup", CubePickup());
-        // SmartDashboard.putData("cube pickup with lights", CubePickupWithLights(3));
-        // SmartDashboard.putData("Deploy Manipulator With Joystick",
-        // DeployManipulatorWithJoystick());
-        // SmartDashboard.putData("Re-Enable Potentiometer", enablePID());
     }
 
     // METHODS
@@ -130,26 +119,32 @@ public final class Manipulator extends PIDSubsystem implements AutoChildren {
         });
     }
 
+    @DefaultDashboard
     public Command CloseOuterManipulator() {
         return new ActionCommand("Close Outer Manipulator", this, this::closeOuterManipulator);
     }
 
+    @DefaultDashboard
     public Command OpenOuterManipulator() {
         return new ActionCommand("Open Outer Manipulator", this, this::openOuterManipulator);
     }
 
+    @DefaultDashboard
     public Command OpenInnerManipulator() {
         return new ActionCommand("Open Inner Manipulator", this, this::openInnerManipulator);
     }
 
+    @DefaultDashboard
     public Command CloseInnerManipulator() {
         return new ActionCommand("Close Inner Manipulator", this, this::closeInnerManipulator);
     }
 
+    @DefaultDashboard
     public Command ManipulatorDischarge() {
         return new ActionCommand("DisCharge Manipulator", this, this::setMotorsToDischarge);
     }
 
+    @DefaultDashboard
     public Command ManipulatorIntake() {
         return new ActionCommand("Intake Manipulator", this, this::setMotorsToIntake);
     }

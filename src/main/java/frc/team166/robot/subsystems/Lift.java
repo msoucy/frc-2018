@@ -9,16 +9,17 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.team166.chopshoplib.AutoChildren;
 import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.commands.CommandChain;
+import frc.team166.chopshoplib.commands.DefaultDashboard;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.chopshoplib.outputs.SendableSpeedController;
 import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
-public final class Lift extends PIDSubsystem {
+public final class Lift extends PIDSubsystem implements AutoChildren {
     // This is for one inch
     private static final double encoderDistancePerTick = 0.01636;
 
@@ -74,7 +75,7 @@ public final class Lift extends PIDSubsystem {
         liftTransmission = map.getShifter();
         liftLidar = map.getLidar();
 
-        map.addChildren(this);
+        addChildren(this);
 
         setOutputRange(-1, 1);
         setAbsoluteTolerance(0.05);
@@ -88,15 +89,6 @@ public final class Lift extends PIDSubsystem {
         if (!prefs.containsKey("Use LIDAR")) {
             prefs.putBoolean("Use LIDAR", false);
         }
-
-        registerCommands();
-    }
-
-    private void registerCommands() {
-        // SmartDashboard.putData("Brake", Brake());
-        // SmartDashboard.putData("Shift to Low Gear", ShiftToLowGear());
-        // SmartDashboard.putData("Shift to High Gear", ShiftToHighGear());
-        SmartDashboard.putData("Go up distance", moveLiftByInches(8));
     }
 
     @Override
@@ -226,6 +218,7 @@ public final class Lift extends PIDSubsystem {
         };
     }
 
+    @DefaultDashboard(8)
     public Command moveLiftByInches(final double inches) {
         return new SubsystemCommand(this) {
             private double destinationHeight;

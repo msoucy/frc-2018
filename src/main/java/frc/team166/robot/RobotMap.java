@@ -76,10 +76,11 @@ public interface RobotMap {
 
     public static interface AutoChildren {
         default public void addChildren(Subsystem system) {
-            Class aClass = this.getClass();
+            Class<? extends AutoChildren> aClass = this.getClass();
             for (Method elem : aClass.getMethods()) {
                 try {
-                    // See if the returned object implements sendable. If it does then lets add it as a child.
+                    // See if the returned object implements sendable.
+                    // If it does then lets add it as a child.
                     if (Sendable.class.isAssignableFrom(elem.getReturnType())) {
                         system.addChild((Sendable) elem.invoke(this));
                     }
@@ -88,7 +89,7 @@ public interface RobotMap {
                 } catch (InvocationTargetException e) {
                     e.printStackTrace();
                 }
-                
+
             }
         }
     }

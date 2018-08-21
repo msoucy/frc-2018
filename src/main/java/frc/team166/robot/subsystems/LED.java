@@ -7,12 +7,14 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.team166.chopshoplib.AutoChildren;
 import frc.team166.chopshoplib.commands.ActionCommand;
+import frc.team166.chopshoplib.commands.DefaultDashboard;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.chopshoplib.outputs.DigitalOutputDutyCycle;
 import frc.team166.robot.RobotMap;
 
-public final class LED extends Subsystem {
+public final class LED extends Subsystem implements AutoChildren {
 
     private final DigitalOutputDutyCycle red;
     private final DigitalOutputDutyCycle green;
@@ -25,26 +27,16 @@ public final class LED extends Subsystem {
 
     public LED(final RobotMap.LEDMap map) {
         super();
-        registerCommands();
 
         red = map.getRed();
-        addChild("Red", red);
-
         green = map.getGreen();
-        addChild("Green", green);
-
         blue = map.getBlue();
-        addChild("Blue", blue);
+
+        SmartDashboard.putData("All Off", new ActionCommand("OFF GERALD", this, this::allOff));
+        addChildren(this);
     }
 
     // METHODS
-    private void registerCommands() {
-        SmartDashboard.putData("Breath Blue", breath(blue, 10));
-        SmartDashboard.putData("All Off", new ActionCommand("OFF GERALD", this, this::allOff));
-        SmartDashboard.putData("STEVIE WONDER THEM", notSeizure(1000));
-        SmartDashboard.putData("NYAN", rainbow(1000));
-    }
-
     private void allOff() {
         red.set(false);
         green.set(false);
@@ -243,22 +235,22 @@ public final class LED extends Subsystem {
         };
     }
 
+    @DefaultDashboard
     public Command breathTeamColor() {
         return new ActionCommand("Breath Team Color", this, () -> {
+            green.disablePWM();
             if (isBlueTeam()) {
                 red.disablePWM();
-                green.disablePWM();
                 breath(blue, 2).start();
-
             } else {
                 blue.disablePWM();
-                green.disablePWM();
                 breath(red, 2).start();
 
             }
         });
     }
 
+    @DefaultDashboard(1000)
     public Command notSeizure(final int numberOfBlinks) {
         return new SubsystemCommand(this) {
             private double lastUpdateTime = System.currentTimeMillis();
@@ -300,6 +292,7 @@ public final class LED extends Subsystem {
         };
     }
 
+    @DefaultDashboard(1000)
     public Command rainbow(final int numberOfBlinks) {
         return new SubsystemCommand(this) {
             private double lastUpdateTime = System.currentTimeMillis();
