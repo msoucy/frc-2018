@@ -82,23 +82,20 @@ public class SimpleEngine implements Engine {
      *            The name of the command to look up
      */
     private Command parseSingleCommand(final String cmd) {
+        Command resultCommand = null;
         final String[] args = cmd.split("[\\s,]+");
-        if (args.length == 0) {
-            // Something is terribly wrong
-            return null;
-        }
 
         if (args.length > 2 && args[0].equals("timeout")) {
             final double timeoutLength = Double.parseDouble(args[1]);
             final String[] cmdargs = Arrays.copyOfRange(args, 2, args.length);
             final Command wrapped = parseArgs(cmdargs);
             if (wrapped != null) {
-                return new TimeoutCommand(wrapped, timeoutLength);
+                resultCommand = new TimeoutCommand(wrapped, timeoutLength);
             }
-        } else {
-            return parseArgs(args);
+        } else if (args.length != 0) {
+            resultCommand = parseArgs(args);
         }
-        return null;
+        return resultCommand;
     }
 
     /**
@@ -109,14 +106,14 @@ public class SimpleEngine implements Engine {
      */
     private Command parseArgs(final String... args) {
         final Function<String, Command> constructor = handlers.get(args[0]);
-        if (constructor == null) {
-            return null;
-        } else {
+        Command resultCommand = null;
+        if (constructor != null) {
             String argument = "";
             if (args.length > 1) {
                 argument = args[1];
             }
-            return constructor.apply(argument);
+            resultCommand = constructor.apply(argument);
         }
+        return resultCommand;
     }
 }

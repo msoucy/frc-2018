@@ -12,16 +12,12 @@
     <rule ref="category/java/bestpractices.xml"/>
     <rule ref="category/java/codestyle.xml">
         <exclude name="AtLeastOneConstructor"/>
-        <exclude name="ForLoopsMustUseBraces"/>
-        <exclude name="IfElseStmtsMustUseBraces"/>
-        <exclude name="IfStmtsMustUseBraces"/>
         <exclude name="LongVariable"/>
         <exclude name="MethodNamingConventions"/>
         <exclude name="OnlyOneReturn"/>
         <exclude name="ShortClassName"/>
         <exclude name="ShortVariable"/>
         <exclude name="VariableNamingConventions"/>
-        <exclude name="WhileLoopsMustUseBraces"/>
     </rule>
     <rule ref="category/java/design.xml">
         <exclude name="DataClass"/>

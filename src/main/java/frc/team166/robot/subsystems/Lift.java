@@ -116,15 +116,13 @@ public final class Lift extends PIDSubsystem {
         if (!topLimitSwitch.get() && output > 0) {
             setSetpoint(LiftHeights.kMaxHeight.get());
             liftDrive.stopMotor();
-            return;
-        }
-        if (!bottomLimitSwitch.get() && output < 0) {
+        } else if (!bottomLimitSwitch.get() && output < 0) {
             // liftEncoder.reset();
             setSetpoint(LiftHeights.kFloor.get());
             liftDrive.stopMotor();
-            return;
+        } else {
+            liftDrive.set(output);
         }
-        liftDrive.set(output);
     }
 
     public void reset() {
@@ -132,16 +130,13 @@ public final class Lift extends PIDSubsystem {
     }
 
     public double findLiftHeight() {
+        double distance = Encoder.getDistance();
         if (Preferences.getInstance()
-                .getBoolean("Use LIDAR", false)) {
-            if (liftLidar.getDistance(true) > kMaxLidarDistance) {
-                return liftLidar.getDistance(true);
-            } else {
-                return Encoder.getDistance();
-            }
-        } else {
-            return Encoder.getDistance();
+                .getBoolean("Use LIDAR", false)
+                && liftLidar.getDistance(true) > kMaxLidarDistance) {
+            distance = liftLidar.getDistance(true);
         }
+        return distance;
     }
 
     // does not do anything

@@ -26,14 +26,16 @@ public class Telemetry {
     }
 
     private String getResource(final String path) {
+        String resource;
         try (InputStream stream = getClass().getResourceAsStream("/" + path);
                 InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
                 BufferedReader bufferedReader = new BufferedReader(reader)) {
-            return bufferedReader.lines()
+            resource = bufferedReader.lines()
                     .collect(Collectors.joining("\n"));
         } catch (IOException e) {
-            return "";
+            resource = "";
         }
+        return resource;
     }
 
 }

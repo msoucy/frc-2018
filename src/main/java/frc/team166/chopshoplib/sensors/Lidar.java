@@ -267,11 +267,7 @@ public class Lidar extends SensorBase implements PIDSource {
      *            in mm
      */
     public double getDistance(final Boolean bFlag) {
-        if (bFlag) {
-            return distanceMM / 25.4;
-        } else {
-            return distanceMM;
-        }
+        return bFlag ? distanceMM / 25.4 : distanceMM;
     }
 
     private void readDistance() {
