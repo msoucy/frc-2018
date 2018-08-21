@@ -10,13 +10,14 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
+import frc.team166.chopshoplib.AutoChildren;
 import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.chopshoplib.outputs.SendableSpeedController;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
-public final class Manipulator extends PIDSubsystem {
+public final class Manipulator extends PIDSubsystem implements AutoChildren {
 
     private final SendableSpeedController deploymentMotor;
     private final SpeedControllerGroup rollers;
@@ -42,12 +43,7 @@ public final class Manipulator extends PIDSubsystem {
         irSensor = map.getManipIrSensor();
         potentiometer = map.getManipPotentiometer();
 
-        addChild("IR", irSensor);
-        addChild("Potentiometer", potentiometer);
-        addChild("Deploy Motor", deploymentMotor);
-        addChild("Rollers", rollers);
-        addChild("Inner", innerSolenoid);
-        addChild("Outer", outerSolenoid);
+        addChildren(this);
 
         deploymentMotor.setInverted(true);
 
