@@ -74,8 +74,8 @@ public interface RobotMap {
         Lidar getLidar();
     }
 
-    public static interface AutoChildren {
-        default public void addChildren(Subsystem system) {
+    interface AutoChildren {
+        default void addChildren(Subsystem system) {
             Class<? extends AutoChildren> aClass = this.getClass();
             for (Method elem : aClass.getMethods()) {
                 try {
@@ -84,9 +84,7 @@ public interface RobotMap {
                     if (Sendable.class.isAssignableFrom(elem.getReturnType())) {
                         system.addChild((Sendable) elem.invoke(this));
                     }
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
+                } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
 

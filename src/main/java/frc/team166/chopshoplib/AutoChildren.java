@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.team166.chopshoplib.commands.DefaultDashboard;
 
 public interface AutoChildren {
-    default public void addChildren(Subsystem system) {
+    default void addChildren(Subsystem system) {
         Class<? extends Subsystem> aClass = system.getClass();
         for (Field field : aClass.getDeclaredFields()) {
             try {
@@ -29,7 +29,9 @@ public interface AutoChildren {
                 for (DefaultDashboard annotation : method
                         .getAnnotationsByType(DefaultDashboard.class)) {
                     Command command = (Command) method.invoke(this, annotation.value());
-                    system.addChild(command.getName(), command);
+                    if (command != null) {
+                        system.addChild(command.getName(), command);
+                    }
                 }
             } catch (InvocationTargetException | IllegalAccessException e) {
                 e.printStackTrace();
