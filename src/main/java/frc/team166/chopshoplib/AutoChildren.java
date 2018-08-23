@@ -14,11 +14,13 @@ public interface AutoChildren {
         Class<? extends Subsystem> aClass = system.getClass();
 
         for (Field field : aClass.getDeclaredFields()) {
+            // Make the field accessible, because apparently we're allowed to do that
+            field.setAccessible(true);
             try {
-                System.out.println("Found field: " + field.getName());
                 // See if the returned object implements sendable.
                 // If it does then lets add it as a child.
                 if (Sendable.class.isAssignableFrom(field.getType())) {
+                    System.out.println("Adding field: " + field.getName());
                     system.addChild(field.getName(), (Sendable) field.get(system));
                 }
             } catch (IllegalAccessException e) {
@@ -33,6 +35,7 @@ public interface AutoChildren {
                     Double[] args = RobotUtils.toBoxed(annotation.value());
                     Command command = (Command) method.invoke(this, (Object[]) args);
                     if (command != null) {
+                        System.out.println("Adding command: " + command);
                         system.addChild(command.getName(), command);
                     }
                 }
