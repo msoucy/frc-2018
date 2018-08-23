@@ -1,10 +1,8 @@
 package frc.team166.chopshoplib.outputs;
 
-import edu.wpi.first.wpilibj.Sendable;
-import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
-public class MockSpeedController implements Sendable, SpeedController {
+public class MockSpeedController implements SendableSpeedController {
 
     private double speed;
     private boolean isInverted;
@@ -69,8 +67,7 @@ public class MockSpeedController implements Sendable, SpeedController {
     @Override
     public void initSendable(final SendableBuilder builder) {
         builder.setSmartDashboardType("Speed Controller");
-        builder.setSafeState(() -> {
-        });
+        builder.setSafeState(this::disable);
         builder.addDoubleProperty("Value", this::get, this::set);
     }
 }

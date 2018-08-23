@@ -12,8 +12,10 @@ import frc.team166.chopshoplib.commands.DefaultDashboard;
 public interface AutoChildren {
     default void addChildren(Subsystem system) {
         Class<? extends Subsystem> aClass = system.getClass();
+
         for (Field field : aClass.getDeclaredFields()) {
             try {
+                System.out.println("Found field: " + field.getName());
                 // See if the returned object implements sendable.
                 // If it does then lets add it as a child.
                 if (Sendable.class.isAssignableFrom(field.getType())) {
@@ -28,7 +30,8 @@ public interface AutoChildren {
             try {
                 for (DefaultDashboard annotation : method
                         .getAnnotationsByType(DefaultDashboard.class)) {
-                    Command command = (Command) method.invoke(this, annotation.value());
+                    Double[] args = RobotUtils.toBoxed(annotation.value());
+                    Command command = (Command) method.invoke(this, (Object[]) args);
                     if (command != null) {
                         system.addChild(command.getName(), command);
                     }
