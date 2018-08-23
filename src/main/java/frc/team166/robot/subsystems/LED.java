@@ -7,14 +7,14 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.team166.chopshoplib.AutoChildren;
+import frc.team166.chopshoplib.DashboardUtils;
 import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.commands.DefaultDashboard;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.chopshoplib.outputs.DigitalOutputDutyCycle;
 import frc.team166.robot.RobotMap;
 
-public final class LED extends Subsystem implements AutoChildren {
+public final class LED extends Subsystem {
 
     private final DigitalOutputDutyCycle red;
     private final DigitalOutputDutyCycle green;
@@ -33,7 +33,8 @@ public final class LED extends Subsystem implements AutoChildren {
         blue = map.getBlue();
 
         SmartDashboard.putData("All Off", new ActionCommand("OFF GERALD", this, this::allOff));
-        addChildren(this);
+
+        DashboardUtils.initialize(this);
     }
 
     // METHODS

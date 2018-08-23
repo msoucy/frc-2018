@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
-import frc.team166.chopshoplib.AutoChildren;
+import frc.team166.chopshoplib.DashboardUtils;
 import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.commands.DefaultDashboard;
@@ -19,7 +19,7 @@ import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
-public final class Lift extends PIDSubsystem implements AutoChildren {
+public final class Lift extends PIDSubsystem {
     // This is for one inch
     private static final double encoderDistancePerTick = 0.01636;
 
@@ -75,7 +75,7 @@ public final class Lift extends PIDSubsystem implements AutoChildren {
         liftTransmission = map.getShifter();
         liftLidar = map.getLidar();
 
-        addChildren(this);
+        DashboardUtils.initialize(this);
 
         setOutputRange(-1, 1);
         setAbsoluteTolerance(0.05);

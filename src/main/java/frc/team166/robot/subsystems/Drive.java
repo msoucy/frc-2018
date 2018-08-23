@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.team166.chopshoplib.AutoChildren;
+import frc.team166.chopshoplib.DashboardUtils;
 import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.commands.DefaultDashboard;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
@@ -17,7 +17,7 @@ import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
-public final class Drive extends Subsystem implements AutoChildren {
+public final class Drive extends Subsystem {
 
     private final Lidar frontLidar;
     private final AnalogGyro tempestGyro;
@@ -70,7 +70,7 @@ public final class Drive extends Subsystem implements AutoChildren {
         pidController.setContinuous();
         pidController.setAbsoluteTolerance(ABS_TOLERANCE_ANGLE);
 
-        addChildren(this);
+        DashboardUtils.initialize(this);
     }
 
     // the default command for this code is supposed to rotate the robot so that

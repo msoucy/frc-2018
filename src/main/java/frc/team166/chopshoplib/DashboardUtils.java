@@ -7,10 +7,14 @@ import java.lang.reflect.Method;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.commands.DefaultDashboard;
 
-public interface AutoChildren {
-    default void addChildren(Subsystem system) {
+public class DashboardUtils {
+    private DashboardUtils() {
+    }
+
+    public static void initialize(Subsystem system) {
         Class<? extends Subsystem> aClass = system.getClass();
 
         for (Field field : aClass.getDeclaredFields()) {
@@ -33,10 +37,10 @@ public interface AutoChildren {
                 for (DefaultDashboard annotation : method
                         .getAnnotationsByType(DefaultDashboard.class)) {
                     Double[] args = RobotUtils.toBoxed(annotation.value());
-                    Command command = (Command) method.invoke(this, (Object[]) args);
+                    Command command = (Command) method.invoke(system, (Object[]) args);
                     if (command != null) {
                         System.out.println("Adding command: " + command);
-                        system.addChild(command.getName(), command);
+                        SmartDashboard.putData(command.getName(), command);
                     }
                 }
             } catch (InvocationTargetException | IllegalAccessException e) {
