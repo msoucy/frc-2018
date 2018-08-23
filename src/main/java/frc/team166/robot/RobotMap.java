@@ -12,11 +12,6 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import frc.team166.chopshoplib.outputs.DigitalOutputDutyCycle;
 import frc.team166.chopshoplib.outputs.SendableSpeedController;
 import frc.team166.chopshoplib.sensors.Lidar;
-import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.Sendable;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
 
 public interface RobotMap {
 
@@ -58,7 +53,7 @@ public interface RobotMap {
 
     LiftMap getLift();
 
-    interface LiftMap extends AutoChildren {
+    interface LiftMap {
         SendableSpeedController getMotors();
 
         DigitalInput getTopLimit();
@@ -72,23 +67,5 @@ public interface RobotMap {
         DoubleSolenoid getShifter();
 
         Lidar getLidar();
-    }
-
-    interface AutoChildren {
-        default void addChildren(Subsystem system) {
-            Class<? extends AutoChildren> aClass = this.getClass();
-            for (Method elem : aClass.getMethods()) {
-                try {
-                    // See if the returned object implements sendable.
-                    // If it does then lets add it as a child.
-                    if (Sendable.class.isAssignableFrom(elem.getReturnType())) {
-                        system.addChild((Sendable) elem.invoke(this));
-                    }
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }
     }
 }
