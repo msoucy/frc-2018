@@ -51,11 +51,4 @@ public class TimeoutCommand extends TimedCommand {
             m_command.cancel();
         }
     }
-
-    @Override
-    protected void interrupted() {
-        if (m_command.isRunning()) {
-            m_command.cancel();
-        }
-    }
 }
