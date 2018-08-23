@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.command.TimedCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.CommandRobot;
-import frc.team166.chopshoplib.Telemetry;
+import frc.team166.chopshoplib.RobotUtils;
 import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.controls.ButtonJoystick;
 import frc.team166.chopshoplib.controls.ButtonXboxController;
@@ -38,15 +38,13 @@ public class Robot extends CommandRobot {
     private Command autoCommand;
     final private SendableChooser<Command> autoChooser = new SendableChooser<>();
 
-    final private Telemetry telemetry = new Telemetry();
-
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
      */
     @Override
     public void robotInit() {
-        telemetry.log();
+        RobotUtils.logTelemetry();
 
         autoChooser.addDefault("Default Auto", drive.driveTime(3, 0.6));
         autoChooser.addObject("Mid Auto", midAuto());
