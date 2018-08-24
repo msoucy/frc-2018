@@ -6,9 +6,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Repeatable(DashboardItems.class)
+@Repeatable(DisplayItems.class)
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DefaultDashboard {
+public @interface Display {
     double[] value() default {};
 }

@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.DashboardUtils;
 import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.commands.DefaultDashboard;
+import frc.team166.chopshoplib.commands.Display;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.Robot;
@@ -168,8 +169,8 @@ public final class Drive extends Subsystem {
         };
     }
 
-    @DefaultDashboard(45)
-    @DefaultDashboard(-45)
+    @Display(45)
+    @Display(-45)
     public Command turnByDegrees(final double degrees) {
         return new SubsystemCommand("Turn " + degrees, this) {
             @Override
@@ -200,7 +201,7 @@ public final class Drive extends Subsystem {
         };
     }
 
-    @DefaultDashboard({ 2.0, 0.6 })
+    @Display({ 2.0, 0.6 })
     public Command driveTime(final double seconds, final double speed) {
         return new SubsystemCommand("Drive " + seconds + "s", this) {
             @Override

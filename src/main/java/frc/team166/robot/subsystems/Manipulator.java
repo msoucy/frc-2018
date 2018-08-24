@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import frc.team166.chopshoplib.DashboardUtils;
 import frc.team166.chopshoplib.commands.ActionCommand;
-import frc.team166.chopshoplib.commands.DefaultDashboard;
+import frc.team166.chopshoplib.commands.Display;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.chopshoplib.outputs.SendableSpeedController;
 import frc.team166.robot.Robot;
@@ -119,32 +119,32 @@ public final class Manipulator extends PIDSubsystem {
         });
     }
 
-    @DefaultDashboard
+    @Display
     public Command CloseOuterManipulator() {
         return new ActionCommand("Close Outer Manipulator", this, this::closeOuterManipulator);
     }
 
-    @DefaultDashboard
+    @Display
     public Command OpenOuterManipulator() {
         return new ActionCommand("Open Outer Manipulator", this, this::openOuterManipulator);
     }
 
-    @DefaultDashboard
+    @Display
     public Command OpenInnerManipulator() {
         return new ActionCommand("Open Inner Manipulator", this, this::openInnerManipulator);
     }
 
-    @DefaultDashboard
+    @Display
     public Command CloseInnerManipulator() {
         return new ActionCommand("Close Inner Manipulator", this, this::closeInnerManipulator);
     }
 
-    @DefaultDashboard
+    @Display
     public Command ManipulatorDischarge() {
         return new ActionCommand("DisCharge Manipulator", this, this::setMotorsToDischarge);
     }
 
-    @DefaultDashboard
+    @Display
     public Command ManipulatorIntake() {
         return new ActionCommand("Intake Manipulator", this, this::setMotorsToIntake);
     }

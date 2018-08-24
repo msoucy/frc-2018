@@ -218,7 +218,7 @@ public final class Lift extends PIDSubsystem {
         };
     }
 
-    @DefaultDashboard(8)
+    @Display(8)
     public Command moveLiftByInches(final double inches) {
         return new SubsystemCommand(this) {
             private double destinationHeight;

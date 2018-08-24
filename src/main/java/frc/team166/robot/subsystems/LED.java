@@ -236,7 +236,7 @@ public final class LED extends Subsystem {
         };
     }
 
-    @DefaultDashboard
+    @Display
     public Command breathTeamColor() {
         return new ActionCommand("Breath Team Color", this, () -> {
             green.disablePWM();
@@ -251,7 +251,7 @@ public final class LED extends Subsystem {
         });
     }
 
-    @DefaultDashboard(1000)
+    @Display(1000)
     public Command notSeizure(final int numberOfBlinks) {
         return new SubsystemCommand(this) {
             private double lastUpdateTime = System.currentTimeMillis();
@@ -293,7 +293,7 @@ public final class LED extends Subsystem {
         };
     }
 
-    @DefaultDashboard(1000)
+    @Display(1000)
     public Command rainbow(final int numberOfBlinks) {
         return new SubsystemCommand(this) {
             private double lastUpdateTime = System.currentTimeMillis();

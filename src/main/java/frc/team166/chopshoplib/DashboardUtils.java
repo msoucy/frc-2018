@@ -34,8 +34,7 @@ public class DashboardUtils {
 
         for (Method method : aClass.getDeclaredMethods()) {
             try {
-                for (DefaultDashboard annotation : method
-                        .getAnnotationsByType(DefaultDashboard.class)) {
+                for (Display annotation : method.getAnnotationsByType(Display.class)) {
                     Double[] args = RobotUtils.toBoxed(annotation.value());
                     Command command = (Command) method.invoke(system, (Object[]) args);
                     if (command != null) {
