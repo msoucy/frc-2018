@@ -71,7 +71,7 @@ def getGitHash = { -> runCommand "git", "describe", "--always" }
 
 def getGitBranch = { -> runCommand "git", "rev-parse", "--abbrev-ref", "HEAD" }
 
-def getGitFilesChanged = { -> "  " + runCommand("git", "diff", "--name-only", "HEAD").replace("\n", "\n  ") }
+def getGitFilesChanged = { -> runCommand("git", "diff", "--name-only", "HEAD").replace("\n", "\n") }
 
 task versionTxt() {
     doLast {
