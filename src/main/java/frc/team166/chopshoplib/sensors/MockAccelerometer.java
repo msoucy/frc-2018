@@ -1,10 +1,10 @@
 package frc.team166.chopshoplib.sensors;
 
-import edu.wpi.first.wpilibj.SensorBase;
+import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
-public class MockAccelerometer extends SensorBase implements Accelerometer {
+public class MockAccelerometer extends SendableBase implements Accelerometer {
 
     private double x;
     private double y;
