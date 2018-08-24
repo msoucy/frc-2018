@@ -100,7 +100,7 @@ public final class Drive extends Subsystem {
     }
 
     public Command joystickArcadeTwoStick(final Joystick left, final Joystick right) {
-        return new SubsystemCommand("joystick Arcade with two sticks", this) {
+        return new SubsystemCommand("Joystick Arcade with two sticks", this) {
             @Override
             protected void execute() {
                 m_drive.arcadeDrive(-left.getY() * 0.8, right.getX());
@@ -169,8 +169,8 @@ public final class Drive extends Subsystem {
         };
     }
 
-    @Display(45)
-    @Display(-45)
+    @Display(value = 45, name = "Turn Right 45")
+    @Display(value = -45, name = "Turn Left 45")
     public Command turnByDegrees(final double degrees) {
         return new SubsystemCommand("Turn " + degrees, this) {
             @Override
