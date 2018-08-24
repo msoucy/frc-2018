@@ -90,7 +90,7 @@ public class SimpleEngine implements Engine {
             final String[] cmdargs = Arrays.copyOfRange(args, 2, args.length);
             final Command wrapped = parseArgs(cmdargs);
             if (wrapped != null) {
-                resultCommand = new TimeoutCommand(wrapped, timeoutLength);
+                resultCommand = new TimeoutCommand(timeoutLength, wrapped);
             }
         } else if (args.length != 0) {
             resultCommand = parseArgs(args);

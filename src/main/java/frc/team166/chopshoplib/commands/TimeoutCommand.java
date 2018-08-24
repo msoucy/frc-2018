@@ -1,7 +1,6 @@
 package frc.team166.chopshoplib.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.TimedCommand;
 
 /**
  * A command that runs another command.
@@ -9,20 +8,20 @@ import edu.wpi.first.wpilibj.command.TimedCommand;
  * The command will be killed after a certain amount of time, if it hasn't
  * already run to completion.
  */
-public class TimeoutCommand extends TimedCommand {
+public class TimeoutCommand extends Command {
 
     private final Command m_command;
 
     /**
      * Wrap the provided command with a timeout
      * 
-     * @param cmd
-     *            The command to time out
      * @param timeout
      *            The maximum time before timing out
+     * @param cmd
+     *            The command to time out
      */
-    public TimeoutCommand(final Command cmd, final double timeout) {
-        this("Timeout(" + cmd.getName() + ", " + timeout + ")", cmd, timeout);
+    public TimeoutCommand(final double timeout, final Command cmd) {
+        this("Timeout(" + cmd.getName() + ", " + timeout + ")", timeout, cmd);
     }
 
     /**
@@ -30,12 +29,12 @@ public class TimeoutCommand extends TimedCommand {
      * 
      * @param name
      *            The name for the timed out command
-     * @param cmd
-     *            The command to time out
      * @param timeout
      *            The maximum time before timing out
+     * @param cmd
+     *            The command to time out
      */
-    public TimeoutCommand(final String name, final Command cmd, final double timeout) {
+    public TimeoutCommand(final String name, final double timeout, final Command cmd) {
         super(name, timeout);
         m_command = cmd;
     }
@@ -43,6 +42,11 @@ public class TimeoutCommand extends TimedCommand {
     @Override
     protected void initialize() {
         m_command.start();
+    }
+
+    @Override
+    protected boolean isFinished() {
+        return isTimedOut() || m_command.isCompleted();
     }
 
     @Override
