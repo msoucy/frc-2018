@@ -14,9 +14,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
  * disconnected interfaces.
  */
 public interface SendableSpeedController extends Sendable, SpeedController {
+    static SendableSpeedController wrap(SendableSpeedController wrapped) {
+        return wrapped;
+    }
+
     static <T extends Sendable & SpeedController> SendableSpeedController wrap(T wrapped) {
         return new SendableSpeedController() {
-
             @Override
             public String getName() {
                 return wrapped.getName();
