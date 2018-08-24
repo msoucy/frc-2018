@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import frc.team166.chopshoplib.DashboardUtils;
 import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.commands.CommandChain;
-import frc.team166.chopshoplib.commands.DefaultDashboard;
+import frc.team166.chopshoplib.commands.Display;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.chopshoplib.outputs.SendableSpeedController;
 import frc.team166.chopshoplib.sensors.Lidar;
