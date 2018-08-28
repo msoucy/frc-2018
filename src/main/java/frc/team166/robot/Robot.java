@@ -45,6 +45,7 @@ public class Robot extends CommandRobot {
     @Override
     public void robotInit() {
         RobotUtils.logTelemetry();
+        RobotUtils.clearPreferences();
 
         autoChooser.addDefault("Default Auto", drive.driveTime(3, 0.6));
         autoChooser.addObject("Mid Auto", midAuto());

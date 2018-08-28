@@ -33,6 +33,11 @@ deploy {
 repositories {
     mavenCentral()
     maven {
+        name "Development ChopShopLib"
+        url "file://${projectDir}/../chopshoplib/build/repo"
+    }
+    maven {
+        name "ChopShopLib"
         url "https://chopshop-166.github.io/chopshoplib/"
     }
 }
@@ -42,7 +47,7 @@ dependencies {
     compile wpilib()
     compile ctre()
     compile navx()
-    compile group: 'frc.team166', name: 'chopshoplib', version: '2019.0.0-alpha1'
+    compile group: 'frc.team166', name: 'chopshoplib', version: '2019.0.0-alpha2'
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
