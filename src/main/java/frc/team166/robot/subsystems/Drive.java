@@ -10,14 +10,15 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.DashboardUtils;
+import frc.team166.chopshoplib.Display;
+import frc.team166.chopshoplib.Resettable;
 import frc.team166.chopshoplib.commands.CommandChain;
-import frc.team166.chopshoplib.commands.Display;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
-public final class Drive extends Subsystem {
+public final class Drive extends Subsystem implements Resettable {
 
     private final Lidar frontLidar;
     private final AnalogGyro tempestGyro;
@@ -80,6 +81,7 @@ public final class Drive extends Subsystem {
         setDefaultCommand(joystickArcadeTwoStick(Robot.leftDriveStick, Robot.rightDriveStick));
     }
 
+    @Override
     public void reset() {
         m_drive.stopMotor();
     }

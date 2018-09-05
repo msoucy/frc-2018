@@ -10,16 +10,17 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import frc.team166.chopshoplib.DashboardUtils;
+import frc.team166.chopshoplib.Display;
+import frc.team166.chopshoplib.Resettable;
 import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.commands.CommandChain;
-import frc.team166.chopshoplib.commands.Display;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.chopshoplib.outputs.SendableSpeedController;
 import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
-public final class Lift extends PIDSubsystem {
+public final class Lift extends PIDSubsystem implements Resettable {
     // This is for one inch
     private static final double encoderDistancePerTick = 0.01636;
 
@@ -110,6 +111,7 @@ public final class Lift extends PIDSubsystem {
         }
     }
 
+    @Override
     public void reset() {
         liftDrive.stopMotor();
     }

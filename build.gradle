@@ -47,7 +47,7 @@ dependencies {
     compile wpilib()
     compile ctre()
     compile navx()
-    compile group: 'frc.team166', name: 'chopshoplib', version: '2019.0.0-alpha2'
+    compile group: 'frc.team166', name: 'chopshoplib', version: '2019.0.0-alpha2-SNAPSHOT', changing: true
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
