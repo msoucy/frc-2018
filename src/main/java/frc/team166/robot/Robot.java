@@ -56,14 +56,14 @@ public class Robot extends CommandRobot {
         CameraServer.getInstance()
                 .startAutomaticCapture();
 
-        xBoxTempest.getButton(XBoxButton.kY)
+        xBoxTempest.getButton(XBoxButton.Y)
                 .whenPressed(manipulator.CloseOuterManipulator());
-        xBoxTempest.getButton(XBoxButton.kX)
+        xBoxTempest.getButton(XBoxButton.X)
                 .whenPressed(manipulator.OpenOuterManipulator());
 
-        xBoxTempest.getButton(XBoxButton.kA)
+        xBoxTempest.getButton(XBoxButton.A)
                 .whileHeld(manipulator.ManipulatorIntakeHeld());
-        xBoxTempest.getButton(XBoxButton.kB)
+        xBoxTempest.getButton(XBoxButton.B)
                 .whileHeld(manipulator.ManipulatorDischargeHeld());
 
         rightDriveStick.getButton(1)

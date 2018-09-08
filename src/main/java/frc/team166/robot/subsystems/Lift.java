@@ -21,21 +21,19 @@ import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
 public final class Lift extends PIDSubsystem implements Resettable {
-    // This is for one inch
-    private static final double encoderDistancePerTick = 0.01636;
 
     private final DigitalInput bottomLimitSwitch;
     private final DigitalInput topLimitSwitch;
-    private final Encoder Encoder;
+    private final Encoder encoder;
     private final SendableSpeedController liftDrive;
     private final DoubleSolenoid liftBrake;
     private final DoubleSolenoid liftTransmission;
 
     // these define the PID values for the lift
-    private static final double kP = 0;
-    private static final double kI = 0;
-    private static final double kD = 0;
-    private static final double kF = 0;
+    private static final double P = 0.0;
+    private static final double I = 0.0;
+    private static final double D = 0.0;
+    private static final double F = 0.0;
 
     // this adds the LIDAR sensor
     private Lidar liftLidar;
@@ -43,14 +41,14 @@ public final class Lift extends PIDSubsystem implements Resettable {
     // enumerator that will be pulled from for the GoToHeight Command
     public enum LiftHeights {
         // will be changed
-        kFloor(0),
-        kSwitch(1),
-        kPortal(2),
-        kIntake(3),
-        kScaleLow(4),
-        kScaleHigh(5),
-        kClimb(6),
-        kMaxHeight(7);
+        FLOOR(0),
+        SWITCH(1),
+        PORTAL(2),
+        INTAKE(3),
+        SCALE_LOW(4),
+        SCALE_HIGH(5),
+        CLIMB(6),
+        MAX_HEIGHT(7);
 
         private double value;
 
@@ -63,14 +61,19 @@ public final class Lift extends PIDSubsystem implements Resettable {
         }
     }
 
+    private enum Gear {
+        LOW,
+        HIGH;
+    }
+
     // sets the maximum lidar distance before switching to the encoder
-    private final static double kMaxLidarDistance = 60;
+    private final static double MAX_LIDAR_DISTANCE = 60.0;
 
     public Lift(final RobotMap.LiftMap map) {
-        super("Lift", kP, kI, kD, kF);
+        super("Lift", P, I, D, F);
         bottomLimitSwitch = map.getBottomLimit();
         topLimitSwitch = map.getTopLimit();
-        Encoder = map.getEncoder();
+        encoder = map.getEncoder();
         liftDrive = map.getMotors();
         liftBrake = map.getBrake();
         liftTransmission = map.getShifter();
@@ -80,7 +83,6 @@ public final class Lift extends PIDSubsystem implements Resettable {
 
         setOutputRange(-1, 1);
         setAbsoluteTolerance(0.05);
-        Encoder.setDistancePerPulse(encoderDistancePerTick);
         addChild(findLiftHeight());
 
         liftDrive.setInverted(true);
@@ -100,11 +102,11 @@ public final class Lift extends PIDSubsystem implements Resettable {
     @Override
     protected void usePIDOutput(final double output) {
         if (!topLimitSwitch.get() && output > 0) {
-            setSetpoint(LiftHeights.kMaxHeight.get());
+            setSetpoint(LiftHeights.MAX_HEIGHT.get());
             liftDrive.stopMotor();
         } else if (!bottomLimitSwitch.get() && output < 0) {
             // liftEncoder.reset();
-            setSetpoint(LiftHeights.kFloor.get());
+            setSetpoint(LiftHeights.FLOOR.get());
             liftDrive.stopMotor();
         } else {
             liftDrive.set(output);
@@ -117,10 +119,10 @@ public final class Lift extends PIDSubsystem implements Resettable {
     }
 
     public double findLiftHeight() {
-        double distance = Encoder.getDistance();
+        double distance = encoder.getDistance();
         if (Preferences.getInstance()
                 .getBoolean("Use LIDAR", false)
-                && liftLidar.getDistance(true) > kMaxLidarDistance) {
+                && liftLidar.getDistance(true) > MAX_LIDAR_DISTANCE) {
             distance = liftLidar.getDistance(true);
         }
         return distance;
@@ -166,9 +168,9 @@ public final class Lift extends PIDSubsystem implements Resettable {
             protected void initialize() {
                 doDisengageBrake();
                 if (isHighGear) {
-                    setGear(Gear.High);
+                    setGear(Gear.HIGH);
                 } else {
-                    setGear(Gear.Low);
+                    setGear(Gear.LOW);
                 }
                 setSetpoint(height.get());
             }
@@ -229,8 +231,8 @@ public final class Lift extends PIDSubsystem implements Resettable {
             protected void initialize() {
                 disable();
                 doDisengageBrake();
-                destinationHeight = Encoder.getDistance() + inches;
-                if (destinationHeight > Encoder.getDistance()) {
+                destinationHeight = encoder.getDistance() + inches;
+                if (destinationHeight > encoder.getDistance()) {
                     liftDrive.set(0.75);
                 } else {
                     liftDrive.set(-0.50);
@@ -240,11 +242,11 @@ public final class Lift extends PIDSubsystem implements Resettable {
             @Override
             protected boolean isFinished() {
                 if (liftDrive.get() > 0) {
-                    if (Encoder.getDistance() >= destinationHeight) {
+                    if (encoder.getDistance() >= destinationHeight) {
                         return true;
                     }
                 } else {
-                    if (Encoder.getDistance() <= destinationHeight) {
+                    if (encoder.getDistance() <= destinationHeight) {
                         return true;
                     }
                 }
@@ -320,31 +322,26 @@ public final class Lift extends PIDSubsystem implements Resettable {
     public Command climbUp() {
         return new CommandChain("Climb Up").then(disengageBrake())
                 .then(shiftToHighGear())
-                .then(goToHeight(LiftHeights.kClimb, true))
+                .then(goToHeight(LiftHeights.CLIMB, true))
                 .then(shiftToLowGear())
-                .then(goToHeight(LiftHeights.kScaleLow, false))
+                .then(goToHeight(LiftHeights.SCALE_LOW, false))
                 .then(engageBrake());
     }
 
     public Command shiftToHighGear() {
         return new ActionCommand("Shift To High Gear", this, () -> {
-            setGear(Gear.High);
+            setGear(Gear.HIGH);
         });
     }
 
     public Command shiftToLowGear() {
         return new ActionCommand("Shift To Low Gear", this, () -> {
-            setGear(Gear.Low);
+            setGear(Gear.LOW);
         });
     }
 
-    private enum Gear {
-        Low,
-        High
-    }
-
     private void setGear(final Gear gear) {
-        if (gear == Gear.Low) {
+        if (gear == Gear.LOW) {
             liftTransmission.set(Value.kForward);
         } else {
             liftTransmission.set(Value.kReverse);

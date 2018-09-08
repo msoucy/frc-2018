@@ -162,6 +162,8 @@ public class Maverick implements RobotMap {
 
         @Override
         public Encoder getEncoder() {
+            // This is for one inch
+            liftEncoder.setDistancePerPulse(0.01636);
             return liftEncoder;
         }
 
