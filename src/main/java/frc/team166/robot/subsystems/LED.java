@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.team166.chopshoplib.DashboardUtils;
 import frc.team166.chopshoplib.Display;
 import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
@@ -33,8 +32,6 @@ public final class LED extends Subsystem {
         blue = map.getBlue();
 
         SmartDashboard.putData("All Off", new ActionCommand("OFF GERALD", this, this::allOff));
-
-        DashboardUtils.initialize(this);
     }
 
     // METHODS

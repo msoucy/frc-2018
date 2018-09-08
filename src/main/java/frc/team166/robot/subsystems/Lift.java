@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
-import frc.team166.chopshoplib.DashboardUtils;
 import frc.team166.chopshoplib.Display;
 import frc.team166.chopshoplib.Resettable;
 import frc.team166.chopshoplib.commands.ActionCommand;
@@ -78,8 +77,6 @@ public final class Lift extends PIDSubsystem implements Resettable {
         liftBrake = map.getBrake();
         liftTransmission = map.getShifter();
         liftLidar = map.getLidar();
-
-        DashboardUtils.initialize(this);
 
         setOutputRange(-1, 1);
         setAbsoluteTolerance(0.05);

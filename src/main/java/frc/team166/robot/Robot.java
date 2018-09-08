@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.command.TimedCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.CommandRobot;
+import frc.team166.chopshoplib.DashboardUtils;
 import frc.team166.chopshoplib.RobotUtils;
 import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.controls.ButtonJoystick;
@@ -51,10 +52,10 @@ public class Robot extends CommandRobot {
         autoChooser.addObject("Mid Auto", midAuto());
         autoChooser.addObject("Cross Line And Drop Cube", crossLineAndDropCube());
         SmartDashboard.putData("Auto mode", autoChooser);
-        SmartDashboard.putData("Turn 90", drive.turnByDegrees(90));
-        SmartDashboard.putData("Turn -90", drive.turnByDegrees(-90));
         CameraServer.getInstance()
                 .startAutomaticCapture();
+
+        DashboardUtils.initialize(this);
 
         xBoxTempest.getButton(XBoxButton.Y)
                 .whenPressed(manipulator.CloseOuterManipulator());

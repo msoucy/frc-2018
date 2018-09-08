@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.team166.chopshoplib.DashboardUtils;
 import frc.team166.chopshoplib.Display;
 import frc.team166.chopshoplib.Resettable;
 import frc.team166.chopshoplib.commands.CommandChain;
@@ -70,8 +69,6 @@ public final class Drive extends Subsystem implements Resettable {
         pidController.setInputRange(0, 360);
         pidController.setContinuous();
         pidController.setAbsoluteTolerance(ABS_TOLERANCE_ANGLE);
-
-        DashboardUtils.initialize(this);
     }
 
     // the default command for this code is supposed to rotate the robot so that
@@ -170,8 +167,10 @@ public final class Drive extends Subsystem implements Resettable {
         };
     }
 
-    @Display(value = 45, name = "Turn Right 45")
-    @Display(value = -45, name = "Turn Left 45")
+    @Display(value = 45.0, name = "Turn Right 45")
+    @Display(value = -45.0, name = "Turn Left 45")
+    @Display(value = 90.0, name = "Turn Right 90")
+    @Display(value = -90.0, name = "Turn Left 90")
     public Command turnByDegrees(final double degrees) {
         return new SubsystemCommand("Turn " + degrees, this) {
             @Override
