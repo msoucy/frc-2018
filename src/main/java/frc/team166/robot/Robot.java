@@ -48,9 +48,9 @@ public class Robot extends CommandRobot {
         RobotUtils.logTelemetry();
         RobotUtils.clearPreferences();
 
-        autoChooser.addDefault("Default Auto", drive.driveTime(3, 0.6));
-        autoChooser.addObject("Mid Auto", midAuto());
-        autoChooser.addObject("Cross Line And Drop Cube", crossLineAndDropCube());
+        autoChooser.setDefaultOption("Default Auto", drive.driveTime(3, 0.6));
+        autoChooser.addOption("Mid Auto", midAuto());
+        autoChooser.addOption("Cross Line And Drop Cube", crossLineAndDropCube());
         SmartDashboard.putData("Auto mode", autoChooser);
         CameraServer.getInstance()
                 .startAutomaticCapture();

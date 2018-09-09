@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import frc.team166.chopshoplib.Display;
 import frc.team166.chopshoplib.Resettable;
 import frc.team166.chopshoplib.commands.ActionCommand;
-import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.chopshoplib.outputs.SendableSpeedController;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
@@ -149,7 +148,7 @@ public final class Manipulator extends PIDSubsystem implements Resettable {
     }
 
     public Command ManipulatorIntakeHeld() {
-        return new SubsystemCommand("Intake", this) {
+        return new Command("Intake", this) {
 
             @Override
             protected void initialize() {
@@ -170,7 +169,7 @@ public final class Manipulator extends PIDSubsystem implements Resettable {
     }
 
     public Command ManipulatorDischargeHeld() {
-        return new SubsystemCommand("Discharge", this) {
+        return new Command("Discharge", this) {
 
             @Override
             protected void initialize() {
@@ -190,7 +189,7 @@ public final class Manipulator extends PIDSubsystem implements Resettable {
     }
 
     public Command CubeEject() {
-        return new SubsystemCommand("Eject Cube", this) {
+        return new Command("Eject Cube", this) {
 
             @Override
             protected void initialize() {
@@ -216,7 +215,7 @@ public final class Manipulator extends PIDSubsystem implements Resettable {
     }
 
     public Command CubePickup() {
-        return new SubsystemCommand("Pick Up Cube", this) {
+        return new Command("Pick Up Cube", this) {
 
             @Override
             protected void initialize() {
@@ -238,7 +237,7 @@ public final class Manipulator extends PIDSubsystem implements Resettable {
     }
 
     public Command DeployManipulator() {
-        return new SubsystemCommand("Deploy Manipulator", this) {
+        return new Command("Deploy Manipulator", this) {
 
             @Override
             protected void initialize() {
@@ -253,7 +252,7 @@ public final class Manipulator extends PIDSubsystem implements Resettable {
     }
 
     public Command DeployManipulatorWithJoystick(final XboxController controller) {
-        return new SubsystemCommand("Deploy Manipulator With Joystick", this) {
+        return new Command("Deploy Manipulator With Joystick", this) {
             @Override
             protected void initialize() {
                 disable();

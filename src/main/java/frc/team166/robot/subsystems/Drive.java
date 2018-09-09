@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.Display;
 import frc.team166.chopshoplib.Resettable;
 import frc.team166.chopshoplib.commands.CommandChain;
-import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
@@ -84,7 +83,7 @@ public final class Drive extends Subsystem implements Resettable {
     }
 
     public Command xboxArcade(final XboxController controller) {
-        return new SubsystemCommand("XBoxArcade", this) {
+        return new Command("XBoxArcade", this) {
             @Override
             protected void execute() {
                 driveTrain.arcadeDrive(-controller.getY(Hand.kLeft), controller.getX(Hand.kRight));
@@ -98,7 +97,7 @@ public final class Drive extends Subsystem implements Resettable {
     }
 
     public Command joystickArcadeTwoStick(final Joystick left, final Joystick right) {
-        return new SubsystemCommand("Joystick Arcade with two sticks", this) {
+        return new Command("Joystick Arcade with two sticks", this) {
             @Override
             protected void execute() {
                 driveTrain.arcadeDrive(-left.getY() * 0.8, right.getX());
@@ -113,7 +112,7 @@ public final class Drive extends Subsystem implements Resettable {
     };
 
     public Command driveStraight(final XboxController controller) {
-        return new SubsystemCommand("Drive Straight", this) {
+        return new Command("Drive Straight", this) {
             @Override
             protected void initialize() {
                 pidController.reset();
@@ -141,7 +140,7 @@ public final class Drive extends Subsystem implements Resettable {
     }
 
     public Command drivetoProximity(final double inches) {
-        return new SubsystemCommand("Drive Distance", this) {
+        return new Command("Drive Distance", this) {
             @Override
             protected void initialize() {
                 pidController.setSetpoint(tempestGyro.getAngle());
@@ -172,7 +171,7 @@ public final class Drive extends Subsystem implements Resettable {
     @Display(value = 90.0, name = "Turn Right 90")
     @Display(value = -90.0, name = "Turn Left 90")
     public Command turnByDegrees(final double degrees) {
-        return new SubsystemCommand("Turn " + degrees, this) {
+        return new Command("Turn " + degrees, this) {
             @Override
             protected void initialize() {
                 tempestGyro.reset();
@@ -203,7 +202,7 @@ public final class Drive extends Subsystem implements Resettable {
 
     @Display({ 2.0, 0.6 })
     public Command driveTime(final double seconds, final double speed) {
-        return new SubsystemCommand("Drive " + seconds + "s", this) {
+        return new Command("Drive " + seconds + "s", this) {
             @Override
             protected void initialize() {
                 pidController.reset();
@@ -231,7 +230,8 @@ public final class Drive extends Subsystem implements Resettable {
     }
 
     public Command driveBox() {
-        return new CommandChain("Box Drive").then(driveTime(1, .8))
+        return new CommandChain("Box Drive")
+                .then(driveTime(1, .8))
                 .then(turnByDegrees(90))
                 .then(driveTime(.5, .8))
                 .then(turnByDegrees(90))

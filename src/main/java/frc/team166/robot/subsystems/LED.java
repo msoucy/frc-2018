@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.Display;
 import frc.team166.chopshoplib.commands.ActionCommand;
-import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.chopshoplib.outputs.DigitalOutputDutyCycle;
 import frc.team166.robot.RobotMap;
 
@@ -59,7 +58,7 @@ public final class LED extends Subsystem {
 
     // COMMANDS
     public Command blinkGreen(final int numberOfBlinks) {
-        return new SubsystemCommand(this) {
+        return new Command(this) {
             private double lastUpdateTime = System.currentTimeMillis();
             private boolean isOn = true;
             private double count;
@@ -98,7 +97,7 @@ public final class LED extends Subsystem {
     }
 
     public Command blinkTeamColor() {
-        return new SubsystemCommand(this) {
+        return new Command(this) {
             private double lastUpdateTime = System.currentTimeMillis();
             private boolean isOn = true;
 
@@ -129,7 +128,7 @@ public final class LED extends Subsystem {
     }
 
     private Command colorOn(final DigitalOutputDutyCycle color) {
-        return new SubsystemCommand(this) {
+        return new Command(this) {
             @Override
             protected void initialize() {
                 color.set(true);
@@ -160,7 +159,7 @@ public final class LED extends Subsystem {
     }
 
     public Command cyanOn() {
-        return new SubsystemCommand(this) {
+        return new Command(this) {
             @Override
             protected void initialize() {
                 red.set(false);
@@ -181,7 +180,7 @@ public final class LED extends Subsystem {
     }
 
     public Command lightTeamColor() {
-        return new SubsystemCommand(this) {
+        return new Command(this) {
             @Override
             protected void initialize() {
                 setTeamColor(true);
@@ -200,7 +199,7 @@ public final class LED extends Subsystem {
     }
 
     public Command breath(final DigitalOutputDutyCycle color, final int frequency) {
-        return new SubsystemCommand("fade", this) {
+        return new Command("fade", this) {
             // Approx how often execute is called
             private static final double EXEC_PERIOD = 20 * 0.001;
             private static final double DUTY_CYCLE_CHANGE = 2.0;
@@ -250,7 +249,7 @@ public final class LED extends Subsystem {
 
     @Display(1000)
     public Command notSeizure(final int numberOfBlinks) {
-        return new SubsystemCommand(this) {
+        return new Command(this) {
             private double lastUpdateTime = System.currentTimeMillis();
             private boolean isOn = true;
             private double count;
@@ -292,7 +291,7 @@ public final class LED extends Subsystem {
 
     @Display(1000)
     public Command rainbow(final int numberOfBlinks) {
-        return new SubsystemCommand(this) {
+        return new Command(this) {
             private double lastUpdateTime = System.currentTimeMillis();
             private final Random rand = new Random();
             private double count;

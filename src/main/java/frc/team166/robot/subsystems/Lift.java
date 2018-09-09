@@ -13,7 +13,6 @@ import frc.team166.chopshoplib.Display;
 import frc.team166.chopshoplib.Resettable;
 import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.commands.CommandChain;
-import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.chopshoplib.outputs.SendableSpeedController;
 import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.Robot;
@@ -132,7 +131,7 @@ public final class Lift extends PIDSubsystem implements Resettable {
     }
 
     public Command raiseLiftALittle() {
-        return new SubsystemCommand("Raise Lift A Little", this) {
+        return new Command("Raise Lift A Little", this) {
             @Override
             protected void initialize() {
                 setTimeout(2.5);
@@ -160,7 +159,7 @@ public final class Lift extends PIDSubsystem implements Resettable {
     }
 
     public Command goToHeight(final LiftHeights height, final boolean isHighGear) {
-        return new SubsystemCommand(this) {
+        return new Command(this) {
             @Override
             protected void initialize() {
                 doDisengageBrake();
@@ -180,7 +179,7 @@ public final class Lift extends PIDSubsystem implements Resettable {
     }
 
     public Command manualLift(final XboxController controller) {
-        return new SubsystemCommand(this) {
+        return new Command(this) {
             @Override
             protected void initialize() {
                 disable();
@@ -221,7 +220,7 @@ public final class Lift extends PIDSubsystem implements Resettable {
 
     @Display(8)
     public Command moveLiftByInches(final double inches) {
-        return new SubsystemCommand(this) {
+        return new Command(this) {
             private double destinationHeight;
 
             @Override
@@ -259,7 +258,7 @@ public final class Lift extends PIDSubsystem implements Resettable {
     }
 
     public Command goUp() {
-        return new SubsystemCommand(this) {
+        return new Command(this) {
             @Override
             protected void initialize() {
                 doDisengageBrake();
@@ -278,7 +277,7 @@ public final class Lift extends PIDSubsystem implements Resettable {
     }
 
     public Command goDown() {
-        return new SubsystemCommand(this) {
+        return new Command(this) {
             @Override
             protected void initialize() {
                 doDisengageBrake();
@@ -298,7 +297,7 @@ public final class Lift extends PIDSubsystem implements Resettable {
     }
 
     public Command lowerLiftToLimitSwitch() {
-        return new SubsystemCommand(this) {
+        return new Command(this) {
             @Override
             protected void initialize() {
                 doDisengageBrake();
@@ -317,7 +316,8 @@ public final class Lift extends PIDSubsystem implements Resettable {
     }
 
     public Command climbUp() {
-        return new CommandChain("Climb Up").then(disengageBrake())
+        return new CommandChain("Climb Up")
+                .then(disengageBrake())
                 .then(shiftToHighGear())
                 .then(goToHeight(LiftHeights.CLIMB, true))
                 .then(shiftToLowGear())

@@ -40,14 +40,20 @@ repositories {
         name "ChopShopLib"
         url "https://chopshop-166.github.io/chopshoplib/"
     }
+    maven {
+        name "WPILib Development"
+        url 'http://first.wpi.edu/FRC/roborio/maven/development/'
+    }
 }
 // Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
 // and NavX.
 dependencies {
     compile wpilib()
+    compile group: 'edu.wpi.first.wpilibj', name: 'wpilibj-java', version: '2018.4.1-20180902173235-1178-g0b113ad'
+    compile group: 'edu.wpi.first.cameraserver', name: 'cameraserver-java', version: '2018.4.1-20180902173235-1178-g0b113ad'
     compile ctre()
     compile navx()
-    compile group: 'frc.team166', name: 'chopshoplib', version: '2019.0.0-alpha2-SNAPSHOT', changing: true
+    compile group: 'frc.team166', name: 'chopshoplib', version: '2019.0.0-alpha3-SNAPSHOT', changing: true
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
