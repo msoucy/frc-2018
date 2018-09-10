@@ -32,9 +32,9 @@ public class Robot extends CommandRobot {
     public final Lift lift = new Lift(robotMap.getLift());
 
     // Joysticks
-    public static final ButtonJoystick leftDriveStick = new ButtonJoystick(0);
-    public static final ButtonJoystick rightDriveStick = new ButtonJoystick(1);
-    public static final ButtonXboxController xBoxTempest = new ButtonXboxController(2);
+    public static final ButtonJoystick LEFT_DRIVE_STICK = new ButtonJoystick(0);
+    public static final ButtonJoystick RIGHT_DRIVE_STICK = new ButtonJoystick(1);
+    public static final ButtonXboxController COPILOT = new ButtonXboxController(2);
 
     private Command autoCommand;
     final private SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -57,19 +57,19 @@ public class Robot extends CommandRobot {
 
         DashboardUtils.initialize(this);
 
-        xBoxTempest.getButton(XBoxButton.Y)
+        COPILOT.getButton(XBoxButton.Y)
                 .whenPressed(manipulator.CloseOuterManipulator());
-        xBoxTempest.getButton(XBoxButton.X)
+        COPILOT.getButton(XBoxButton.X)
                 .whenPressed(manipulator.OpenOuterManipulator());
 
-        xBoxTempest.getButton(XBoxButton.A)
+        COPILOT.getButton(XBoxButton.A)
                 .whileHeld(manipulator.ManipulatorIntakeHeld());
-        xBoxTempest.getButton(XBoxButton.B)
+        COPILOT.getButton(XBoxButton.B)
                 .whileHeld(manipulator.ManipulatorDischargeHeld());
 
-        rightDriveStick.getButton(1)
+        RIGHT_DRIVE_STICK.getButton(1)
                 .whenPressed(manipulator.OpenInnerManipulator());
-        rightDriveStick.getButton(2)
+        RIGHT_DRIVE_STICK.getButton(2)
                 .whenPressed(manipulator.CloseInnerManipulator());
     }
 
@@ -169,7 +169,7 @@ public class Robot extends CommandRobot {
     public Command cubePickupWithLights(final int blinkCount) {
         CommandChain chain = new CommandChain("Cube Pickup with Lights");
         chain.then(manipulator.CubePickup())
-                .then(rumble(xBoxTempest))
+                .then(rumble(COPILOT))
                 .then(led.blinkGreen(blinkCount));
         return chain;
     }

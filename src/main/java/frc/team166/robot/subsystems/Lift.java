@@ -127,7 +127,7 @@ public final class Lift extends PIDSubsystem implements Resettable {
     // does not do anything
     @Override
     public void initDefaultCommand() {
-        setDefaultCommand(manualLift(Robot.xBoxTempest));
+        setDefaultCommand(manualLift(Robot.COPILOT));
     }
 
     public Command raiseLiftALittle() {

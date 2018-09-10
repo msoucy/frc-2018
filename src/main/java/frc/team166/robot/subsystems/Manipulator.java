@@ -113,7 +113,7 @@ public final class Manipulator extends PIDSubsystem implements Resettable {
 
     public Command DefaultCommand() {
         return new ActionCommand("Manipulator Default Command", this, () -> {
-            DeployManipulatorWithJoystick(Robot.xBoxTempest).start();
+            DeployManipulatorWithJoystick(Robot.COPILOT).start();
         });
     }
 

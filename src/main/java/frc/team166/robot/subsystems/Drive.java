@@ -74,7 +74,7 @@ public final class Drive extends Subsystem implements Resettable {
     // it's gyro value is 0
     @Override
     public void initDefaultCommand() {
-        setDefaultCommand(joystickArcadeTwoStick(Robot.leftDriveStick, Robot.rightDriveStick));
+        setDefaultCommand(joystickArcadeTwoStick(Robot.LEFT_DRIVE_STICK, Robot.RIGHT_DRIVE_STICK));
     }
 
     @Override
