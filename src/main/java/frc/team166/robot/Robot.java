@@ -74,19 +74,6 @@ public class Robot extends CommandRobot {
     }
 
     /**
-     * This function is called once each time the robot enters Disabled mode. You
-     * can use it to reset any subsystem information you want to clear when the
-     * robot is disabled.
-     */
-    @Override
-    public void disabledInit() {
-        drive.reset();
-        lift.reset();
-        manipulator.reset();
-
-    }
-
-    /**
      * This autonomous (along with the chooser code above) shows how to select
      * between different autonomous modes using the dashboard. The sendable chooser
      * code works with the Java SmartDashboard. If you prefer the LabVIEW Dashboard,
@@ -119,7 +106,7 @@ public class Robot extends CommandRobot {
     }
 
     public Command crossLineAndDropCube() {
-        CommandChain chain = new CommandChain("Cross Line And Drop Cube");
+        final CommandChain chain = new CommandChain("Cross Line And Drop Cube");
         chain.then(lift.moveLiftByInches(-1))
                 .then(drive.driveTime(3.6, 0.6), lift.moveLiftByInches(26))
                 .then(manipulator.CubeEject());
@@ -141,7 +128,7 @@ public class Robot extends CommandRobot {
                 degrees = -90.00;
             }
         }
-        CommandChain auto = new CommandChain("Mid Auto");
+        final CommandChain auto = new CommandChain("Mid Auto");
         auto.then(drive.driveTime(.75, .6))
                 .then(drive.turnByDegrees(degrees))
                 .then(drive.driveTime(.5, .6))
@@ -167,7 +154,7 @@ public class Robot extends CommandRobot {
     }
 
     public Command cubePickupWithLights(final int blinkCount) {
-        CommandChain chain = new CommandChain("Cube Pickup with Lights");
+        final CommandChain chain = new CommandChain("Cube Pickup with Lights");
         chain.then(manipulator.CubePickup())
                 .then(rumble(COPILOT))
                 .then(led.blinkGreen(blinkCount));
