@@ -119,9 +119,11 @@ public class Robot extends CommandRobot {
     }
 
     public Command crossLineAndDropCube() {
-        return new CommandChain("Cross Line And Drop Cube").then(lift.moveLiftByInches(-1))
+        CommandChain chain = new CommandChain("Cross Line And Drop Cube");
+        chain.then(lift.moveLiftByInches(-1))
                 .then(drive.driveTime(3.6, 0.6), lift.moveLiftByInches(26))
                 .then(manipulator.CubeEject());
+        return chain;
     }
 
     public Command midAuto() {
@@ -139,11 +141,13 @@ public class Robot extends CommandRobot {
                 degrees = -90.00;
             }
         }
-        return new CommandChain("Mid Auto").then(drive.driveTime(.75, .6))
+        CommandChain auto = new CommandChain("Mid Auto");
+        auto.then(drive.driveTime(.75, .6))
                 .then(drive.turnByDegrees(degrees))
                 .then(drive.driveTime(.5, .6))
                 .then(drive.turnByDegrees(-degrees))
                 .then(drive.driveTime(.3, .6), lift.raiseLiftALittle());
+        return auto;
     }
 
     public Command rumble(final XboxController controller) {
@@ -163,9 +167,11 @@ public class Robot extends CommandRobot {
     }
 
     public Command cubePickupWithLights(final int blinkCount) {
-        return new CommandChain("Cube Pickup with Lights").then(manipulator.CubePickup())
+        CommandChain chain = new CommandChain("Cube Pickup with Lights");
+        chain.then(manipulator.CubePickup())
                 .then(rumble(xBoxTempest))
                 .then(led.blinkGreen(blinkCount));
+        return chain;
     }
 
 }

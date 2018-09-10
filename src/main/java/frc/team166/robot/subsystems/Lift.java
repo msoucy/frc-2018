@@ -316,13 +316,14 @@ public final class Lift extends PIDSubsystem implements Resettable {
     }
 
     public Command climbUp() {
-        return new CommandChain("Climb Up")
-                .then(disengageBrake())
+        CommandChain chain = new CommandChain("Climb Up");
+        chain.then(disengageBrake())
                 .then(shiftToHighGear())
                 .then(goToHeight(LiftHeights.CLIMB, true))
                 .then(shiftToLowGear())
                 .then(goToHeight(LiftHeights.SCALE_LOW, false))
                 .then(engageBrake());
+        return chain;
     }
 
     public Command shiftToHighGear() {

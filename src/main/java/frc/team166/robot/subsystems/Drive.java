@@ -230,8 +230,8 @@ public final class Drive extends Subsystem implements Resettable {
     }
 
     public Command driveBox() {
-        return new CommandChain("Box Drive")
-                .then(driveTime(1, .8))
+        CommandChain box = new CommandChain("Box Drive");
+        box.then(driveTime(1, .8))
                 .then(turnByDegrees(90))
                 .then(driveTime(.5, .8))
                 .then(turnByDegrees(90))
@@ -239,5 +239,6 @@ public final class Drive extends Subsystem implements Resettable {
                 .then(turnByDegrees(90))
                 .then(driveTime(.5, .8))
                 .then(turnByDegrees(90));
+        return box;
     }
 }
