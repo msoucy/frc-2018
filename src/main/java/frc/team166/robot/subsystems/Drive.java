@@ -52,14 +52,6 @@ public final class Drive extends Subsystem implements Resettable {
             angleCorrection = value;
         });
 
-        // SmartDashboard.putData("XBox", XboxArcade());
-        // SmartDashboard.putData("Drive 2s", DriveTime(2, .6));
-        // SmartDashboard.putData("Drive Box", DriveBox());
-
-        addChild(tempestGyro);
-        addChild(driveTrain);
-        addChild(pidController);
-        addChild("Front LiDAR", frontLidar);
         tempestGyro.setSensitivity(0.0125 / 5.45);
         pidController.setOutputRange(-0.6, 0.6);
         pidController.setPercentTolerance(0.90);

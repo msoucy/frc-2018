@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import frc.team166.chopshoplib.Display;
 import frc.team166.chopshoplib.Resettable;
 import frc.team166.chopshoplib.commands.ActionCommand;
+import frc.team166.chopshoplib.commands.SetCommand;
 import frc.team166.chopshoplib.outputs.SendableSpeedController;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
@@ -30,6 +31,26 @@ public final class Manipulator extends PIDSubsystem implements Resettable {
     private static final double I = 0.0;
     private static final double D = 0.0;
     private static final double F = 0.0;
+
+    public enum State {
+        CLOSED,
+        OPEN;
+    }
+
+    public enum MotorState {
+        INTAKE(-0.6),
+        DISCHARGE(0.6);
+
+        private double value;
+
+        MotorState(final double value) {
+            this.value = value;
+        }
+
+        double getValue() {
+            return value;
+        }
+    }
 
     public Manipulator(final RobotMap map) {
         super("Manipulator", P, I, D, F);
@@ -53,20 +74,20 @@ public final class Manipulator extends PIDSubsystem implements Resettable {
         deploymentMotor.stopMotor();
     }
 
-    private void openInnerManipulator() {
-        innerSolenoid.set(Value.kForward);
+    private void setInner(final State state) {
+        if (state == State.OPEN) {
+            innerSolenoid.set(Value.kForward);
+        } else {
+            innerSolenoid.set(Value.kReverse);
+        }
     }
 
-    private void closeInnerManipulator() {
-        innerSolenoid.set(Value.kReverse);
-    }
-
-    private void openOuterManipulator() {
-        outerSolenoid.set(Value.kForward);
-    }
-
-    private void closeOuterManipulator() {
-        outerSolenoid.set(Value.kReverse);
+    private void setOuter(final State state) {
+        if (state == State.OPEN) {
+            outerSolenoid.set(Value.kForward);
+        } else {
+            outerSolenoid.set(Value.kReverse);
+        }
     }
 
     private double getIRDistance() {
@@ -83,68 +104,44 @@ public final class Manipulator extends PIDSubsystem implements Resettable {
         deploymentMotor.set(output);
     }
 
-    /**
-     * Sets motors to intake mode
-     *
-     * <p>
-     * Turns motors on to intake a cube
-     */
-    private void setMotorsToIntake() {
-        // change once you find optimal motor speed
-        rollers.set(-0.6);
-    }
-
-    /**
-     * Sets motors to discharge mode
-     *
-     * <p>
-     * Turns motors on to discharge a cube
-     */
-    private void setMotorsToDischarge() {
-        // change once you find optimal motor speed
-        rollers.set(0.6);
+    private void setMotors(final MotorState state) {
+        rollers.set(state.getValue());
     }
 
     // COMMANDS
     @Override
     public void initDefaultCommand() {
-        setDefaultCommand(DefaultCommand());
+        setDefaultCommand(DeployManipulatorWithJoystick(Robot.COPILOT));
     };
 
-    public Command DefaultCommand() {
-        return new ActionCommand("Manipulator Default Command", this, () -> {
-            DeployManipulatorWithJoystick(Robot.COPILOT).start();
-        });
+    @Display
+    public Command OpenOuterManipulator() {
+        return new SetCommand<>("Open Outer Manipulator", this, State.OPEN, this::setOuter);
     }
 
     @Display
     public Command CloseOuterManipulator() {
-        return new ActionCommand("Close Outer Manipulator", this, this::closeOuterManipulator);
-    }
-
-    @Display
-    public Command OpenOuterManipulator() {
-        return new ActionCommand("Open Outer Manipulator", this, this::openOuterManipulator);
+        return new SetCommand<>("Close Outer", this, State.CLOSED, this::setOuter);
     }
 
     @Display
     public Command OpenInnerManipulator() {
-        return new ActionCommand("Open Inner Manipulator", this, this::openInnerManipulator);
+        return new SetCommand<>("Open Inner", this, State.OPEN, this::setInner);
     }
 
     @Display
     public Command CloseInnerManipulator() {
-        return new ActionCommand("Close Inner Manipulator", this, this::closeInnerManipulator);
+        return new SetCommand<>("Close Inner", this, State.CLOSED, this::setInner);
     }
 
     @Display
     public Command ManipulatorDischarge() {
-        return new ActionCommand("DisCharge Manipulator", this, this::setMotorsToDischarge);
+        return new SetCommand<>("DisCharge", this, MotorState.DISCHARGE, this::setMotors);
     }
 
     @Display
     public Command ManipulatorIntake() {
-        return new ActionCommand("Intake Manipulator", this, this::setMotorsToIntake);
+        return new SetCommand<>("Intake", this, MotorState.INTAKE, this::setMotors);
     }
 
     public Command ManipulatorIntakeHeld() {
@@ -152,7 +149,7 @@ public final class Manipulator extends PIDSubsystem implements Resettable {
 
             @Override
             protected void initialize() {
-                setMotorsToIntake();
+                setMotors(MotorState.INTAKE);
             }
 
             @Override
@@ -173,7 +170,7 @@ public final class Manipulator extends PIDSubsystem implements Resettable {
 
             @Override
             protected void initialize() {
-                setMotorsToDischarge();
+                setMotors(MotorState.DISCHARGE);
             }
 
             @Override
@@ -198,7 +195,7 @@ public final class Manipulator extends PIDSubsystem implements Resettable {
                         .getGameSpecificMessage();
 
                 if (gameData.length() > 0 && gameData.charAt(0) == 'R') {
-                    setMotorsToDischarge();
+                    setMotors(MotorState.DISCHARGE);
                 }
             }
 
@@ -219,8 +216,8 @@ public final class Manipulator extends PIDSubsystem implements Resettable {
 
             @Override
             protected void initialize() {
-                openOuterManipulator();
-                setMotorsToIntake();
+                setOuter(State.OPEN);
+                setMotors(MotorState.INTAKE);
             }
 
             @Override
@@ -230,7 +227,7 @@ public final class Manipulator extends PIDSubsystem implements Resettable {
 
             @Override
             protected void end() {
-                closeOuterManipulator();
+                setOuter(State.CLOSED);
                 rollers.stopMotor();
             }
         };

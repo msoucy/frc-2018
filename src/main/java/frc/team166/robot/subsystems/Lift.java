@@ -13,6 +13,7 @@ import frc.team166.chopshoplib.Display;
 import frc.team166.chopshoplib.Resettable;
 import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.commands.CommandChain;
+import frc.team166.chopshoplib.commands.SetCommand;
 import frc.team166.chopshoplib.outputs.SendableSpeedController;
 import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.Robot;
@@ -62,6 +63,11 @@ public final class Lift extends PIDSubsystem implements Resettable {
     private enum Gear {
         LOW,
         HIGH;
+    }
+
+    private enum BrakeState {
+        DISENGAGED,
+        ENGAGED;
     }
 
     // sets the maximum lidar distance before switching to the encoder
@@ -124,6 +130,22 @@ public final class Lift extends PIDSubsystem implements Resettable {
         return distance;
     }
 
+    private void setGear(final Gear gear) {
+        if (gear == Gear.LOW) {
+            liftTransmission.set(Value.kForward);
+        } else {
+            liftTransmission.set(Value.kReverse);
+        }
+    }
+
+    private void setBrakeState(final BrakeState state) {
+        if (state == BrakeState.ENGAGED) {
+            liftBrake.set(Value.kReverse);
+        } else {
+            liftBrake.set(Value.kForward);
+        }
+    }
+
     // does not do anything
     @Override
     public void initDefaultCommand() {
@@ -135,7 +157,7 @@ public final class Lift extends PIDSubsystem implements Resettable {
             @Override
             protected void initialize() {
                 setTimeout(2.5);
-                doDisengageBrake();
+                setBrakeState(BrakeState.DISENGAGED);
                 liftDrive.set(0.9);
             }
 
@@ -152,30 +174,18 @@ public final class Lift extends PIDSubsystem implements Resettable {
             @Override
             protected void end() {
                 liftDrive.stopMotor();
-                doEngageBrake();
+                setBrakeState(BrakeState.ENGAGED);
                 liftDrive.set(0);
             }
         };
     }
 
-    public Command goToHeight(final LiftHeights height, final boolean isHighGear) {
-        return new Command(this) {
-            @Override
-            protected void initialize() {
-                doDisengageBrake();
-                if (isHighGear) {
-                    setGear(Gear.HIGH);
-                } else {
-                    setGear(Gear.LOW);
-                }
-                setSetpoint(height.get());
-            }
-
-            @Override
-            protected boolean isFinished() {
-                return true;
-            }
-        };
+    public Command goToHeight(final LiftHeights height, final Gear gearState) {
+        return new ActionCommand(this, () -> {
+            setBrakeState(BrakeState.DISENGAGED);
+            setGear(gearState);
+            setSetpoint(height.get());
+        });
     }
 
     public Command manualLift(final XboxController controller) {
@@ -191,10 +201,9 @@ public final class Lift extends PIDSubsystem implements Resettable {
                         - controller.getTriggerAxis(Hand.kLeft);
 
                 if (elevatorControl >= .1 || elevatorControl <= -0.1) {
-                    doDisengageBrake();
+                    setBrakeState(BrakeState.DISENGAGED);
                 } else {
-                    doEngageBrake();
-
+                    setBrakeState(BrakeState.ENGAGED);
                 }
                 if (elevatorControl > 0 && !topLimitSwitch.get()) {
                     liftDrive.set(controller.getTriggerAxis(Hand.kLeft));
@@ -226,7 +235,7 @@ public final class Lift extends PIDSubsystem implements Resettable {
             @Override
             protected void initialize() {
                 disable();
-                doDisengageBrake();
+                setBrakeState(BrakeState.DISENGAGED);
                 destinationHeight = encoder.getDistance() + inches;
                 if (destinationHeight > encoder.getDistance()) {
                     liftDrive.set(0.75);
@@ -252,7 +261,7 @@ public final class Lift extends PIDSubsystem implements Resettable {
             @Override
             protected void end() {
                 liftDrive.set(0);
-                doEngageBrake();
+                setBrakeState(BrakeState.ENGAGED);
             }
         };
     }
@@ -261,7 +270,7 @@ public final class Lift extends PIDSubsystem implements Resettable {
         return new Command(this) {
             @Override
             protected void initialize() {
-                doDisengageBrake();
+                setBrakeState(BrakeState.DISENGAGED);
             }
 
             @Override
@@ -280,7 +289,7 @@ public final class Lift extends PIDSubsystem implements Resettable {
         return new Command(this) {
             @Override
             protected void initialize() {
-                doDisengageBrake();
+                setBrakeState(BrakeState.DISENGAGED);
             }
 
             @Override
@@ -300,7 +309,7 @@ public final class Lift extends PIDSubsystem implements Resettable {
         return new Command(this) {
             @Override
             protected void initialize() {
-                doDisengageBrake();
+                setBrakeState(BrakeState.DISENGAGED);
             }
 
             @Override
@@ -319,46 +328,26 @@ public final class Lift extends PIDSubsystem implements Resettable {
         final CommandChain chain = new CommandChain("Climb Up");
         chain.then(disengageBrake())
                 .then(shiftToHighGear())
-                .then(goToHeight(LiftHeights.CLIMB, true))
+                .then(goToHeight(LiftHeights.CLIMB, Gear.HIGH))
                 .then(shiftToLowGear())
-                .then(goToHeight(LiftHeights.SCALE_LOW, false))
+                .then(goToHeight(LiftHeights.SCALE_LOW, Gear.LOW))
                 .then(engageBrake());
         return chain;
     }
 
     public Command shiftToHighGear() {
-        return new ActionCommand("Shift To High Gear", this, () -> {
-            setGear(Gear.HIGH);
-        });
+        return new SetCommand<>("Shift To High Gear", this, Gear.HIGH, this::setGear);
     }
 
     public Command shiftToLowGear() {
-        return new ActionCommand("Shift To Low Gear", this, () -> {
-            setGear(Gear.LOW);
-        });
-    }
-
-    private void setGear(final Gear gear) {
-        if (gear == Gear.LOW) {
-            liftTransmission.set(Value.kForward);
-        } else {
-            liftTransmission.set(Value.kReverse);
-        }
+        return new SetCommand<>("Shift To Low Gear", this, Gear.LOW, this::setGear);
     }
 
     public Command engageBrake() {
-        return new ActionCommand("Brake", this, this::doEngageBrake);
-    }
-
-    private void doEngageBrake() {
-        liftBrake.set(Value.kReverse);
+        return new SetCommand<>("Brake", this, BrakeState.ENGAGED, this::setBrakeState);
     }
 
     public Command disengageBrake() {
-        return new ActionCommand("Don't Brake", this, this::doDisengageBrake);
-    }
-
-    private void doDisengageBrake() {
-        liftBrake.set(Value.kReverse);
+        return new SetCommand<>("Don't Brake", this, BrakeState.DISENGAGED, this::setBrakeState);
     }
 }
