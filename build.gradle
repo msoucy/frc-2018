@@ -53,7 +53,7 @@ dependencies {
     compile group: 'edu.wpi.first.cameraserver', name: 'cameraserver-java', version: '2018.4.1-20180902173235-1178-g0b113ad'
     compile ctre()
     compile navx()
-    compile group: 'frc.team166', name: 'chopshoplib', version: '2019.0.0-alpha3-SNAPSHOT', changing: true
+    compile group: 'frc.team166', name: 'chopshoplib', version: '2019.0.0-alpha3', changing: true
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')

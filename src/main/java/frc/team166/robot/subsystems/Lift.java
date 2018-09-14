@@ -122,10 +122,12 @@ public final class Lift extends PIDSubsystem implements Resettable {
 
     public double findLiftHeight() {
         double distance = encoder.getDistance();
-        if (Preferences.getInstance()
-                .getBoolean("Use LIDAR", false)
-                && liftLidar.getDistance(true) > MAX_LIDAR_DISTANCE) {
-            distance = liftLidar.getDistance(true);
+        final Preferences prefs = Preferences.getInstance();
+        if (prefs.getBoolean("Use LIDAR", false)) {
+            final double lidarDistance = liftLidar.getDistance(Lidar.MeasurementType.INCHES);
+            if(lidarDistance > MAX_LIDAR_DISTANCE) {
+                distance = lidarDistance;
+            }
         }
         return distance;
     }

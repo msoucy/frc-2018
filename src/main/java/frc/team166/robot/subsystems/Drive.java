@@ -147,7 +147,7 @@ public final class Drive extends Subsystem implements Resettable {
 
             @Override
             protected boolean isFinished() {
-                return frontLidar.getDistance(true) <= inches;
+                return frontLidar.getDistance(Lidar.MeasurementType.INCHES) <= inches;
 
             }
 
