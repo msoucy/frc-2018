@@ -2,43 +2,41 @@
     // See https://go.microsoft.com/fwlink/?LinkId=733558
     // for the documentation about the tasks.json format
     "version": "2.0.0",
+    "type": "shell",
+    "windows": {
+        "command": ".\\gradlew"
+    },
+    "linux": {
+        "command": "./gradlew"
+    },
+    "group": "none",
+    "problemMatcher": [],
     "tasks": [
         {
-            "label": "Build",
-            "type": "shell",
-            "command": ".\\gradlew build",
+            "label": "build",
+            "args": [],
             "group": {
                 "kind": "build",
                 "isDefault": true
-            },
-            "problemMatcher": []
+            }
         },
         {
-            "label": "Clean",
-            "type": "shell",
-            "command": ".\\gradlew clean",
-            "group": "build",
-            "problemMatcher": []
+            "label": "clean",
+            "args": []
         },
         {
-            "label": "Deploy",
-            "type": "shell",
-            "command": ".\\gradlew deploy --offline",
-            "group": "build",
-            "problemMatcher": []
+            "label": "deploy",
+            "args": [
+                "--offline"
+            ]
         },
         {
-            "label": "Riolog",
-            "command": ".\\gradlew riolog",
-            "group": "build",
-            "problemMatcher": []
+            "label": "riolog",
+            "args": []
         },
         {
-            "label": "Shuffleboard",
-            "type": "shell",
-            "command": ".\\gradlew shuffleboard",
-            "group": "build",
-            "problemMatcher": []
+            "label": "shuffleboard",
+            "args": []
         }
     ]
 }
