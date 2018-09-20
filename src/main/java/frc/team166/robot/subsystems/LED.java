@@ -5,10 +5,10 @@ import java.util.Random;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.Display;
-import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.outputs.DigitalOutputDutyCycle;
 import frc.team166.robot.RobotMap;
 
@@ -30,7 +30,7 @@ public final class LED extends Subsystem {
         green = map.getGreen();
         blue = map.getBlue();
 
-        SmartDashboard.putData("All Off", new ActionCommand("OFF GERALD", this, this::allOff));
+        SmartDashboard.putData("All Off", new InstantCommand("OFF GERALD", this, this::allOff));
     }
 
     // METHODS
@@ -234,7 +234,7 @@ public final class LED extends Subsystem {
 
     @Display
     public Command breathTeamColor() {
-        return new ActionCommand("Breath Team Color", this, () -> {
+        return new InstantCommand("Breath Team Color", this, () -> {
             green.disablePWM();
             if (isBlueTeam()) {
                 red.disablePWM();

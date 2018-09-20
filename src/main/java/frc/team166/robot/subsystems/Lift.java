@@ -8,10 +8,10 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import frc.team166.chopshoplib.Display;
 import frc.team166.chopshoplib.Resettable;
-import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.commands.SetCommand;
 import frc.team166.chopshoplib.outputs.SendableSpeedController;
@@ -125,7 +125,7 @@ public final class Lift extends PIDSubsystem implements Resettable {
         final Preferences prefs = Preferences.getInstance();
         if (prefs.getBoolean("Use LIDAR", false)) {
             final double lidarDistance = liftLidar.getDistance(Lidar.MeasurementType.INCHES);
-            if(lidarDistance > MAX_LIDAR_DISTANCE) {
+            if (lidarDistance > MAX_LIDAR_DISTANCE) {
                 distance = lidarDistance;
             }
         }
@@ -183,7 +183,7 @@ public final class Lift extends PIDSubsystem implements Resettable {
     }
 
     public Command goToHeight(final LiftHeights height, final Gear gearState) {
-        return new ActionCommand(this, () -> {
+        return new InstantCommand(this, () -> {
             setBrakeState(BrakeState.DISENGAGED);
             setGear(gearState);
             setSetpoint(height.get());

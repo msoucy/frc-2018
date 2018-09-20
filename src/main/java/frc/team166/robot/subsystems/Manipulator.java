@@ -9,10 +9,10 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import frc.team166.chopshoplib.Display;
 import frc.team166.chopshoplib.Resettable;
-import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.commands.SetCommand;
 import frc.team166.chopshoplib.outputs.SendableSpeedController;
 import frc.team166.robot.Robot;
@@ -271,7 +271,7 @@ public final class Manipulator extends PIDSubsystem implements Resettable {
     }
 
     public Command enablePID() {
-        return new ActionCommand("Enable PID", this, this::enable);
+        return new InstantCommand("Enable PID", this, this::enable);
     }
 
 }

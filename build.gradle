@@ -49,8 +49,8 @@ repositories {
 // and NavX.
 dependencies {
     compile wpilib()
-    compile group: 'edu.wpi.first.wpilibj', name: 'wpilibj-java', version: '2018.4.1-20180902173235-1178-g0b113ad'
-    compile group: 'edu.wpi.first.cameraserver', name: 'cameraserver-java', version: '2018.4.1-20180902173235-1178-g0b113ad'
+    compile group: 'edu.wpi.first.wpilibj', name: 'wpilibj-java', version: '2018.4.1-20180920141831-1187-gd2a5aaa'
+    compile group: 'edu.wpi.first.cameraserver', name: 'cameraserver-java', version: '2018.4.1-20180920141831-1187-gd2a5aaa'
     compile ctre()
     compile navx()
     compile group: 'frc.team166', name: 'chopshoplib', version: '2019.0.0-alpha3', changing: true
