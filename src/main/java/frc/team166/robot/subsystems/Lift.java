@@ -214,7 +214,6 @@ public final class Lift extends PIDSubsystem implements Resettable {
                 } else {
                     liftDrive.set(elevatorControl);
                 }
-
             }
 
             @Override
@@ -297,7 +296,6 @@ public final class Lift extends PIDSubsystem implements Resettable {
             @Override
             protected void execute() {
                 setSetpointRelative(-1);
-
             }
 
             @Override

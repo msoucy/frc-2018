@@ -39,6 +39,7 @@ public final class Manipulator extends PIDSubsystem implements Resettable {
 
     public enum MotorState {
         INTAKE(-0.6),
+        STOPPED(0.0),
         DISCHARGE(0.6);
 
         private double value;
@@ -160,7 +161,7 @@ public final class Manipulator extends PIDSubsystem implements Resettable {
 
             @Override
             protected void end() {
-                rollers.set(0);
+                setMotors(MotorState.STOPPED);
             }
         };
     }
@@ -180,7 +181,7 @@ public final class Manipulator extends PIDSubsystem implements Resettable {
 
             @Override
             protected void end() {
-                rollers.set(0);
+                setMotors(MotorState.STOPPED);
             }
         };
     }
@@ -206,7 +207,7 @@ public final class Manipulator extends PIDSubsystem implements Resettable {
 
             @Override
             protected void end() {
-                rollers.stopMotor();
+                setMotors(MotorState.STOPPED);
             }
         };
     }
@@ -228,7 +229,7 @@ public final class Manipulator extends PIDSubsystem implements Resettable {
             @Override
             protected void end() {
                 setOuter(State.CLOSED);
-                rollers.stopMotor();
+                setMotors(MotorState.STOPPED);
             }
         };
     }
