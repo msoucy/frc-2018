@@ -2,7 +2,7 @@ import java.text.SimpleDateFormat
 
 plugins {
     id "java"
-    id "findbugs"
+    id "com.github.spotbugs" version "1.6.6"
     id "pmd"
     id "edu.wpi.first.GradleRIO" version "2019.0.0-alpha-3"
 }
@@ -96,7 +96,11 @@ task versionTxt() {
 
 compileJava.dependsOn versionTxt
 
-tasks.withType(FindBugs) {
+ext {
+    SpotBugsTask = com.github.spotbugs.SpotBugsTask
+}
+
+tasks.withType(SpotBugsTask) {
     reports {
         xml.enabled false
         html.enabled true
@@ -104,13 +108,13 @@ tasks.withType(FindBugs) {
     }
 }
 
-findbugs {
+spotbugs {
     ignoreFailures = true
     excludeFilter = file("$rootProject.projectDir/config/findbugs-ignore.xml")
 }
 
 pmd {
-    toolVersion = "6.7.0"
+    toolVersion = "6.10.0"
     ignoreFailures = true
     ruleSets = []
     ruleSetFiles = files("$rootProject.projectDir/config/pmd-ruleset.xml")
