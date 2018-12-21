@@ -9,9 +9,9 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import frc.team166.chopshoplib.outputs.DigitalOutputDutyCycle;
-import frc.team166.chopshoplib.outputs.SendableSpeedController;
-import frc.team166.chopshoplib.sensors.Lidar;
+import com.chopshop166.chopshoplib.outputs.DigitalOutputDutyCycle;
+import com.chopshop166.chopshoplib.outputs.SendableSpeedController;
+import com.chopshop166.chopshoplib.sensors.Lidar;
 
 public interface RobotMap {
 

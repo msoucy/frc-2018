@@ -31,15 +31,9 @@ deploy {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
-    maven {
-        name "Development ChopShopLib"
-        url "file://${projectDir}/../chopshoplib/build/repo"
-    }
-    maven {
-        name "ChopShopLib"
-        url "https://chopshop-166.github.io/chopshoplib/"
-    }
+    maven { url 'https://jitpack.io' }
     maven {
         name "WPILib Development"
         url 'http://first.wpi.edu/FRC/roborio/maven/development/'
@@ -53,7 +47,7 @@ dependencies {
     compile group: 'edu.wpi.first.cameraserver', name: 'cameraserver-java', version: '2018.4.1-20180920141831-1187-gd2a5aaa'
     compile ctre()
     compile navx()
-    compile group: 'frc.team166', name: 'chopshoplib', version: '2019.0.0-alpha3', changing: true
+    compile group: 'com.github.chopshop-166', name: 'chopshoplib', version: '2019.0.0-alpha4'
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')

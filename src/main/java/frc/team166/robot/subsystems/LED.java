@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.team166.chopshoplib.Display;
-import frc.team166.chopshoplib.outputs.DigitalOutputDutyCycle;
+import com.chopshop166.chopshoplib.Display;
+import com.chopshop166.chopshoplib.outputs.DigitalOutputDutyCycle;
 import frc.team166.robot.RobotMap;
 
 public final class LED extends Subsystem {

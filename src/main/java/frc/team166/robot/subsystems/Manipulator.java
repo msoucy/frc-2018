@@ -11,10 +11,10 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
-import frc.team166.chopshoplib.Display;
-import frc.team166.chopshoplib.Resettable;
-import frc.team166.chopshoplib.commands.SetCommand;
-import frc.team166.chopshoplib.outputs.SendableSpeedController;
+import com.chopshop166.chopshoplib.Display;
+import com.chopshop166.chopshoplib.Resettable;
+import com.chopshop166.chopshoplib.commands.SetCommand;
+import com.chopshop166.chopshoplib.outputs.SendableSpeedController;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 

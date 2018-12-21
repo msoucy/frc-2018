@@ -9,10 +9,10 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.team166.chopshoplib.Display;
-import frc.team166.chopshoplib.Resettable;
-import frc.team166.chopshoplib.commands.CommandChain;
-import frc.team166.chopshoplib.sensors.Lidar;
+import com.chopshop166.chopshoplib.Display;
+import com.chopshop166.chopshoplib.Resettable;
+import com.chopshop166.chopshoplib.commands.CommandChain;
+import com.chopshop166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
