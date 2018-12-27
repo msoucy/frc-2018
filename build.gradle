@@ -43,11 +43,12 @@ repositories {
 // and NavX.
 dependencies {
     compile wpilib()
-    compile group: 'edu.wpi.first.wpilibj', name: 'wpilibj-java', version: '2018.4.1-20180920141831-1187-gd2a5aaa'
-    compile group: 'edu.wpi.first.cameraserver', name: 'cameraserver-java', version: '2018.4.1-20180920141831-1187-gd2a5aaa'
+    compile group: 'edu.wpi.first.ntcore', name: 'ntcore-java', version: '2018.4.1-20181003000242-1213-gfd82153'
+    compile group: 'edu.wpi.first.wpilibj', name: 'wpilibj-java', version: '2018.4.1-20181003000242-1213-gfd82153'
+    compile group: 'edu.wpi.first.cameraserver', name: 'cameraserver-java', version: '2018.4.1-20181003000242-1213-gfd82153'
     compile ctre()
     compile navx()
-    compile group: 'com.github.chopshop-166', name: 'chopshoplib', version: '2019.0.0-alpha4'
+    compile group: 'com.chopshop166', name: 'chopshoplib', version: '2019.0.0-alpha6'
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')

@@ -1,6 +1,6 @@
 package frc.team166.robot;
 
-import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.XboxController;
@@ -45,7 +45,7 @@ public class Robot extends CommandRobot {
      */
     @Override
     public void robotInit() {
-        RobotUtils.logTelemetry();
+        DashboardUtils.logTelemetry();
         RobotUtils.clearPreferences();
 
         autoChooser.setDefaultOption("Default Auto", drive.driveTime(3, 0.6));
@@ -76,14 +76,12 @@ public class Robot extends CommandRobot {
     /**
      * This autonomous (along with the chooser code above) shows how to select
      * between different autonomous modes using the dashboard. The sendable chooser
-     * code works with the Java SmartDashboard. If you prefer the LabVIEW Dashboard,
-     * remove all of the chooser code and uncomment the getString code to get the
-     * auto name from the text box below the Gyro
+     * code works with the Java SmartDashboard.
      *
      * <p>
      * You can add additional auto modes by adding additional commands to the
      * chooser code above (like the commented example) or additional comparisons to
-     * the switch structure below with additional strings & commands.
+     * the switch structure below with additional strings and commands.
      */
     @Override
     public void autonomousInit() {
