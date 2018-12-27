@@ -80,17 +80,17 @@ def getGitHash = { -> runCommand "git", "describe", "--always" }
 
 def getGitBranch = { -> runCommand "git", "rev-parse", "--abbrev-ref", "HEAD" }
 
-def getGitFilesChanged = { -> runCommand("git", "diff", "--name-only", "HEAD") }
+def getGitFilesChanged = { -> runCommand "git", "diff", "--name-only", "HEAD" }
 
 task versionTxt() {
     doLast {
         String resourcesDir = "$projectDir/src/main/resources"
-        def logDirBase = new File(resourcesDir)
+        def logDirBase = file(resourcesDir)
         logDirBase.mkdirs()
-        new File("$resourcesDir/branch.txt").text = getGitBranch()
-        new File("$resourcesDir/commit.txt").text = getGitHash()
-        new File("$resourcesDir/changes.txt").text = getGitFilesChanged()
-        new File("$resourcesDir/buildtime.txt").text =
+        file("$resourcesDir/branch.txt").text = getGitBranch()
+        file("$resourcesDir/commit.txt").text = getGitHash()
+        file("$resourcesDir/changes.txt").text = getGitFilesChanged()
+        file("$resourcesDir/buildtime.txt").text =
                 new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())
     }
 }
