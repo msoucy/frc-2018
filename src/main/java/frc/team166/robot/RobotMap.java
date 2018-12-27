@@ -1,5 +1,9 @@
 package frc.team166.robot;
 
+import com.chopshop166.chopshoplib.outputs.DigitalOutputDutyCycle;
+import com.chopshop166.chopshoplib.outputs.SendableSpeedController;
+import com.chopshop166.chopshoplib.sensors.Lidar;
+
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
@@ -9,9 +13,6 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import com.chopshop166.chopshoplib.outputs.DigitalOutputDutyCycle;
-import com.chopshop166.chopshoplib.outputs.SendableSpeedController;
-import com.chopshop166.chopshoplib.sensors.Lidar;
 
 public interface RobotMap {
 

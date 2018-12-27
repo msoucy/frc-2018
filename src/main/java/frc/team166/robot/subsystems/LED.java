@@ -2,14 +2,15 @@ package frc.team166.robot.subsystems;
 
 import java.util.Random;
 
+import com.chopshop166.chopshoplib.Display;
+import com.chopshop166.chopshoplib.outputs.DigitalOutputDutyCycle;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import com.chopshop166.chopshoplib.Display;
-import com.chopshop166.chopshoplib.outputs.DigitalOutputDutyCycle;
 import frc.team166.robot.RobotMap;
 
 public final class LED extends Subsystem {
@@ -242,7 +243,6 @@ public final class LED extends Subsystem {
             } else {
                 blue.disablePWM();
                 breath(red, 2).start();
-
             }
         });
     }

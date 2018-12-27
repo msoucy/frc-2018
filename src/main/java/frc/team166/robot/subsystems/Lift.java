@@ -1,5 +1,12 @@
 package frc.team166.robot.subsystems;
 
+import com.chopshop166.chopshoplib.Display;
+import com.chopshop166.chopshoplib.Resettable;
+import com.chopshop166.chopshoplib.commands.CommandChain;
+import com.chopshop166.chopshoplib.commands.SetCommand;
+import com.chopshop166.chopshoplib.outputs.SendableSpeedController;
+import com.chopshop166.chopshoplib.sensors.Lidar;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -10,12 +17,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
-import com.chopshop166.chopshoplib.Display;
-import com.chopshop166.chopshoplib.Resettable;
-import com.chopshop166.chopshoplib.commands.CommandChain;
-import com.chopshop166.chopshoplib.commands.SetCommand;
-import com.chopshop166.chopshoplib.outputs.SendableSpeedController;
-import com.chopshop166.chopshoplib.sensors.Lidar;
+import edu.wpi.first.wpilibj.command.TimedCommand;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
@@ -155,10 +157,9 @@ public final class Lift extends PIDSubsystem implements Resettable {
     }
 
     public Command raiseLiftALittle() {
-        return new Command("Raise Lift A Little", this) {
+        return new TimedCommand("Raise Lift A Little", 2.5, this) {
             @Override
             protected void initialize() {
-                setTimeout(2.5);
                 setBrakeState(BrakeState.DISENGAGED);
                 liftDrive.set(0.9);
             }
@@ -169,15 +170,9 @@ public final class Lift extends PIDSubsystem implements Resettable {
             }
 
             @Override
-            protected boolean isFinished() {
-                return isTimedOut();
-            }
-
-            @Override
             protected void end() {
                 liftDrive.stopMotor();
                 setBrakeState(BrakeState.ENGAGED);
-                liftDrive.set(0);
             }
         };
     }

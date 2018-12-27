@@ -1,5 +1,13 @@
 package frc.team166.robot;
 
+import com.chopshop166.chopshoplib.CommandRobot;
+import com.chopshop166.chopshoplib.DashboardUtils;
+import com.chopshop166.chopshoplib.RobotUtils;
+import com.chopshop166.chopshoplib.commands.CommandChain;
+import com.chopshop166.chopshoplib.controls.ButtonJoystick;
+import com.chopshop166.chopshoplib.controls.ButtonXboxController;
+import com.chopshop166.chopshoplib.controls.ButtonXboxController.XBoxButton;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -8,13 +16,6 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.TimedCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import com.chopshop166.chopshoplib.CommandRobot;
-import com.chopshop166.chopshoplib.DashboardUtils;
-import com.chopshop166.chopshoplib.RobotUtils;
-import com.chopshop166.chopshoplib.commands.CommandChain;
-import com.chopshop166.chopshoplib.controls.ButtonJoystick;
-import com.chopshop166.chopshoplib.controls.ButtonXboxController;
-import com.chopshop166.chopshoplib.controls.ButtonXboxController.XBoxButton;
 import frc.team166.robot.maps.Maverick;
 import frc.team166.robot.subsystems.Drive;
 import frc.team166.robot.subsystems.LED;

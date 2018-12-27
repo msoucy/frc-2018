@@ -1,5 +1,10 @@
 package frc.team166.robot.subsystems;
 
+import com.chopshop166.chopshoplib.Display;
+import com.chopshop166.chopshoplib.Resettable;
+import com.chopshop166.chopshoplib.commands.SetCommand;
+import com.chopshop166.chopshoplib.outputs.SendableSpeedController;
+
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -11,10 +16,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
-import com.chopshop166.chopshoplib.Display;
-import com.chopshop166.chopshoplib.Resettable;
-import com.chopshop166.chopshoplib.commands.SetCommand;
-import com.chopshop166.chopshoplib.outputs.SendableSpeedController;
+import edu.wpi.first.wpilibj.command.TimedCommand;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
@@ -187,22 +189,16 @@ public final class Manipulator extends PIDSubsystem implements Resettable {
     }
 
     public Command CubeEject() {
-        return new Command("Eject Cube", this) {
+        return new TimedCommand("Eject Cube", 5.0, this) {
 
             @Override
             protected void initialize() {
-                setTimeout(5.0);
                 final String gameData = DriverStation.getInstance()
                         .getGameSpecificMessage();
 
                 if (gameData.length() > 0 && gameData.charAt(0) == 'R') {
                     setMotors(MotorState.DISCHARGE);
                 }
-            }
-
-            @Override
-            protected boolean isFinished() {
-                return isTimedOut();
             }
 
             @Override
@@ -258,9 +254,9 @@ public final class Manipulator extends PIDSubsystem implements Resettable {
 
             @Override
             protected void execute() {
-                double rotation = Math.pow(controller.getY(Hand.kLeft), 2);
-                rotation *= Math.signum(controller.getY(Hand.kLeft));
-                deploymentMotor.set(rotation);
+                double yval = controller.getY(Hand.kLeft);
+                // Sign Preserving Square
+                deploymentMotor.set(Math.copySign(yval * yval, yval));
             }
 
             @Override

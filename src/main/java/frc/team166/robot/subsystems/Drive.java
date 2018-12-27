@@ -1,5 +1,10 @@
 package frc.team166.robot.subsystems;
 
+import com.chopshop166.chopshoplib.Display;
+import com.chopshop166.chopshoplib.Resettable;
+import com.chopshop166.chopshoplib.commands.CommandChain;
+import com.chopshop166.chopshoplib.sensors.Lidar;
+
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Joystick;
@@ -7,12 +12,9 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.command.TimedCommand;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import com.chopshop166.chopshoplib.Display;
-import com.chopshop166.chopshoplib.Resettable;
-import com.chopshop166.chopshoplib.commands.CommandChain;
-import com.chopshop166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
@@ -194,7 +196,7 @@ public final class Drive extends Subsystem implements Resettable {
 
     @Display({ 2.0, 0.6 })
     public Command driveTime(final double seconds, final double speed) {
-        return new Command("Drive " + seconds + "s", this) {
+        return new TimedCommand("Drive " + seconds + "s", seconds, this) {
             @Override
             protected void initialize() {
                 pidController.reset();
@@ -206,11 +208,6 @@ public final class Drive extends Subsystem implements Resettable {
             @Override
             protected void execute() {
                 driveTrain.arcadeDrive(speed, angleCorrection);
-            }
-
-            @Override
-            protected boolean isFinished() {
-                return isTimedOut();
             }
 
             @Override
