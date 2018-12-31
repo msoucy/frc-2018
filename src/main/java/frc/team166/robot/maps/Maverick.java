@@ -96,6 +96,7 @@ public class Maverick implements RobotMap {
 
     @Override
     public AnalogGyro getDriveGyro() {
+        driveGyro.setSensitivity(0.0125 / 5.45);
         return driveGyro;
     }
 
