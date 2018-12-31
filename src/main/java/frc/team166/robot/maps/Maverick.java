@@ -117,6 +117,7 @@ public class Maverick implements RobotMap {
 
     @Override
     public SendableSpeedController getDeploymentMotor() {
+        deploymentMotor.setInverted(true);
         return SendableSpeedController.wrap(deploymentMotor);
     }
 
