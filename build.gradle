@@ -66,6 +66,11 @@ compileJava {
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 }
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
 
 def runCommand = { String... args ->
     def stdout = new ByteArrayOutputStream()
