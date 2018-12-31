@@ -15,12 +15,21 @@ import frc.team166.robot.RobotMap
 
 public final class LED(val map : RobotMap.LEDMap) : Subsystem() {
 
-    private val red = map.getRed()
-    private val green = map.getGreen()
-    private val blue = map.getBlue()
+    private val redPort = map.getRed()
+    private var red : Boolean
+        get() = redPort.get()
+        set(value) = redPort.set(value)
+    private val greenPort = map.getGreen()
+    private var green : Boolean
+        get() = greenPort.get()
+        set(value) = greenPort.set(value)
+    private val bluePort = map.getBlue()
+    private var blue : Boolean
+        get() = bluePort.get()
+        set(value) = bluePort.set(value)
 
     override public fun initDefaultCommand() {
-        setDefaultCommand(breathTeamColor())
+        defaultCommand = breathTeamColor()
     }
 
     init {
@@ -29,25 +38,28 @@ public final class LED(val map : RobotMap.LEDMap) : Subsystem() {
 
     // METHODS
     private fun allOff() {
-        red.set(false)
-        green.set(false)
-        blue.set(false)
+        red = false
+        green = false
+        blue = false
     }
 
-    private fun isBlueTeam() : Boolean {
-        val team = DriverStation.getInstance().getAlliance()
-        return team == Alliance.Blue
-    }
-
-    private fun setTeamColor(turnOn : Boolean) {
-        if (isBlueTeam()) {
-            red.set(false)
-            blue.set(turnOn)
-        } else {
-            blue.set(false)
-            red.set(turnOn)
+    private val isBlueTeam : Boolean
+        get() {
+            val team = DriverStation.getInstance().getAlliance()
+            return team == Alliance.Blue
         }
-    }
+    
+    private val thisTeamColor : DigitalOutputDutyCycle
+        get() = if (isBlueTeam) bluePort else redPort
+    private val otherTeamColor : DigitalOutputDutyCycle
+        get() = if (isBlueTeam) redPort else bluePort
+
+    private var teamColor : Boolean
+        get() = thisTeamColor.get()
+        set(value) {
+            thisTeamColor.set(value)
+            otherTeamColor.set(false)
+        }
 
     // COMMANDS
     fun blinkGreen(numberOfBlinks : Int) =
@@ -57,17 +69,17 @@ public final class LED(val map : RobotMap.LEDMap) : Subsystem() {
             private var count = 0
 
             override protected fun initialize() {
-                green.set(true)
+                green = true
             }
 
             override protected fun execute() {
                 if (System.currentTimeMillis() >= lastUpdateTime + 250) {
                     lastUpdateTime = System.currentTimeMillis()
                     if (isOn) {
-                        green.set(false)
+                        green = false
                         count++
                     } else {
-                        green.set(true)
+                        green = true
                     }
                     isOn = !isOn
                 }
@@ -76,7 +88,7 @@ public final class LED(val map : RobotMap.LEDMap) : Subsystem() {
             override protected fun isFinished() = count >= numberOfBlinks
 
             override protected fun end() {
-                green.set(false)
+                green = false
             }
         }
 
@@ -86,21 +98,21 @@ public final class LED(val map : RobotMap.LEDMap) : Subsystem() {
             private var isOn = true
 
             override protected fun initialize() {
-                setTeamColor(true)
+                teamColor = true
             }
 
             override protected fun execute() {
                 if (System.currentTimeMillis() >= lastUpdateTime + 750) {
                     lastUpdateTime = System.currentTimeMillis()
                     isOn = !isOn
-                    setTeamColor(isOn)
+                    teamColor = isOn
                 }
             }
 
             override protected fun isFinished() = false
 
             override protected fun end() {
-                setTeamColor(false)
+                teamColor = false
             }
         }
 
@@ -117,18 +129,18 @@ public final class LED(val map : RobotMap.LEDMap) : Subsystem() {
             }
         }
 
-    fun redOn() = colorOn(red)
+    fun redOn() = colorOn(redPort)
 
-    fun greenOn() = colorOn(green)
+    fun greenOn() = colorOn(greenPort)
 
-    fun blueOn() = colorOn(blue)
+    fun blueOn() = colorOn(bluePort)
 
     fun cyanOn() =
         object : Command(this) {
             override protected fun initialize() {
-                red.set(false)
-                blue.set(true)
-                green.set(true)
+                red = false
+                blue = true
+                green = true
             }
 
             override protected fun isFinished() = false
@@ -141,13 +153,13 @@ public final class LED(val map : RobotMap.LEDMap) : Subsystem() {
     fun lightTeamColor() =
         object : Command(this) {
             override protected fun initialize() {
-                setTeamColor(true)
+                teamColor = true
             }
 
             override protected fun isFinished() = false
 
             override protected fun end() {
-                setTeamColor(false)
+                teamColor = false
             }
         }
 
@@ -165,11 +177,10 @@ public final class LED(val map : RobotMap.LEDMap) : Subsystem() {
             }
 
             override protected fun execute() {
-                if (isIncreasing) {
-                    color.updateDutyCycle(color.getPWMRate() + changeAmount)
-                } else {
-                    color.updateDutyCycle(color.getPWMRate() - changeAmount)
-                }
+                color.updateDutyCycle(
+                    if (isIncreasing) { color.getPWMRate() + changeAmount }
+                    else { color.getPWMRate() - changeAmount }
+                )
                 if (color.getPWMRate() >= 1 || color.getPWMRate() <= 0) {
                     isIncreasing = !isIncreasing
                 }
@@ -182,13 +193,13 @@ public final class LED(val map : RobotMap.LEDMap) : Subsystem() {
     @Display
     fun breathTeamColor() =
         InstantCommand("Breath Team Color", this) {
-            green.disablePWM()
-            if (isBlueTeam()) {
-                red.disablePWM()
-                breath(blue, 2).start()
+            greenPort.disablePWM()
+            if (isBlueTeam) {
+                redPort.disablePWM()
+                breath(bluePort, 2).start()
             } else {
-                blue.disablePWM()
-                breath(red, 2).start()
+                bluePort.disablePWM()
+                breath(redPort, 2).start()
             }
         }
 
@@ -200,20 +211,19 @@ public final class LED(val map : RobotMap.LEDMap) : Subsystem() {
             private var count = 0
 
             override protected fun initialize() {
-                blue.set(true)
+                blue = true
             }
 
             override protected fun execute() {
                 if (System.currentTimeMillis() >= lastUpdateTime + 15) {
                     lastUpdateTime = System.currentTimeMillis()
                     if (isOn) {
-                        blue.set(false)
-                        red.set(true)
-                        isOn = false
+                        blue = false
+                        red = true
                         count++
                     } else {
-                        blue.set(true)
-                        red.set(false)
+                        blue = true
+                        red = false
                     }
                     isOn = !isOn
                 }
@@ -222,8 +232,8 @@ public final class LED(val map : RobotMap.LEDMap) : Subsystem() {
             override protected fun isFinished() = count >= numberOfBlinks
 
             override protected fun end() {
-                red.set(false)
-                blue.set(false)
+                red = false
+                blue = false
             }
         }
 
@@ -235,15 +245,15 @@ public final class LED(val map : RobotMap.LEDMap) : Subsystem() {
             private val rand = Random()
 
             override protected fun initialize() {
-                blue.set(true)
+                blue = true
             }
 
             override protected fun execute() {
                 if (System.currentTimeMillis() >= lastUpdateTime + 15) {
                     lastUpdateTime = System.currentTimeMillis()
-                    blue.set(rand.nextBoolean())
-                    red.set(rand.nextBoolean())
-                    green.set(rand.nextBoolean())
+                    blue = rand.nextBoolean()
+                    red = rand.nextBoolean()
+                    green = rand.nextBoolean()
                     count++
                 }
             }

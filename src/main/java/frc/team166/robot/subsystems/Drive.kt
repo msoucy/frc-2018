@@ -54,7 +54,7 @@ public final class Drive(map : RobotMap) : Subsystem(), Resettable {
     // the default command for this code is supposed to rotate the robot so that
     // it's gyro value is 0
     override fun initDefaultCommand() {
-        setDefaultCommand(joystickArcadeTwoStick(Robot.LEFT_DRIVE_STICK, Robot.RIGHT_DRIVE_STICK))
+        defaultCommand = joystickArcadeTwoStick(Robot.LEFT_DRIVE_STICK, Robot.RIGHT_DRIVE_STICK)
     }
 
     override fun reset() {
@@ -83,7 +83,7 @@ public final class Drive(map : RobotMap) : Subsystem(), Resettable {
         object : Command("Drive Straight", this) {
             override protected fun initialize() {
                 pidController.reset()
-                pidController.setSetpoint(tempestGyro.getAngle())
+                pidController.setpoint = tempestGyro.getAngle()
                 pidController.enable()
             }
 
@@ -128,7 +128,7 @@ public final class Drive(map : RobotMap) : Subsystem(), Resettable {
                 tempestGyro.reset()
                 pidController.reset()
                 pidController.setAbsoluteTolerance(ABS_TOLERANCE_ANGLE)
-                pidController.setSetpoint(degrees)
+                pidController.setpoint = degrees
                 pidController.enable()
             }
 

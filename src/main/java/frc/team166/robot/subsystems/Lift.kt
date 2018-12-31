@@ -63,9 +63,9 @@ public final class Lift(val map : RobotMap.LiftMap) :
     init {
         setOutputRange(-1.0, 1.0)
         setAbsoluteTolerance(0.05)
-        addChild(findLiftHeight())
+        addChild(liftHeight)
 
-        liftDrive.setInverted(true)
+        liftDrive.inverted = true
 
         val prefs = Preferences.getInstance()
 
@@ -74,7 +74,7 @@ public final class Lift(val map : RobotMap.LiftMap) :
         }
     }
 
-    override protected fun returnPIDInput() = findLiftHeight()
+    override protected fun returnPIDInput() = liftHeight
 
     override protected fun usePIDOutput(output : Double) {
         if (!topLimitSwitch.get() && output > 0) {
@@ -93,42 +93,49 @@ public final class Lift(val map : RobotMap.LiftMap) :
         liftDrive.stopMotor()
     }
 
-    public fun findLiftHeight() : Double {
-        var distance = encoder.getDistance()
-        val prefs = Preferences.getInstance()
-        if (prefs.getBoolean("Use LIDAR", false)) {
-            val lidarDistance = liftLidar.getDistance(Lidar.MeasurementType.INCHES)
-            if (lidarDistance > MAX_LIDAR_DISTANCE) {
-                distance = lidarDistance
+    public val liftHeight : Double
+        get() {
+            var distance = encoder.getDistance()
+            val prefs = Preferences.getInstance()
+            if (prefs.getBoolean("Use LIDAR", false)) {
+                val lidarDistance = liftLidar.getDistance(Lidar.MeasurementType.INCHES)
+                if (lidarDistance > MAX_LIDAR_DISTANCE) {
+                    distance = lidarDistance
+                }
+            }
+            return distance
+        }
+
+    private var gear = Gear.HIGH
+        get() = field
+        set(value) {
+            if (value == Gear.LOW) {
+                liftTransmission.set(Value.kForward)
+            } else {
+                liftTransmission.set(Value.kReverse)
+            }
+            field = value
+        }
+
+
+    private var brakeState = BrakeState.ENGAGED
+        get() = field
+        set(value) {
+            if (value == BrakeState.ENGAGED) {
+                liftBrake.set(Value.kReverse)
+            } else {
+                liftBrake.set(Value.kForward)
             }
         }
-        return distance
-    }
-
-    private fun setGear(gear : Gear) {
-        if (gear == Gear.LOW) {
-            liftTransmission.set(Value.kForward)
-        } else {
-            liftTransmission.set(Value.kReverse)
-        }
-    }
-
-    private fun setBrakeState(state : BrakeState) {
-        if (state == BrakeState.ENGAGED) {
-            liftBrake.set(Value.kReverse)
-        } else {
-            liftBrake.set(Value.kForward)
-        }
-    }
 
     override fun initDefaultCommand() {
-        setDefaultCommand(manualLift(Robot.COPILOT))
+        defaultCommand = manualLift(Robot.COPILOT)
     }
 
     fun raiseLiftALittle() =
         object : TimedCommand("Raise Lift A Little", 2.5, this) {
             override protected fun initialize() {
-                setBrakeState(BrakeState.DISENGAGED)
+                brakeState = BrakeState.DISENGAGED
                 liftDrive.set(0.9)
             }
 
@@ -138,14 +145,14 @@ public final class Lift(val map : RobotMap.LiftMap) :
 
             override protected fun end() {
                 liftDrive.stopMotor()
-                setBrakeState(BrakeState.ENGAGED)
+                brakeState = BrakeState.ENGAGED
             }
         }
 
     private fun goToHeight(height : LiftHeights, gearState : Gear) =
         InstantCommand(this) {
-            setBrakeState(BrakeState.DISENGAGED)
-            setGear(gearState)
+            brakeState = BrakeState.DISENGAGED
+            gear = gearState
             setSetpoint(height.value)
         }
 
@@ -159,13 +166,13 @@ public final class Lift(val map : RobotMap.LiftMap) :
                 val elevatorControl = controller.getTriggerAxis(Hand.kRight)
                         - controller.getTriggerAxis(Hand.kLeft)
 
-                setBrakeState (
+                brakeState =
                     if (elevatorControl >= .1 || elevatorControl <= -0.1) {
                         BrakeState.DISENGAGED
                     } else {
                         BrakeState.ENGAGED
                     }
-                )
+
                 liftDrive.set(
                     if (elevatorControl > 0 && !topLimitSwitch.get()) {
                         controller.getTriggerAxis(Hand.kLeft)
@@ -191,7 +198,7 @@ public final class Lift(val map : RobotMap.LiftMap) :
 
             override protected fun initialize() {
                 disable()
-                setBrakeState(BrakeState.DISENGAGED)
+                brakeState = BrakeState.DISENGAGED
                 liftDrive.set(
                     if (destinationHeight > encoder.getDistance()) {
                         0.75
@@ -216,14 +223,14 @@ public final class Lift(val map : RobotMap.LiftMap) :
 
             override protected fun end() {
                 liftDrive.set(0.0)
-                setBrakeState(BrakeState.ENGAGED)
+                brakeState = BrakeState.ENGAGED
             }
         }
 
     fun goUp() =
         object : Command(this) {
             override protected fun initialize() {
-                setBrakeState(BrakeState.DISENGAGED)
+                brakeState = BrakeState.DISENGAGED
             }
 
             override protected fun execute() {
@@ -236,7 +243,7 @@ public final class Lift(val map : RobotMap.LiftMap) :
     fun goDown() =
         object : Command(this) {
             override protected fun initialize() {
-                setBrakeState(BrakeState.DISENGAGED)
+                brakeState = BrakeState.DISENGAGED
             }
 
             override protected fun execute() {
@@ -249,7 +256,7 @@ public final class Lift(val map : RobotMap.LiftMap) :
     public fun lowerLiftToLimitSwitch() =
         object : Command(this) {
             override protected fun initialize() {
-                setBrakeState(BrakeState.DISENGAGED)
+                brakeState = BrakeState.DISENGAGED
             }
 
             override protected fun execute() {
@@ -270,11 +277,11 @@ public final class Lift(val map : RobotMap.LiftMap) :
         return chain
     }
 
-    public fun shiftToHighGear() : Command = SetCommand("Shift To High Gear", this, Gear.HIGH, ::setGear)
+    public fun shiftToHighGear() : Command = InstantCommand("Shift To High Gear", this) { gear = Gear.HIGH }
 
-    public fun shiftToLowGear() : Command = SetCommand("Shift To Low Gear", this, Gear.LOW, ::setGear)
+    public fun shiftToLowGear() : Command = InstantCommand("Shift To Low Gear", this) { gear = Gear.LOW }
 
-    public fun engageBrake() : Command = SetCommand("Brake", this, BrakeState.ENGAGED, ::setBrakeState)
+    public fun engageBrake() : Command = InstantCommand("Brake", this) { brakeState = BrakeState.ENGAGED }
 
-    fun disengageBrake() : Command = SetCommand("Don't Brake", this, BrakeState.DISENGAGED, ::setBrakeState)
+    fun disengageBrake() : Command = InstantCommand("Don't Brake", this) { brakeState = BrakeState.DISENGAGED }
 }

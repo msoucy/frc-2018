@@ -52,21 +52,34 @@ public final class Manipulator(val map : RobotMap) :
         deploymentMotor.stopMotor()
     }
 
-    private fun setInner(state : State) {
-        if (state == State.OPEN) {
-            innerSolenoid.set(Value.kForward)
-        } else {
-            innerSolenoid.set(Value.kReverse)
+    private var innerState = State.CLOSED
+        get() = field
+        set(value) {
+            if (value == State.OPEN) {
+                innerSolenoid.set(Value.kForward)
+            } else {
+                innerSolenoid.set(Value.kReverse)
+            }
+            field = value
         }
-    }
 
-    private fun setOuter(state : State) {
-        if (state == State.OPEN) {
-            outerSolenoid.set(Value.kForward)
-        } else {
-            outerSolenoid.set(Value.kReverse)
+    private var outerState = State.CLOSED
+        get() = field
+        set(value) {
+            if (value == State.OPEN) {
+                outerSolenoid.set(Value.kForward)
+            } else {
+                outerSolenoid.set(Value.kReverse)
+            }
+            field = value
         }
-    }
+
+    private var motorSpeed = MotorState.STOPPED
+        get() = field
+        set(value) {
+            rollers.set(value.value)
+            field = value
+        }
 
     private fun getIRDistance() = irSensor.getVoltage()
 
@@ -76,44 +89,40 @@ public final class Manipulator(val map : RobotMap) :
         deploymentMotor.set(output)
     }
 
-    private fun setMotors(state : MotorState) {
-        rollers.set(state.value)
-    }
-
     // COMMANDS
     override fun initDefaultCommand() {
-        setDefaultCommand(DeployManipulatorWithJoystick(Robot.COPILOT))
+        defaultCommand = DeployManipulatorWithJoystick(Robot.COPILOT)
     }
 
     @Display
-    fun OpenOuterManipulator() = SetCommand("Open Outer Manipulator", this, State.OPEN, this::setOuter)
+    fun OpenOuterManipulator() = InstantCommand("Open Outer Manipulator", this) { outerState = State.OPEN }
 
     @Display
-    fun CloseOuterManipulator() = SetCommand("Close Outer", this, State.CLOSED, this::setOuter)
+    fun CloseOuterManipulator() = InstantCommand("Close Outer", this) { outerState = State.CLOSED }
 
     @Display
-    fun OpenInnerManipulator() = SetCommand("Open Inner", this, State.OPEN, this::setInner)
+    fun OpenInnerManipulator() = InstantCommand("Open Inner", this) { innerState = State.OPEN }
 
     @Display
-    fun CloseInnerManipulator() = SetCommand("Close Inner", this, State.CLOSED, this::setInner)
+    fun CloseInnerManipulator() = InstantCommand("Close Inner", this) { innerState = State.CLOSED }
 
     @Display
-    fun ManipulatorDischarge() = SetCommand("DisCharge", this, MotorState.DISCHARGE, this::setMotors)
+    fun ManipulatorDischarge() = InstantCommand("DisCharge", this) { motorSpeed = MotorState.DISCHARGE }
 
     @Display
-    fun ManipulatorIntake() = SetCommand("Intake", this, MotorState.INTAKE, this::setMotors)
+    fun ManipulatorIntake() = InstantCommand("Intake", this) { motorSpeed = MotorState.INTAKE}
 
     fun ManipulatorIntakeHeld() =
         object : Command("Intake", this) {
 
             override protected fun initialize() {
-                setMotors(MotorState.INTAKE)
+                motorSpeed = MotorState.INTAKE
             }
 
             override protected fun isFinished() = false
 
             override protected fun end() {
-                setMotors(MotorState.STOPPED)
+                motorSpeed = MotorState.STOPPED
             }
         }
 
@@ -121,13 +130,13 @@ public final class Manipulator(val map : RobotMap) :
         object : Command("Discharge", this) {
 
             override protected fun initialize() {
-                setMotors(MotorState.DISCHARGE)
+                motorSpeed = MotorState.DISCHARGE
             }
 
             override protected fun isFinished() = false
 
             override protected fun end() {
-                setMotors(MotorState.STOPPED)
+                motorSpeed = MotorState.STOPPED
             }
         }
 
@@ -138,12 +147,12 @@ public final class Manipulator(val map : RobotMap) :
                 var gameData = DriverStation.getInstance().getGameSpecificMessage()
 
                 if (gameData.length > 0 && gameData.get(0) == 'R') {
-                    setMotors(MotorState.DISCHARGE)
+                    motorSpeed = MotorState.DISCHARGE
                 }
             }
 
             override protected fun end() {
-                setMotors(MotorState.STOPPED)
+                motorSpeed = MotorState.STOPPED
             }
         }
 
@@ -151,15 +160,15 @@ public final class Manipulator(val map : RobotMap) :
         object : Command("Pick Up Cube", this) {
 
             override protected fun initialize() {
-                setOuter(State.OPEN)
-                setMotors(MotorState.INTAKE)
+                outerState = State.OPEN
+                motorSpeed = MotorState.INTAKE
             }
 
             override protected fun isFinished() = getIRDistance() > 0.5
 
             override protected fun end() {
-                setOuter(State.CLOSED)
-                setMotors(MotorState.STOPPED)
+                outerState = State.CLOSED
+                motorSpeed = MotorState.STOPPED
             }
         }
 
@@ -167,7 +176,7 @@ public final class Manipulator(val map : RobotMap) :
         object : Command("Deploy Manipulator", this) {
 
             override protected fun initialize() {
-                setSetpoint(2.5)
+                setpoint = 2.5
             }
 
             override protected fun isFinished() = onTarget()
