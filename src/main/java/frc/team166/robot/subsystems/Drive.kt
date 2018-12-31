@@ -36,13 +36,11 @@ public final class Drive(map : RobotMap) : Subsystem(), Resettable {
     // drive type
     private var angleCorrection = 0.0
 
-    fun setAngleCorrection(value : Double) {
-        angleCorrection = value
-    }
-
     // PIDController loop used to find the power of the motors needed to keep the
     // angle of the gyro at 0
-    private val pidController = PIDController(P, I, D, F, tempestGyro, ::setAngleCorrection)
+    private val pidController = PIDController(P, I, D, F, tempestGyro) { value : Double ->
+        angleCorrection = value
+    }
 
     init {
         pidController.setOutputRange(-0.6, 0.6)
@@ -63,7 +61,8 @@ public final class Drive(map : RobotMap) : Subsystem(), Resettable {
         driveTrain.stopMotor()
     }
 
-    fun xboxArcade(controller : XboxController) = object : Command("XBoxArcade", this) {
+    fun xboxArcade(controller : XboxController) =
+        object : Command("XBoxArcade", this) {
             override protected fun execute() {
                 driveTrain.arcadeDrive(-controller.getY(Hand.kLeft), controller.getX(Hand.kRight))
             }
@@ -71,7 +70,7 @@ public final class Drive(map : RobotMap) : Subsystem(), Resettable {
             override protected fun isFinished() = false
         }
 
-    fun joystickArcadeTwoStick(left : Joystick, right : Joystick) : Command =
+    fun joystickArcadeTwoStick(left : Joystick, right : Joystick) =
         object : Command("Joystick Arcade with two sticks", this) {
             override protected fun execute() {
                 driveTrain.arcadeDrive(-left.getY() * 0.8, right.getX())
@@ -80,7 +79,7 @@ public final class Drive(map : RobotMap) : Subsystem(), Resettable {
             override protected fun isFinished() = false
         }
 
-    fun driveStraight(controller : XboxController) : Command =
+    fun driveStraight(controller : XboxController) =
         object : Command("Drive Straight", this) {
             override protected fun initialize() {
                 pidController.reset()
@@ -100,7 +99,7 @@ public final class Drive(map : RobotMap) : Subsystem(), Resettable {
             }
         }
 
-    fun drivetoProximity(inches : Double) : Command =
+    fun drivetoProximity(inches : Double) =
         object : Command("Drive Distance", this) {
             override protected fun initialize() {
                 pidController.setSetpoint(tempestGyro.getAngle())
@@ -119,11 +118,11 @@ public final class Drive(map : RobotMap) : Subsystem(), Resettable {
             }
         }
 
-    // @Display(value = 45.0, name = "Turn Right 45")
-    // @Display(value = -45.0, name = "Turn Left 45")
-    // @Display(value = 90.0, name = "Turn Right 90")
-    // @Display(value = -90.0, name = "Turn Left 90")
-    fun turnByDegrees(degrees : Double) : Command =
+    @Display(value = [45.0], name = "Turn Right 45")
+    // @Display(value = [-45.0], name = "Turn Left 45")
+    // @Display(value = [90.0], name = "Turn Right 90")
+    // @Display(value = [-90.0], name = "Turn Left 90")
+    fun turnByDegrees(degrees : Double) =
         object : Command("Turn " + degrees, this) {
             override protected fun initialize() {
                 tempestGyro.reset()
@@ -145,8 +144,8 @@ public final class Drive(map : RobotMap) : Subsystem(), Resettable {
             }
         }
 
-    // @Display({ 2.0, 0.6 })
-    fun driveTime(seconds : Double, speed : Double) : Command =
+    @Display(2.0, 0.6)
+    fun driveTime(seconds : Double, speed : Double) =
         object : TimedCommand("Drive " + seconds + "s", seconds, this) {
             override protected fun initialize() {
                 pidController.reset()
