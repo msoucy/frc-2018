@@ -254,7 +254,7 @@ public final class Manipulator extends PIDSubsystem implements Resettable {
 
             @Override
             protected void execute() {
-                double yval = controller.getY(Hand.kLeft);
+                final double yval = controller.getY(Hand.kLeft);
                 // Sign Preserving Square
                 deploymentMotor.set(Math.copySign(yval * yval, yval));
             }

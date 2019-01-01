@@ -39,13 +39,16 @@ repositories {
         url 'http://first.wpi.edu/FRC/roborio/maven/development/'
     }
 }
+
+def wpiVersion = '2018.4.1-20181003000242-1213-gfd82153'
+
 // Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
 // and NavX.
 dependencies {
     compile wpilib()
-    compile group: 'edu.wpi.first.ntcore', name: 'ntcore-java', version: '2018.4.1-20181003000242-1213-gfd82153'
-    compile group: 'edu.wpi.first.wpilibj', name: 'wpilibj-java', version: '2018.4.1-20181003000242-1213-gfd82153'
-    compile group: 'edu.wpi.first.cameraserver', name: 'cameraserver-java', version: '2018.4.1-20181003000242-1213-gfd82153'
+    compile group: 'edu.wpi.first.ntcore', name: 'ntcore-java', version: wpiVersion
+    compile group: 'edu.wpi.first.wpilibj', name: 'wpilibj-java', version: wpiVersion
+    compile group: 'edu.wpi.first.cameraserver', name: 'cameraserver-java', version: wpiVersion
     compile ctre()
     compile navx()
     compile group: 'com.chopshop166', name: 'chopshoplib', version: '2019.0.0-alpha6'
@@ -65,37 +68,6 @@ compileJava {
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 }
-
-def runCommand = { String... args ->
-    def stdout = new ByteArrayOutputStream()
-    exec {
-        commandLine args
-        standardOutput = stdout
-    }
-    return stdout.toString().trim()
-
-}
-
-def getGitHash = { -> runCommand "git", "describe", "--always" }
-
-def getGitBranch = { -> runCommand "git", "rev-parse", "--abbrev-ref", "HEAD" }
-
-def getGitFilesChanged = { -> runCommand "git", "diff", "--name-only", "HEAD" }
-
-task versionTxt() {
-    doLast {
-        String resourcesDir = "$projectDir/src/main/resources"
-        def logDirBase = file(resourcesDir)
-        logDirBase.mkdirs()
-        file("$resourcesDir/branch.txt").text = getGitBranch()
-        file("$resourcesDir/commit.txt").text = getGitHash()
-        file("$resourcesDir/changes.txt").text = getGitFilesChanged()
-        file("$resourcesDir/buildtime.txt").text =
-                new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())
-    }
-}
-
-compileJava.dependsOn versionTxt
 
 ext {
     SpotBugsTask = com.github.spotbugs.SpotBugsTask
@@ -120,6 +92,8 @@ pmd {
     ruleSets = []
     ruleSetFiles = files("$rootProject.projectDir/config/pmd-ruleset.xml")
 }
+
+apply from: 'versioning.gradle'
 
 wrapper {
     gradleVersion = '4.10'
