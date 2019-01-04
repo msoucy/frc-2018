@@ -3,6 +3,7 @@ package frc.team166.robot.subsystems;
 import com.chopshop166.chopshoplib.Display;
 import com.chopshop166.chopshoplib.Resettable;
 import com.chopshop166.chopshoplib.commands.CommandChain;
+import com.chopshop166.chopshoplib.outputs.TankDriveSubsystem;
 import com.chopshop166.chopshoplib.sensors.Lidar;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
@@ -11,14 +12,18 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.command.TimedCommand;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
+import jaci.pathfinder.Pathfinder;
+import jaci.pathfinder.Trajectory;
+import jaci.pathfinder.followers.EncoderFollower;
+import jaci.pathfinder.modifiers.TankModifier;
 
-public final class Drive extends Subsystem implements Resettable {
+public final class Drive extends TankDriveSubsystem implements Resettable {
 
     private final Lidar frontLidar;
     private final AnalogGyro tempestGyro;
@@ -31,6 +36,7 @@ public final class Drive extends Subsystem implements Resettable {
     private final static double D = 0;
     private final static double F = 0;
     private final static double ABS_TOLERANCE_ANGLE = 3;
+    private final static double MAX_VELOCITY = 1.7;
 
     // defines a new double that is going to be used in the line that defines the
     // drive type
@@ -74,6 +80,46 @@ public final class Drive extends Subsystem implements Resettable {
     @Override
     public void reset() {
         driveTrain.stopMotor();
+    }
+
+    @Override
+    public TankModifier getModifier(final Trajectory trajectory) {
+        return new TankModifier(trajectory).modify(0.8);
+    }
+
+    @Override
+    public DifferentialDrive getDriveTrain() {
+        return driveTrain;
+    }
+
+    @Override
+    public Gyro getGyro() {
+        return tempestGyro;
+    }
+
+    @Override
+    public void configureLeftEncoderFollower(final EncoderFollower follower) {
+        follower.configureEncoder(0, 1024, 0.2);
+        follower.configurePIDVA(1.0, 0.0, 0.0, 1.0 / MAX_VELOCITY, 0);
+    }
+
+    @Override
+    public Integer getLeftEncoder() {
+        return 0;
+    }
+
+    @Override
+    public Integer getRightEncoder() {
+        return 0;
+    }
+
+    public Command driveSample() {
+        return path(new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
+                Trajectory.Config.SAMPLES_HIGH, 0.05, MAX_VELOCITY, 2.0, 60.0))
+                        .then(-4, -1, Pathfinder.d2r(-45))
+                        .then(-2, -2, 0)
+                        .then(0, 0, 0)
+                        .compile("Drive Sample", this);
     }
 
     public Command xboxArcade(final XboxController controller) {
