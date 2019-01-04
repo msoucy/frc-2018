@@ -114,12 +114,13 @@ public final class Drive extends TankDriveSubsystem implements Resettable {
     }
 
     public Command driveSample() {
-        return path(new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
-                Trajectory.Config.SAMPLES_HIGH, 0.05, MAX_VELOCITY, 2.0, 60.0))
-                        .then(-4, -1, Pathfinder.d2r(-45))
-                        .then(-2, -2, 0)
-                        .then(0, 0, 0)
-                        .compile("Drive Sample", this);
+        final Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
+                Trajectory.Config.SAMPLES_HIGH, 0.05, MAX_VELOCITY, 2.0, 60.0);
+        return this.path(config)
+                .then(-4, -1, Pathfinder.d2r(-45))
+                .then(-2, -2, 0)
+                .then(0, 0, 0)
+                .compile("Drive Sample", this);
     }
 
     public Command xboxArcade(final XboxController controller) {
