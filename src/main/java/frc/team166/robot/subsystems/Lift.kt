@@ -77,10 +77,10 @@ public final class Lift(val map : RobotMap.LiftMap) :
     override protected fun returnPIDInput() = liftHeight
 
     override protected fun usePIDOutput(output : Double) {
-        if (!topLimitSwitch.get() && output > 0) {
+        if (!topLimitSwitch.get() && output > 0.0) {
             setSetpoint(LiftHeights.MAX_HEIGHT.value)
             liftDrive.stopMotor()
-        } else if (!bottomLimitSwitch.get() && output < 0) {
+        } else if (!bottomLimitSwitch.get() && output < 0.0) {
             // liftEncoder.reset()
             setSetpoint(LiftHeights.FLOOR.value)
             liftDrive.stopMotor()
@@ -277,11 +277,11 @@ public final class Lift(val map : RobotMap.LiftMap) :
         return chain
     }
 
-    public fun shiftToHighGear() : Command = InstantCommand("Shift To High Gear", this) { gear = Gear.HIGH }
+    public fun shiftToHighGear() : Command = SetCommand("Shift To High Gear", this, Gear.HIGH, ::gear::set)
 
-    public fun shiftToLowGear() : Command = InstantCommand("Shift To Low Gear", this) { gear = Gear.LOW }
+    public fun shiftToLowGear() : Command = SetCommand("Shift To Low Gear", this, Gear.LOW, ::gear::set)
 
-    public fun engageBrake() : Command = InstantCommand("Brake", this) { brakeState = BrakeState.ENGAGED }
+    public fun engageBrake() : Command = SetCommand("Brake", this, BrakeState.ENGAGED, ::brakeState::set)
 
-    fun disengageBrake() : Command = InstantCommand("Don't Brake", this) { brakeState = BrakeState.DISENGAGED }
+    fun disengageBrake() : Command = SetCommand("Don't Brake", this, BrakeState.DISENGAGED, ::brakeState::set)
 }

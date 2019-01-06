@@ -95,22 +95,22 @@ public final class Manipulator(val map : RobotMap) :
     }
 
     @Display
-    fun OpenOuterManipulator() = InstantCommand("Open Outer Manipulator", this) { outerState = State.OPEN }
+    fun OpenOuterManipulator() = SetCommand("Open Outer", this, State.OPEN, ::outerState::set)
 
     @Display
-    fun CloseOuterManipulator() = InstantCommand("Close Outer", this) { outerState = State.CLOSED }
+    fun CloseOuterManipulator() = SetCommand("Close Outer", this, State.CLOSED, ::outerState::set)
 
     @Display
-    fun OpenInnerManipulator() = InstantCommand("Open Inner", this) { innerState = State.OPEN }
+    fun OpenInnerManipulator() = SetCommand("Open Inner", this, State.OPEN, ::innerState::set)
 
     @Display
-    fun CloseInnerManipulator() = InstantCommand("Close Inner", this) { innerState = State.CLOSED }
+    fun CloseInnerManipulator() = SetCommand("Close Inner", this, State.CLOSED, ::innerState::set)
 
     @Display
-    fun ManipulatorDischarge() = InstantCommand("DisCharge", this) { motorSpeed = MotorState.DISCHARGE }
+    fun ManipulatorDischarge() = SetCommand("DisCharge", this, MotorState.DISCHARGE, ::motorSpeed::set)
 
     @Display
-    fun ManipulatorIntake() = InstantCommand("Intake", this) { motorSpeed = MotorState.INTAKE}
+    fun ManipulatorIntake() = SetCommand("Intake", this, MotorState.INTAKE, ::motorSpeed::set)
 
     fun ManipulatorIntakeHeld() =
         object : Command("Intake", this) {
