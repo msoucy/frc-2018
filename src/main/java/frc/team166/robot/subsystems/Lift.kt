@@ -89,11 +89,11 @@ public final class Lift(val map : RobotMap.LiftMap) :
         }
     }
 
-    override public fun reset() {
+    override fun reset() {
         liftDrive.stopMotor()
     }
 
-    public val liftHeight : Double
+    val liftHeight : Double
         get() {
             var distance = encoder.getDistance()
             val prefs = Preferences.getInstance()
@@ -253,7 +253,7 @@ public final class Lift(val map : RobotMap.LiftMap) :
             override protected fun isFinished() = false
         }
 
-    public fun lowerLiftToLimitSwitch() =
+    fun lowerLiftToLimitSwitch() =
         object : Command(this) {
             override protected fun initialize() {
                 brakeState = BrakeState.DISENGAGED
@@ -266,7 +266,7 @@ public final class Lift(val map : RobotMap.LiftMap) :
             override protected fun isFinished() = !bottomLimitSwitch.get()
         }
 
-    public fun climbUp() : Command {
+    fun climbUp() : Command {
         val chain = CommandChain("Climb Up")
         chain.then(disengageBrake())
                 .then(shiftToHighGear())
@@ -277,11 +277,11 @@ public final class Lift(val map : RobotMap.LiftMap) :
         return chain
     }
 
-    public fun shiftToHighGear() : Command = SetCommand("Shift To High Gear", this, Gear.HIGH, ::gear::set)
+    fun shiftToHighGear() : Command = SetCommand("Shift To High Gear", this, Gear.HIGH, ::gear::set)
 
-    public fun shiftToLowGear() : Command = SetCommand("Shift To Low Gear", this, Gear.LOW, ::gear::set)
+    fun shiftToLowGear() : Command = SetCommand("Shift To Low Gear", this, Gear.LOW, ::gear::set)
 
-    public fun engageBrake() : Command = SetCommand("Brake", this, BrakeState.ENGAGED, ::brakeState::set)
+    fun engageBrake() : Command = SetCommand("Brake", this, BrakeState.ENGAGED, ::brakeState::set)
 
     fun disengageBrake() : Command = SetCommand("Don't Brake", this, BrakeState.DISENGAGED, ::brakeState::set)
 }
