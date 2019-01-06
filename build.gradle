@@ -46,9 +46,7 @@ dependencies {
     compile wpi.deps.vendor.java()
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
-    // compile ctre()
-    // compile navx()
-    compile group: 'com.chopshop166', name: 'chopshoplib', version: '2019.0.0-beta1'
+    compile group: 'com.chopshop166', name: 'chopshoplib', version: '2019.0.0'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
